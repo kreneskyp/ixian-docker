@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+pushd $APP_DIR
+
+mkdir -p $CACHE_DIR/packages
+mkdir -p $CACHE_DIR/registry
+mkdir -p $CACHE_DIR/links
+
+/node_modules/bower/bin/bower --config.interactive=false --allow-root install $BOWER_CONFIG
+
+if [[ ! -z $DEV_UID ]]; then
+    chown -R $DEV_UID:$DEV_GID $OUTPUT_DIR
+    chown -R $DEV_UID:$DEV_GID $CACHE_DIR
+fi
+
+popd

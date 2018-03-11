@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+pushd $WORK
+
+pipenv --python 3.6
+pipenv install
+
+if [[ ! -z $DEV_UID ]]; then
+    chown -R $DEV_UID:$DEV_GID .venv
+fi
+
+popd
