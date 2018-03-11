@@ -3,8 +3,7 @@
 
 
 # virtualenv
-/lib/
-/include/
+.venv
 
 # Compiled Python Files
 *.pyc
