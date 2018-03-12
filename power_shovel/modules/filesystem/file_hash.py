@@ -22,7 +22,7 @@ def hash_file(path):
     :return: sha256 hash of path contents
     """
     hash = hashlib.sha256()
-    hash.update(get_flags(path))
+    hash.update(get_flags(path).encode('utf-8'))
     with open(path, 'rb', buffering=0) as f:
         for b in iter(lambda: f.read(128 * 1024), b''):
             hash.update(b)

@@ -9,9 +9,9 @@ from power_shovel.modules.filesystem.utils import mkdir
 
 def hash_object(obj):
     """deterministically hash a dict."""
-    return hashlib.sha256(
-        json.dumps(obj, sort_keys=True)
-    ).hexdigest()
+    hash = hashlib.sha256()
+    hash.update(json.dumps(obj, sort_keys=True).encode('utf-8'))
+    return hash.hexdigest()
 
 
 class Checker(object):
