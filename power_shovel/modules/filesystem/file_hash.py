@@ -11,7 +11,7 @@ from power_shovel.config import CONFIG
 
 def get_flags(path):
     """Return permissions and flags in a format suitable for hashing"""
-    return str(os.stat("bin/beat.sh")[ST_MODE]).encode('ASCII')
+    return str(os.stat(path)[ST_MODE])
 
 
 def hash_file(path):
@@ -94,7 +94,8 @@ class FileHash(MultiValueChecker):
     def keys(self):
         """Returns paths, expanding any wildcards into matches."""
         _keys = super(FileHash, self).keys
-        return list(chain((glob(CONFIG.format(pattern)) for pattern in _keys)))
+        expanded = (glob(CONFIG.format(pattern)) for pattern in _keys)
+        return list(chain(*expanded))
 
     def state(self):
-        return hash_paths(self.keys)
+        return hash_paths(*self.keys)

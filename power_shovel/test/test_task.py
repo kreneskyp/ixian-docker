@@ -179,6 +179,11 @@ class TaskTestCases(TestCase):
             {'check': [PassingCheck()]})
         return grandparent, parent, child
 
+    def assert_no_checker_save_calls(self):
+        self.grandparent.checkers[0].save.assert_has_calls([])
+        self.parent.checkers[0].save.assert_has_calls([])
+        self.child.checkers[0].save.assert_has_calls([])
+
     def reset_task_checkers_save(self):
         self.grandparent.checkers[0].save.reset_mock()
         self.parent.checkers[0].save.reset_mock()
@@ -201,6 +206,7 @@ class TaskTestCases(TestCase):
         parent_checker.check.assert_has_calls([])
         child_checker.check.assert_has_calls([])
         self.assert_no_calls()
+        self.assert_no_checker_save_calls()
         self.reset_task_checkers_check()
 
         self.parent()
@@ -208,6 +214,7 @@ class TaskTestCases(TestCase):
         parent_checker.check.assert_has_calls([])
         child_checker.check.assert_has_calls([])
         self.assert_no_calls()
+        self.assert_no_checker_save_calls()
         self.reset_task_checkers_check()
 
         self.child()
@@ -215,6 +222,7 @@ class TaskTestCases(TestCase):
         parent_checker.check.assert_has_calls([])
         child_checker.check.assert_has_calls([])
         self.assert_no_calls()
+        self.assert_no_checker_save_calls()
         self.reset_task_checkers_check()
 
     def test_force(self):
