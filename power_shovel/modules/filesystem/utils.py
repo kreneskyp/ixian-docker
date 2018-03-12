@@ -10,7 +10,7 @@ def mkdir(path):
 
 def pwd():
     """Return working directory"""
-    return subprocess.check_output(['pwd'])[:-1]
+    return os.getcwd()
 
 
 def touch(path):
