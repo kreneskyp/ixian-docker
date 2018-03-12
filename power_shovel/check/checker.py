@@ -60,6 +60,15 @@ class Checker(object):
             return None
 
     def file_path(self):
+        """Path where state file can be found.
+
+        :return: path
+        """
+        return CONFIG.format(
+            '{BUILDER}/{file_name}',
+            file_name=self.filename())
+
+    def filename(self):
         """
         Generate a filename that is a deterministic representation of the
         dependencies being checked.
@@ -82,12 +91,9 @@ class SingleKeyChecker(Checker):
     def __init__(self, key):
         self.key = key
 
-    def file_path(self):
+    def filename(self):
         """"Generate file path using keys of the data dict."""
-        filename = hashlib.sha256(self.key).hexdigest()
-        return CONFIG.format(
-            '{BUILDER}/checks/{filename}',
-            filename=filename)
+        return hashlib.sha256(self.key).hexdigest()
 
 
 class MultiValueChecker(Checker):
@@ -101,11 +107,9 @@ class MultiValueChecker(Checker):
         """list of keys saved in this instance"""
         return self._keys
 
-    def file_path(self):
+    def filename(self):
         """"Generate file path using keys of the data dict."""
-        return CONFIG.format(
-            '{BUILDER}/checks/{filename}',
-            filename=hash_object(self.keys))
+        return hash_object(self.keys)
 
     def clone(self):
         return type(self)(self.keys)

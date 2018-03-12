@@ -23,7 +23,7 @@ class MockChecker(Checker):
     def state(self):
         return {'mock': self.mocked_state}
 
-    def file_path(self):
+    def filename(self):
         return 'mock-%s' % str(self.id)
 
     def clone(self):
