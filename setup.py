@@ -15,13 +15,13 @@ requirements = [
     for ir in parse_requirements(requirements_path, session=PipSession())]
 
 setup(
-    name='power_shovel',
+    name='power_shovel.docker',
     version=VERSION,
     author='Peter Krenesky',
     author_email='kreneskyp@gmail.com',
     maintainer='Peter Krenesky',
     maintainer_email='kreneskyp@gmail.com',
-    description='Make like extension of shovel.',
+    description='Docker multi-stage builder pattern.',
     long_description=open('%s/README.md' % DIR, 'r').read(),
     url='https://github.com',
     packages=find_packages(exclude=["*.tests",

@@ -1,2 +1,2 @@
-shovel
+power_shovel
 docker-py
