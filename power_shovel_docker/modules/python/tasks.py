@@ -1,7 +1,9 @@
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import task
+from power_shovel_docker.modules.docker.checker import DockerImageExists
 from power_shovel_docker.modules.docker.utils import build_image
+from power_shovel_docker.modules.docker.utils import build_library_volumes
 from power_shovel_docker.modules.docker.utils import build_library_image
 from power_shovel_docker.modules.docker.utils import run_builder
 
@@ -11,6 +13,17 @@ def python_local_package_mount_flags():
 
 
 @task()
+def delete_python_builder():
+    print(CONFIG.FORMAT('TODO: delete image "{PYTHON.BUILDER_TAG}"'))
+
+
+@task(
+    check=[
+        FileHash('{PYTHON.MODULE_DIR}'),
+        DockerImageExists('{PYTHON.BUILDER_TAG}')
+    ],
+    clean=delete_python_builder
+)
 def build_python_builder():
     """
     Build a builder for installing python packages. The default Dockerfile
@@ -53,7 +66,8 @@ def python_builder_kwargs(image=CONFIG.PYTHON.BUILDER_TAG, dev=False):
         volumes=volumes)
 
 
-@task(check=FileHash('requirements.txt'))
+@task(check=FileHash('requirements.txt', 'Pipfile'),
+      depends=[build_python_builder])
 def build_python_image(
         tag='python',
         image=CONFIG.PYTHON.BUILDER_TAG,
@@ -63,7 +77,13 @@ def build_python_image(
     build_library_image(tag, **python_builder_kwargs(image, dev))
 
 
-@task()
+@task(check=FileHash('requirements.txt'),
+      depends=[build_python_builder])
+def build_python_volume(image=CONFIG.PYTHON.BUILDER_TAG):
+    build_library_volumes(**python_builder_kwargs(image))
+
+
+@task(depends=[build_python_volume])
 def python_builder_shell(image=CONFIG.PYTHON.BUILDER_TAG):
     """
     open a bash shell in the webpack builder with volumes mounted. This allows
@@ -72,7 +92,7 @@ def python_builder_shell(image=CONFIG.PYTHON.BUILDER_TAG):
     run_builder(command='/bin/bash', **python_builder_kwargs(image))
 
 
-@task()
+@task(depends=[build_python_volume])
 def pipenv(*args, **kargs):
     """
     Run a pipenv command.

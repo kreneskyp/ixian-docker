@@ -7,7 +7,7 @@ from power_shovel.utils.decorators import classproperty
 class WebpackConfig(Config):
 
     @classproperty
-    def MODULE(cls):
+    def MODULE_DIR(cls):
         """Directory where shovel.webpack is installed"""
         from power_shovel_docker.modules import webpack
         return os.path.dirname(os.path.realpath(webpack.__file__))
@@ -15,7 +15,7 @@ class WebpackConfig(Config):
     BUILDER_TAG = 'builder.webpack'
     IMAGE_TAG = '{PROJECT_NAME}.webpack'
     COMPILED_STATIC_DIR = '{DOCKER.APP_DIR}/compiled_static'
-    BUILDER_CONTEXT = '{WEBPACK.MODULE}'
+    BUILDER_CONTEXT = '{WEBPACK.MODULE_DIR}'
     BUILDER_DOCKERFILE = '{WEBPACK.BUILDER_CONTEXT}/Dockerfile'
     CONFIG_FILE = 'webpack.config.js'
     CONFIG_FILE_PATH = '{DOCKER.PROJECT_DIR}/{WEBPACK.CONFIG_FILE}'

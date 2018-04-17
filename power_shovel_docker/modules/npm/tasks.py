@@ -1,11 +1,11 @@
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import task
+from power_shovel.utils.process import format_args
 from power_shovel_docker.modules.docker.checker import DockerImageExists
-from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.utils import build_image
+from power_shovel_docker.modules.docker.utils import build_library_volumes
 from power_shovel_docker.modules.docker.utils import build_library_image
-from power_shovel_docker.modules.docker.utils import build_volume_from_image
 from power_shovel_docker.modules.docker.utils import run_builder
 from power_shovel_docker.modules.npm.utils import npm_local_package_mount_flags
 
@@ -43,6 +43,7 @@ def npm_builder_kwargs(image=CONFIG.NPM.BUILDER_TAG):
 
     volumes = [
         '{PWD}/package.json:{DOCKER.APP_DIR}/package.json',
+
         # TODO need to initialize empty bash history, this was causing an error.
         #'{BUILDER}/npm.bash_history:{DOCKER.HOME_DIR}/.bash_history'
     ]
@@ -66,9 +67,11 @@ def npm_builder_kwargs(image=CONFIG.NPM.BUILDER_TAG):
         volumes=volumes)
 
 
-@task(
-    check=FileHash('package.json'),
-    depends=[build_npm_builder])
+@task(check=[
+        FileHash('package.json', 'some/dir/'),
+        DockerImageExists(CONFIG.NPM.BUILDER_TAG),
+      ],
+      depends=[build_npm_builder])
 def build_npm_image(tag='npm', image=CONFIG.NPM.BUILDER_TAG):
     """
     Build an image with packages installed via npm.
@@ -83,15 +86,27 @@ def build_npm_image(tag='npm', image=CONFIG.NPM.BUILDER_TAG):
     build_library_image(tag, **npm_builder_kwargs(image))
 
 
-@task(check=DockerVolumeExists(CONFIG.NPM.BUILDER_TAG))
+@task
+def clean_npm_volume(image=CONFIG.NPM.BUILDER_TAG):
+    print('TODO: clean volumes for %s' % image)
+
+
+@task(check=FileHash('package.json'),
+      depends=[build_npm_builder],
+      clean=clean_npm_volume)
 def build_npm_volume(tag=CONFIG.NPM.BUILDER_TAG,
                      image=CONFIG.NPM.BUILDER_TAG):
-    """Build the npm volume from the library image.
+    """Build volume with packages installed via npm.
+
+    This function handles local dependencies automatically. When present all
+    packages listed with a path (e.g. file:/path/to/package) are mapped as
+    volumes.  A temp package.json with rewritten paths is used to install them
+    from their mountpoints.
 
     :param tag: tag for volume, defaults to CONFIG.NPM_BUILDER_TAG.
     :param image: image tag, defaults to CONFIG.NPM_BUILDER_TAG.
     """
-    build_volume_from_image(image, '/builder/node_modules', tag)
+    build_library_volumes(**npm_builder_kwargs(image))
 
 
 @task(depends=[build_npm_builder])
@@ -103,14 +118,15 @@ def npm_builder_shell(tag='npm', image=CONFIG.NPM.BUILDER_TAG):
     run_builder(command='/bin/bash', **npm_builder_kwargs(image))
 
 
-@task(depends=[build_npm_builder])
+@task(depends=[build_npm_volume])
 def npm_update(image=CONFIG.NPM.BUILDER_TAG):
     """Update package.json with ncu"""
     run_builder(command='ncu -u', **npm_builder_kwargs(image))
 
 
-@task(depends=[build_npm_builder])
+@task(depends=[build_npm_volume])
 def npm(*args, **kwargs):
     """Run npm within the context of the builder"""
-    image = kwargs.get('image', CONFIG.NPM.BUILDER_TAG)
-    run_builder(command='npm', **npm_builder_kwargs(image))
+    image = kwargs.pop('image', CONFIG.NPM.BUILDER_TAG)
+    run_builder(command='npm ' + format_args(*args, **kwargs),
+                **npm_builder_kwargs(image))

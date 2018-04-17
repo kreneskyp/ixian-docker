@@ -6,7 +6,7 @@ from power_shovel.utils.decorators import classproperty
 
 class PythonConfig(Config):
     @classproperty
-    def MODULE(cls):
+    def MODULE_DIR(cls):
         """Directory where shovel.python is installed"""
         from power_shovel_docker.modules import python
         return os.path.dirname(os.path.realpath(python.__file__))
@@ -22,7 +22,7 @@ class PythonConfig(Config):
 
     # Docker / Builder
     BUILDER_TAG = 'builder.python'
-    BUILDER_CONTEXT = '{PYTHON.MODULE}'
+    BUILDER_CONTEXT = '{PYTHON.MODULE_DIR}'
     BUILDER_DOCKERFILE = '{PYTHON.BUILDER_CONTEXT}/Dockerfile'
     IMAGE_TAG = '{PROJECT_NAME}.python'
 

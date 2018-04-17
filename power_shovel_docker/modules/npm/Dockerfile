@@ -9,7 +9,7 @@ CMD 'build'
 
 # install NodeJS
 ARG NODE_VERSION=8.x
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl man git
 RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION | bash -
 RUN apt-get install -y nodejs
 RUN npm config set ca="" --global

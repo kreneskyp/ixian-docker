@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-pushd $WORK
+pushd $APP_DIR
 
 pipenv --python 3.6
 pipenv install
