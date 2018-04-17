@@ -1,7 +1,26 @@
 from power_shovel import task
 from power_shovel.config import CONFIG
 from power_shovel.utils.process import execute
+from power_shovel_docker.modules.docker.utils import build_image
 from power_shovel_docker.modules.docker.utils import convert_volume_flags
+
+
+@task()
+def build_docker_volumes():
+    """Common build target for building docker volumes."""
+    pass
+
+
+@task()
+def build_docker_images():
+    """Common build target for building docker images."""
+    pass
+
+
+@task(depends=[build_docker_volumes])
+def build_app():
+    """Builds the docker app using CONFIG.DOCKER_FILE"""
+    build_image(CONFIG.PROJECT_NAME, CONFIG.DOCKER_FILE)
 
 
 @task()

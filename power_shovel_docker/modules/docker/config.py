@@ -14,3 +14,4 @@ class DockerConfig(Config):
     ENV_DIR = '/srv'
     APP_DIR = '{DOCKER.ENV_DIR}/{PROJECT_NAME}'
     PROJECT_DIR = '{DOCKER.APP_DIR}/project'
+    DOCKER_FILE = 'Dockerfile'
