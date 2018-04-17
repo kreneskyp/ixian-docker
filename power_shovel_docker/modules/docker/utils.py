@@ -131,28 +131,60 @@ def run_builder(
     ))
 
 
-def build_library_image(tag, image, outputs, env=None, volumes=None):
-    """
-    Create an image from the output of a docker builder.
+def build_library_image(tag, image, env=None, volumes=None):
+    """Create a library image from the output of a docker builder.
 
-    :param image: builder image to use.
+    This runs the builder without any outputs mapped. The builder will save
+    to the container. The container will be committed into the new image.
+
+    :param tag: tag for library image
+    :param image: builder image to build library with.
+    :param env: additional env flags for builder.
+    :param volumes: list of volume mappings. Volumes may be used to add caches
+        or dependencies to the build.
+    """
+    # commit the builder first to create a blank container for the new image.
+    # This ensures that this command doesn't update the builder container and
+    # taint it for other builds.
+    library_image_tag = None
+    execute('docker commit {container} {library_image}')
+
+    # run the builder and commit the changes
+    run_builder(library_image_tag, env=env, volumes=volumes)
+    execute('docker commit {container} {library_image}')
+
+
+def convert_library_volume_to_libary_image():
+    """Convert library volumes into a library image.
+
+    This takes existing library volumes and saves them to a volume. The image
+    can then be pushed to a registry to share it between builds
+
+    :return:
+    """
+    # TODO: implement
+
+
+def build_library_volumes(image, outputs, env=None, volumes=None):
+    """Create volumes from the output of a docker builder.
+
+    This runs the builder with volumes mounted for all outputs. The outputted
+    library volumes can then be mounted and used by other builders or the
+    runtime container.
+
+    `outputs` should be specified as a list of docker volume mapping strings.
+    Mappings may contain config variables.
+
+
+
+
+    :param image: builder image to build library with.
+    :param outputs: outputs expected for library.
+    :param env: additional env flags for builder.
     :param volumes: list of volume mappings. Volumes may be used to add caches
         or dependencies to the build.
     """
     run_builder(image, outputs, env=env, volumes=volumes)
-
-    output = '%s/%s' % (CONFIG.DOCKER_BUILDER_OUTPUT_LOCAL, image)
-    build_image(
-        tag,
-        CONFIG.DOCKER_FILE_LIBRARY,
-        args={
-            'INPUT': output
-        }
-    )
-    # TODO need to copy files from volume to non-volume location. Quickest way
-    # to do this is mount volumes in a different location and then copy them
-    # to the build location.
-    execute('docker commit {container} {library_image}')
 
 
 def docker_client():
