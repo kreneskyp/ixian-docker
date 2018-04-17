@@ -11,6 +11,16 @@ def build_image(
         file='Dockerfile',
         context='.',
         args=None):
+    """Build a docker image.
+
+    Builds a docker image. This is a shim around Docker-py that adds some
+    power-shovel utilities to it.
+
+    :param tag: Tag for image.
+    :param file: Dockerfile.
+    :param context: build context, default is the working directory.
+    :param args: args to pass as build-args to build
+    """
 
     # TODO: --no-cache for clean builds
 
@@ -26,15 +36,19 @@ def build_image(
 
 
 def build_volume_from_image(image, path, tag=None):
-    """
-    Build a volume from a docker image
+    """Build a volume from a docker image.
+
+    This utility is used to build volumes from an existing image. This allows
+    images stored in a registry to pulled and used as libraries.
+
     :param image: image tag to build from
     :param path: path within docker image to create a volume for
     :param tag: volume tag, defaults to image name
     """
     tag = tag or image
 
-    # remove existing volume first
+    # TODO: list of outputs instead of single path
+    # TODO: remove existing volume first
     #execute('docker volume rm %s' % tag)
     execute('docker run -v {tag}:{path} --rm {image} true'.format(
         image=image,
@@ -44,8 +58,9 @@ def build_volume_from_image(image, path, tag=None):
 
 
 def convert_volume_flags(volumes):
-    """
-    Format volume patterns into volume flags.
+    """Format volume patterns into volume flags.
+
+    TODO: deprecate this and let docker-py handle formatting volumes
 
     :param volumes: list of volume strings
     :return: list of volume flags
@@ -53,10 +68,17 @@ def convert_volume_flags(volumes):
     return ['-v %s' % CONFIG.format(volume) for volume in volumes]
 
 
-def run_builder(image, outputs, command='build', flags=None, env=None, volumes=None):
-    """
-    Run a docker builder container. This function is a helper for using the
-    docker builder pattern.
+def run_builder(
+    image,
+    outputs,
+    command='build',
+    flags=None,
+    env=None,
+    volumes=None
+):
+    """Run a docker builder container.
+
+    This function is a helper for using the docker builder pattern.
 
     The default command is is the `build` script. This script should perform
     a library specific build process. (e.g. npm install, webpack compile). The
@@ -72,12 +94,18 @@ def run_builder(image, outputs, command='build', flags=None, env=None, volumes=N
 
     :param image: builder image to use.
     :param outputs: list of outputs.  May be files or directories.
+    :param command: command string to execute, default is "build".
+    :param flags: additional docker build flags.
+    :param env: additional env flags .
     :param volumes: list of volume mappings.
     """
+    # TODO use docker-py
+
     env_flags = ' '.join(['-e %s=%s' % item for item in (env or {}).items()])
     volume_flags = ' '.join(convert_volume_flags(volumes or []))
 
     # mount outputs into volumes.
+    # TODO move this into build_library_volume
     output_volume_flags = ' '.join([
         CONFIG.format('-v {image}.{output}:{DOCKER.APP_DIR}/{output}',
                       image=image,
