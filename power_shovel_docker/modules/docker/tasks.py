@@ -20,7 +20,7 @@ def build_docker_images():
 @task(depends=[build_docker_volumes])
 def build_app():
     """Builds the docker app using CONFIG.DOCKER_FILE"""
-    build_image(CONFIG.PROJECT_NAME, CONFIG.DOCKER_FILE)
+    build_image(CONFIG.PROJECT_NAME, CONFIG.DOCKER.DOCKER_FILE)
 
 
 @task()

@@ -32,7 +32,7 @@ def webpack_builder_kwargs(image=CONFIG.WEBPACK.BUILDER_TAG):
     volumes = [
         '{PWD}:{DOCKER.PROJECT_DIR}',
         # TODO : volume names shouldn't be defined here
-        'builder.npm.node_modules:{DOCKER.APP_DIR}/node_modules',
+        '{PROJECT_NAME}.node_modules:{DOCKER.APP_DIR}/node_modules',
         #'{BUILDER}/webpack.bash_history:{DOCKER.HOME_DIR}/.bash_history'
     ]
 
@@ -69,7 +69,7 @@ def build_webpack_volume(image=CONFIG.WEBPACK.BUILDER_TAG):
     build_library_volumes(**webpack_builder_kwargs(image))
 
 
-@task(depends=[build_webpack_volume])
+@task()
 def webpack_builder_shell(image=CONFIG.WEBPACK.BUILDER_TAG):
     """
     open a bash shell in the webpack builder with volumes mounted. This allows

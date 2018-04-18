@@ -59,17 +59,14 @@ def python_builder_kwargs(image=CONFIG.PYTHON.BUILDER_TAG, dev=False):
 
     return dict(
         image=image,
-        outputs=[
-            'wheelhouse',
-            '.venv',
-        ],
         volumes=volumes)
 
 
-@task(check=FileHash('requirements.txt', 'Pipfile'),
+@task(parent='build_docker_images',
+      check=FileHash('requirements.txt', 'Pipfile'),
       depends=[build_python_builder])
 def build_python_image(
-        tag='python',
+        tag=CONFIG.PYTHON.TAG,
         image=CONFIG.PYTHON.BUILDER_TAG,
         dev=False
 ):
@@ -77,10 +74,13 @@ def build_python_image(
     build_library_image(tag, **python_builder_kwargs(image, dev))
 
 
-@task(check=FileHash('requirements.txt'),
+@task(parent='build_docker_volumes',
+      check=FileHash('requirements.txt'),
       depends=[build_python_builder])
 def build_python_volume(image=CONFIG.PYTHON.BUILDER_TAG):
-    build_library_volumes(**python_builder_kwargs(image))
+    build_library_volumes(
+        outputs=CONFIG.PYTHON.OUTPUTS[0],
+        **python_builder_kwargs(image))
 
 
 @task(depends=[build_python_volume])
@@ -89,7 +89,10 @@ def python_builder_shell(image=CONFIG.PYTHON.BUILDER_TAG):
     open a bash shell in the webpack builder with volumes mounted. This allows
     for manually running webpack commands.
     """
-    run_builder(command='/bin/bash', **python_builder_kwargs(image))
+    run_builder(
+        command='/bin/bash',
+        outputs=CONFIG.PYTHON.OUTPUTS[0],
+        **python_builder_kwargs(image))
 
 
 @task(depends=[build_python_volume])
@@ -101,4 +104,7 @@ def pipenv(*args, **kargs):
     """
     image=CONFIG.PYTHON.BUILDER_TAG
     args_str = ' '.join(args)
-    run_builder(command='pipenv %s' % args_str, **python_builder_kwargs(image))
+    run_builder(
+        command='pipenv %s' % args_str,
+        outputs=CONFIG.PYTHON.OUTPUTS[0]
+        **python_builder_kwargs(image))

@@ -70,7 +70,7 @@ def convert_volume_flags(volumes):
 
 def run_builder(
     image,
-    outputs,
+    outputs=None,
     command='build',
     flags=None,
     env=None,
@@ -107,10 +107,11 @@ def run_builder(
     # mount outputs into volumes.
     # TODO move this into build_library_volume
     output_volume_flags = ' '.join([
-        CONFIG.format('-v {image}.{output}:{DOCKER.APP_DIR}/{output}',
-                      image=image,
-                      output=output)
-        for output in outputs])
+        CONFIG.format(
+            '-v {PROJECT_NAME}.{output}:{DOCKER.APP_DIR}/{output}',
+            image=image,
+            output=output)
+        for output in outputs or []])
 
     # run builder
     execute(CONFIG.format(
@@ -139,6 +140,7 @@ def build_library_image(tag, image, env=None, volumes=None):
 
     :param tag: tag for library image
     :param image: builder image to build library with.
+    :param outputs: outputs expected for library.
     :param env: additional env flags for builder.
     :param volumes: list of volume mappings. Volumes may be used to add caches
         or dependencies to the build.
@@ -146,12 +148,13 @@ def build_library_image(tag, image, env=None, volumes=None):
     # commit the builder first to create a blank container for the new image.
     # This ensures that this command doesn't update the builder container and
     # taint it for other builds.
-    library_image_tag = None
-    execute('docker commit {container} {library_image}')
+    execute('docker commit {image} {library_image}'.format(
+        image=image, library_image=tag))
 
     # run the builder and commit the changes
-    run_builder(library_image_tag, env=env, volumes=volumes)
-    execute('docker commit {container} {library_image}')
+    run_builder(tag, env=env, volumes=volumes)
+    execute('docker commit {library_image} {library_image}'.format(
+        image=image, library_image=tag))
 
 
 def convert_library_volume_to_libary_image():
@@ -174,9 +177,6 @@ def build_library_volumes(image, outputs, env=None, volumes=None):
 
     `outputs` should be specified as a list of docker volume mapping strings.
     Mappings may contain config variables.
-
-
-
 
     :param image: builder image to build library with.
     :param outputs: outputs expected for library.
