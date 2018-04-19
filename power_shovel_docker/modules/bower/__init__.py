@@ -5,6 +5,6 @@ MODULE_CONFIG = {
 
     # Runtime volumes mounted in all environments.
     'volumes': [
-        'builder.bower.bower_components:{DOCKER.APP_DIR}/bower_components',
+        '{PROJECT_NAME}.bower_components:{DOCKER.APP_DIR}/bower_components',
     ]
 }

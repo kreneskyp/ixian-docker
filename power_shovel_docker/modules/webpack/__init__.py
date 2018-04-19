@@ -5,6 +5,6 @@ MODULE_CONFIG = {
 
     # Runtime volumes mounted in all environments.
     'volumes': [
-        'builder.webpack.compiled_static:{DOCKER.APP_DIR}/compiled_static',
+        '{PROJECT_NAME}.compiled_static:{DOCKER.APP_DIR}/compiled_static',
     ]
 }

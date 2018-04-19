@@ -5,7 +5,6 @@ MODULE_CONFIG = {
 
     # Runtime volumes mounted in all environments.
     'volumes': [
-        'builder.python..venv:{DOCKER.APP_DIR}/.venv',
     ],
 
     # Dev volumes mounted only in local environment
