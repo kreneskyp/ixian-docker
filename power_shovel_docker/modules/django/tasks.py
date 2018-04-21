@@ -1,8 +1,8 @@
 from power_shovel.task import task
 from power_shovel.utils.process import execute
-from power_shovel.config import CONFIG, requires_config
+from power_shovel.config import CONFIG
+from power_shovel.config import requires_config
 from power_shovel_docker.modules.docker.tasks import compose
-
 
 
 @task()
@@ -54,4 +54,7 @@ def dbshell():
 
 @task()
 def runserver():
-    compose(CONFIG.format('{PYTHON.BIN} manage.py runserver 0.0.0.0:8000'))
+    compose(
+        CONFIG.format('{PYTHON.BIN} manage.py runserver 0.0.0.0:8000'),
+        flags=['-p 8000:8000']
+    )

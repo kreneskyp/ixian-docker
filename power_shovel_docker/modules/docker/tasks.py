@@ -34,6 +34,7 @@ def compose(*args, **kwargs):
 
     # TODO process kwargs
     args_str = ' '.join(args)
+    flags = ' '.join(kwargs.pop('flags', []))
 
     # convert volume configs provided by modules into flags to pass to compose
     volumes = ' '.join(convert_volume_flags(
@@ -45,9 +46,10 @@ def compose(*args, **kwargs):
         'docker-compose run {volumes} '
         '-e APP_DIR={DOCKER.APP_DIR} '
         '-e ROOT_MODULE_PATH={PYTHON.ROOT_MODULE_PATH} '
-        ' --rm app {args}',
+        ' --rm {flags} app {args}',
         args=args_str,
-        volumes=volumes
+        volumes=volumes,
+        flags=flags
     ))
 
 
