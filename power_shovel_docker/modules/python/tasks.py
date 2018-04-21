@@ -96,15 +96,15 @@ def python_builder_shell(image=CONFIG.PYTHON.BUILDER_TAG):
 
 
 @task(depends=[build_python_volume])
-def pipenv(*args, **kargs):
+def pipenv(*args, **kwargs):
     """
     Run a pipenv command.
 
     This runs in the builder container with volumes mounted.
     """
-    image=CONFIG.PYTHON.BUILDER_TAG
+    image = CONFIG.PYTHON.BUILDER_TAG
     args_str = ' '.join(args)
     run_builder(
         command='pipenv %s' % args_str,
-        outputs=CONFIG.PYTHON.OUTPUTS[0]
+        outputs=CONFIG.PYTHON.OUTPUTS[0],
         **python_builder_kwargs(image))
