@@ -14,7 +14,6 @@ class NPMConfig(Config):
 
     NODE_MODULES_DIR = '{DOCKER.APP_DIR}/node_modules'
     PACKAGE_JSON = 'package.json'
-    BUILDER_TAG = 'builder.npm'
-    IMAGE_TAG = '{PROJECT_NAME}.npm'
-    BUILDER_CONTEXT = '{NPM.MODULE_DIR}'
-    BUILDER_DOCKERFILE = '{NPM.BUILDER_CONTEXT}/Dockerfile'
+    DOCKER_CONTEXT = '{NPM.MODULE_DIR}/context'
+    DOCKERFILE_TEMPLATE = '{NPM.MODULE_DIR}/Dockerfile.template'
+    NODE_MODULES_VOLUME = '{PROJECT_NAME}.node_modules'

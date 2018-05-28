@@ -1,0 +1,12 @@
+RUN apt-get install -y \
+        postgresql-client
+
+
+ENV DJANGO_SETTINGS_MODULE $PROJECT_NAME.settings.base
+EXPOSE 8000
+RUN ln -s $PROJECT_DIR/manage.py $APP_DIR
+RUN ln -s $PROJECT_DIR/uwsgi.ini $APP_DIR
+
+# Honcho - this is used to start/stop app services (web server, celery, etc)
+RUN ln -s $PROJECT_DIR/Procfile $APP_DIR
+CMD ["honcho", "start"]

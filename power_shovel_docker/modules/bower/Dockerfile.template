@@ -1,0 +1,6 @@
+RUN ln -s $PROJECT_DIR/bower.json $APP_DIR
+
+RUN npm install bower
+# RUN bower install --
+
+#/node_modules/bower/bin/bower --config.interactive=false --allow-root install /var/input/bower.json

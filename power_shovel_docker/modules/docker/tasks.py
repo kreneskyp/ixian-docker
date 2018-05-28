@@ -3,21 +3,17 @@ from power_shovel.config import CONFIG
 from power_shovel.utils.process import execute
 from power_shovel_docker.modules.docker.utils import build_image
 from power_shovel_docker.modules.docker.utils import convert_volume_flags
+from power_shovel_docker.modules.docker import utils
 
 
 @task()
-def build_docker_volumes():
-    """Common build target for building docker volumes."""
-    pass
+def build_dockerfile():
+    text = utils.build_dockerfile()
+    with open(CONFIG.DOCKER.DOCKER_FILE, 'w') as dockerfile:
+        dockerfile.write(text)
 
 
-@task()
-def build_docker_images():
-    """Common build target for building docker images."""
-    pass
-
-
-@task(depends=[build_docker_volumes])
+@task(depends=[build_dockerfile])
 def build_app():
     """Builds the docker app using CONFIG.DOCKER_FILE"""
     build_image(CONFIG.PROJECT_NAME, CONFIG.DOCKER.DOCKER_FILE)
@@ -80,7 +76,7 @@ def down():
 # =============================================================================
 
 def docker_full_teardown():
-    # TODO this doesn't work yet because can't pipe modules
+    # TODO this doesn't work yet because can't pipe commands
     # TODO split these into individual tasks kill_containers|clean_containers|clean_images
     # TODO add clean_volumes
     # TODO --force should be passed to docker commands where appropriate.

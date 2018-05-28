@@ -12,10 +12,7 @@ class BowerConfig(Config):
         from power_shovel_docker.modules import bower
         return os.path.dirname(os.path.realpath(bower.__file__))
 
-    BUILDER_TAG = 'builder.bower'
-    IMAGE_TAG = '{PROJECT_NAME}.bower'
+    COMPONENTS_VOLUME = '{PROJECT_NAME}.bower_components'
     COMPONENTS_DIR = '{DOCKER.APP_DIR}/bower_components'
-    BUILDER_CONTEXT = '{BOWER.MODULE_DIR}'
-    BUILDER_DOCKERFILE = '{BOWER.BUILDER_CONTEXT}/Dockerfile'
     CONFIG_FILE = 'bower.json'
     CONFIG_FILE_PATH = '{DOCKER.PROJECT_DIR}/{BOWER.CONFIG_FILE}'
