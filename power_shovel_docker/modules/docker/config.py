@@ -80,5 +80,14 @@ class DockerConfig(Config):
     HOME_DIR = '/root'
     ENV_DIR = '/srv'
     APP_DIR = '{DOCKER.ENV_DIR}/{PROJECT_NAME}'
+    APP_BIN = '{DOCKER.APP_DIR}/bin'
     PROJECT_DIR = '{DOCKER.APP_DIR}/project'
+
+    # Name of Dockerfile to build with build_app
     DOCKER_FILE = 'Dockerfile'
+
+    # Template is used for compiling the Dockerfile.
+    DOCKERFILE_TEMPLATE = '{DOCKER.MODULE_DIR}/Dockerfile.template'
+
+    # Modules contributed files to add to docker build context.
+    MODULE_CONTEXT = '{BUILDER_DIR}/module_context'

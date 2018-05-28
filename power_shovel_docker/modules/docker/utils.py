@@ -1,9 +1,90 @@
+import shutil
+
 import docker
+import jinja2
+import os
 from docker.errors import NotFound
 
-from power_shovel.modules.filesystem.utils import pwd
+from power_shovel.module import MODULES
 from power_shovel.utils.process import execute, get_dev_uid, get_dev_gid
 from power_shovel.config import CONFIG
+
+
+def build_dockerfile(
+    template_path=None,
+    context=None
+):
+    """Build dockerfile from configured modules and settings.
+
+    This compiles a dockerfile based on the settings for the project. Each
+    module may provide a jinja template snippet. The snippets are passed to
+    a base template that renders them.
+
+    The base template
+
+    :param template_path: base template to use for rendering Dockerfile
+    :return: DockerFile as a string.
+    """
+
+    # build loader that includes files from:
+    #  - directory for base template
+    #  - directories for each of the module's template snippets.
+    path, filename = os.path.split(
+        template_path or CONFIG.DOCKER.DOCKERFILE_TEMPLATE)
+    prefixes = {'base': jinja2.FileSystemLoader(path)}
+    module_templates = []
+    for module in MODULES:
+        template = module.get('dockerfile_template', None)
+
+        if not template:
+            continue
+
+        path, filename = os.path.split(CONFIG.format(template))
+        prefixes[module['name']] = jinja2.FileSystemLoader(path)
+        module_templates.append({
+            'name': module['name'],
+            'template': '{}/{}'.format(module['name'], filename)
+        })
+    loader = jinja2.PrefixLoader(prefixes)
+
+    # render template
+    environment = jinja2.Environment(loader=loader)
+    template = environment.get_template('base/%s' % filename)
+    return template.render(context or {
+        'modules': module_templates,
+        'CONFIG': CONFIG
+    })
+
+
+def gather_context():
+    """Gathers context directories from modules needed for docker build.
+
+    Docker only allows files to be added from directories that are within the
+    build context. Modules may be in python libraries installed in various
+    places in the build system. Rather than requiring module libraries to exist
+    in a specific place, this helper copies them to the builder cache.
+
+    The directories are stored in under `CONFIG.DOCKER.MODULE_CONTEXT`. Each
+    directory is renamed for it's module. e.g. context files for npm will be in
+    `CONFIG.DOCKER.MODULE_CONTEXT/npm`.
+    """
+    for module in MODULES:
+        if 'docker_context' not in module:
+            continue
+
+        source = CONFIG.format(module['docker_context'])
+        dest = CONFIG.format(
+            '{DOCKER.MODULE_CONTEXT}/{module_name}',
+            module_name=module['name']
+        )
+
+        # shutil.copytree requires the dest does not exist. Docker checks use
+        # hashes so it shouldn't matter if files are physically different.
+        if os.path.exists(dest):
+            shutil.rmtree(dest)
+
+        # docker does not honor symlinks so do not honor them here either.
+        shutil.copytree(source, dest, symlinks=False)
 
 
 def build_image(
@@ -21,6 +102,8 @@ def build_image(
     :param context: build context, default is the working directory.
     :param args: args to pass as build-args to build
     """
+
+    gather_context()
 
     # TODO: --no-cache for clean builds
 
