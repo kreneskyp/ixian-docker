@@ -8,6 +8,12 @@ class DockerConfig(Config):
     """Configuration for Docker module."""
 
     @classproperty
+    def ROOT_MODULE_DIR(cls):
+        """Directory where power_shovel.docker is installed"""
+        import power_shovel_docker
+        return os.path.dirname(os.path.realpath(power_shovel_docker.__file__))
+
+    @classproperty
     def MODULE_DIR(cls):
         """Directory where modules.docker is installed"""
         from power_shovel_docker.modules import docker

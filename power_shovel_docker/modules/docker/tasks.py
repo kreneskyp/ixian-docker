@@ -1,19 +1,28 @@
 from power_shovel import task
 from power_shovel.config import CONFIG
+from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
 from power_shovel_docker.modules.docker.utils import build_image
 from power_shovel_docker.modules.docker.utils import convert_volume_flags
 from power_shovel_docker.modules.docker import utils
 
 
-@task()
+@task(check=FileHash(
+    '{POWER_SHOVEL}',
+    '{DOCKER.ROOT_MODULE_DIR}'
+))
 def build_dockerfile():
     text = utils.build_dockerfile()
     with open(CONFIG.DOCKER.DOCKER_FILE, 'w') as dockerfile:
         dockerfile.write(text)
 
 
-@task(depends=[build_dockerfile])
+@task(
+    depends=[build_dockerfile],
+    check=FileHash(
+        'Dockerfile'
+    )
+)
 def build_app():
     """Builds the docker app using CONFIG.DOCKER_FILE"""
     build_image(CONFIG.PROJECT_NAME, CONFIG.DOCKER.DOCKER_FILE)
