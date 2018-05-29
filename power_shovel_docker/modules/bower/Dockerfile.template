@@ -1,6 +1,13 @@
+ENV BOWER {{ CONFIG.BOWER.BIN }}
+ENV BOWER_CONFIG {{ CONFIG.BOWER.CONFIG_FILE_PATH }}
+ADD {{ CONFIG.DOCKER.MODULE_CONTEXT }}/bower/bower.sh $APP_DIR
 RUN ln -s $PROJECT_DIR/bower.json $APP_DIR
-
 RUN npm install bower
-# RUN bower install --
 
-#/node_modules/bower/bin/bower --config.interactive=false --allow-root install /var/input/bower.json
+{% if CONFIG.ENV == 'PRODUCTION' %}
+# Install packages - This is skipped in DEV builds because they may include
+# local-third-party packages. Those packages are installed using mounted
+# volumes and are not accessible to docker build.
+# TODO add check for local packages?
+RUN bower.sh
+{% endif %}

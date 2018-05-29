@@ -16,3 +16,5 @@ class BowerConfig(Config):
     COMPONENTS_DIR = '{DOCKER.APP_DIR}/bower_components'
     CONFIG_FILE = 'bower.json'
     CONFIG_FILE_PATH = '{DOCKER.PROJECT_DIR}/{BOWER.CONFIG_FILE}'
+    BIN = '{NPM.NODE_MODULES_DIR}/.bin/bower'
+    DOCKER_CONTEXT = '{BOWER.MODULE_DIR}/context'

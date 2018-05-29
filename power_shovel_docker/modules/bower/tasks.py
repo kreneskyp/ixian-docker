@@ -6,7 +6,7 @@ from power_shovel_docker.modules.docker.tasks import build_app, compose
 @task(depends=[build_app])
 def build_bower(*args, **kwargs):
     """Install bower components in app container"""
-    compose('bower.sh', *args, **kwargs)
+    compose('./bower.sh', *args, **kwargs)
 
 
 @task(depends=[build_app])
