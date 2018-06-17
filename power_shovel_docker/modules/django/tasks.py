@@ -6,8 +6,8 @@ from power_shovel_docker.modules.docker.tasks import compose
 
 
 @task()
-def manage(*args, **kwargs):
-    compose('python3 manage.py', *args, **kwargs)
+def manage(*args):
+    compose('python3 manage.py', *args)
 
 
 @task()

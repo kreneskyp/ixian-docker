@@ -36,8 +36,6 @@ def compose(*args, **kwargs):
     :param kwargs:
     :return:
     """
-
-    # TODO process kwargs
     args_str = ' '.join(args)
     flags = ' '.join(kwargs.pop('flags', []))
 
