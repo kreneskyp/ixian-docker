@@ -61,9 +61,9 @@ def compose(*args, **kwargs):
 
 
 @task()
-def bash():
+def bash(*args):
     """Open a bash shell in container"""
-    compose('/bin/bash')
+    compose('/bin/bash', *args)
 
 
 @task()
