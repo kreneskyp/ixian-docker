@@ -21,9 +21,9 @@ def shell_plus():
     manage('shell_plus')
 
 
-@task()
+@task(parent='test_python')
 @requires_config('PYTHON', 'DJANGO_SETTINGS_TEST', 'DJANGO_SETTINGS_DIR')
-def test_python(path=''):
+def django_test(path=''):
     execute((
         '''docker-compose run --rm app '''
         '''{python} ./manage.py test {path} '''

@@ -7,16 +7,16 @@ def python_local_package_mount_flags():
 
 
 @task()
-def pipenv(*args, **kwargs):
+def pipenv(*args):
     """
     Run a pipenv command.
 
     This runs in the builder container with volumes mounted.
     """
-    compose('pipenv', *args, **kwargs)
+    compose('pipenv', *args)
 
 
 @task()
-def build_pip(*args, **kwargs):
+def build_pip(*args):
     """Run pipenv install"""
-    compose('pipenv install', *args, **kwargs)
+    compose('pipenv install', flags=['--dev'], *args)
