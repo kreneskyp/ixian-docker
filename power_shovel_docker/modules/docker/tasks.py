@@ -44,7 +44,6 @@ def compose(*args, **kwargs):
         CONFIG.DOCKER.DEV_VOLUMES +
         CONFIG.DOCKER.VOLUMES))
 
-    # TODO --service-ports only for runserver
     execute(CONFIG.format(
         'docker-compose run {volumes} '
         '-e APP_DIR={DOCKER.APP_DIR} '
