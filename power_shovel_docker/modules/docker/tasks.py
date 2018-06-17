@@ -7,7 +7,9 @@ from power_shovel_docker.modules.docker.utils import convert_volume_flags
 from power_shovel_docker.modules.docker import utils
 
 
-@task(check=FileHash(
+@task(
+    category='Docker',
+    check=FileHash(
     '{POWER_SHOVEL}',
     '{DOCKER.ROOT_MODULE_DIR}'
 ))
@@ -18,6 +20,7 @@ def build_dockerfile():
 
 
 @task(
+    category='docker',
     depends=[build_dockerfile],
     check=FileHash(
         'Dockerfile'
@@ -28,7 +31,7 @@ def build_app():
     build_image(CONFIG.PROJECT_NAME, CONFIG.DOCKER.DOCKER_FILE)
 
 
-@task()
+@task(category='docker')
 def compose(*args, **kwargs):
     """
     Docker compose run a command in `app`
@@ -60,19 +63,19 @@ def compose(*args, **kwargs):
 # =============================================================================
 
 
-@task()
+@task(category='Docker')
 def bash(*args):
     """Open a bash shell in container"""
     compose('/bin/bash', *args)
 
 
-@task()
+@task(category='Docker')
 def up():
     """Start app in test-container"""
     compose('up -d app')
 
 
-@task()
+@task(category='Docker')
 def down():
     compose('down')
 

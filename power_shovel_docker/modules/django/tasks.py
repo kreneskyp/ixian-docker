@@ -3,23 +3,23 @@ from power_shovel.config import CONFIG
 from power_shovel_docker.modules.docker.tasks import compose
 
 
-@task()
+@task(category='django')
 def manage(*args):
     compose('python3 manage.py', *args)
 
 
-@task()
+@task(category='django')
 def shell(*args):
     """Open a django shell_plus shell in app container"""
     manage('shell_plus', *args)
 
 
-@task()
+@task(category='django')
 def shell_plus(*args):
     manage('shell_plus', *args)
 
 
-@task(parent=['test', 'test_python'])
+@task(parent=['test', 'test_python'], category='testing')
 def django_test(*args):
     command = (
         '''test '''
@@ -31,22 +31,22 @@ def django_test(*args):
     manage(command, *(args or [CONFIG.PYTHON.ROOT_MODULE]))
 
 
-@task()
+@task(category='django')
 def migrate(*args):
     manage('migrate', *args)
 
 
-@task()
+@task(category='django')
 def makemigrations(*apps):
     manage('makemigrations %s' % ' '.join(apps or [CONFIG.PROJECT_NAME]))
 
 
-@task()
+@task(category='django')
 def dbshell(*args):
     manage('dbshell', *args)
 
 
-@task()
+@task(category='django')
 def runserver(*args):
     compose(
         CONFIG.format('{PYTHON.BIN} manage.py runserver 0.0.0.0:8000'),
