@@ -36,7 +36,7 @@ def compose(*args, **kwargs):
     :param kwargs:
     :return:
     """
-    args_str = ' '.join(args)
+    args_str = CONFIG.format(' '.join(args))
     flags = ' '.join(kwargs.pop('flags', []))
 
     # convert volume configs provided by modules into flags to pass to compose
