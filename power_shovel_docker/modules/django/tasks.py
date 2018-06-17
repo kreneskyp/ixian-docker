@@ -11,14 +11,14 @@ def manage(*args):
 
 
 @task()
-def shell():
+def shell(*args):
     """Open a django shell_plus shell in app container"""
-    manage('shell_plus')
+    manage('shell_plus', *args)
 
 
 @task()
-def shell_plus():
-    manage('shell_plus')
+def shell_plus(*args):
+    manage('shell_plus', *args)
 
 
 @task(parent=['test', 'test_python'])
@@ -28,25 +28,14 @@ def django_test(*args):
         '''--settings={DJANGO.SETTINGS_TEST} '''
         '''--exclude-dir={DJANGO.SETTINGS_MODULE} '''
     )
-    manage(command, *args)
-    return
 
-    execute((
-        '''docker-compose run --rm app '''
-        '''{python} ./manage.py test {path} '''
-        '''--settings={settings} '''
-        '''--exclude-dir=DJANGO_SETTINGS_DIR'''.format(
-            python=CONFIG.PYTHON.BIN,
-            settings=CONFIG.DJANGO.SETTINGS_TEST,
-            settings_dir=CONFIG.DJANGO.SETTINGS_DIR,
-            path=path
-        )),
-        fail_silent=True)
+    # call command with args, if no args are given run tests from root module.
+    manage(command, *(args or [CONFIG.PYTHON.ROOT_MODULE]))
 
 
 @task()
-def migrate():
-    manage('migrate')
+def migrate(*args):
+    manage('migrate', *args)
 
 
 @task()
@@ -55,13 +44,14 @@ def makemigrations(*apps):
 
 
 @task()
-def dbshell():
-    manage('dbshell')
+def dbshell(*args):
+    manage('dbshell', *args)
 
 
 @task()
-def runserver():
+def runserver(*args):
     compose(
         CONFIG.format('{PYTHON.BIN} manage.py runserver 0.0.0.0:8000'),
-        flags=['-p 8000:8000']
+        flags=['-p 8000:8000'],
+        *args
     )
