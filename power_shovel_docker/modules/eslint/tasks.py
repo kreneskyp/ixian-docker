@@ -4,7 +4,7 @@ from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.npm.tasks import build_npm
 
 
-@task(parent='lint_js', depends=[build_npm], auto_help=False)
+@task(parent=['lint_js', 'lint'], depends=[build_npm], auto_help=False)
 def eslint(*args):
     formatted_args = ' '.join(args)
     command = CONFIG.format(
