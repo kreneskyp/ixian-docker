@@ -11,6 +11,6 @@ def jest(*args):
 
 
 @task(depends=[build_npm])
-def test_js_update(*args):
+def jest_update(*args):
     command = CONFIG.format('{JEST.BIN} -u --config={JEST.CONFIG_FILE_PATH}')
     compose(command, *args)
