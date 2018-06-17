@@ -26,7 +26,7 @@ def django_test(*args):
     command = (
         '''test '''
         '''--settings={DJANGO.SETTINGS_TEST} '''
-        '''--exclude-dir={DJANGO.SETTINGS_DIR} '''
+        '''--exclude-dir={DJANGO.SETTINGS_MODULE} '''
     )
     manage(command, *args)
     return

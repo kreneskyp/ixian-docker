@@ -12,7 +12,8 @@ class DjangoConfig(Config):
         return os.path.dirname(os.path.realpath(django.__file__))
 
     SETTINGS_DIR = '{PYTHON.ROOT_MODULE}/settings'
-    SETTINGS_TEST = '{PYTHON.ROOT_MODULE}.settings.test'
+    SETTINGS_MODULE = '{PYTHON.ROOT_MODULE}.settings'
+    SETTINGS_TEST = '{DJANGO.SETTINGS_MODULE}.test'
 
 
 DJANGO_CONFIG = DjangoConfig()
