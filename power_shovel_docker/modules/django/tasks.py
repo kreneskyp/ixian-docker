@@ -21,17 +21,24 @@ def shell_plus():
     manage('shell_plus')
 
 
-@task(parent='test_python')
-@requires_config('PYTHON', 'DJANGO_SETTINGS_TEST', 'DJANGO_SETTINGS_DIR')
-def django_test(path=''):
+@task(parent=['test', 'test_python'])
+def django_test(*args):
+    command = (
+        '''test '''
+        '''--settings={DJANGO.SETTINGS_TEST} '''
+        '''--exclude-dir={DJANGO.SETTINGS_DIR} '''
+    )
+    manage(command, *args)
+    return
+
     execute((
         '''docker-compose run --rm app '''
         '''{python} ./manage.py test {path} '''
         '''--settings={settings} '''
         '''--exclude-dir=DJANGO_SETTINGS_DIR'''.format(
-            python='python3',
-            settings=CONFIG.DJANGO_SETTINGS_TEST,
-            settings_dir=CONFIG.DJANGO_SETTINGS_DIR,
+            python=CONFIG.PYTHON.BIN,
+            settings=CONFIG.DJANGO.SETTINGS_TEST,
+            settings_dir=CONFIG.DJANGO.SETTINGS_DIR,
             path=path
         )),
         fail_silent=True)
