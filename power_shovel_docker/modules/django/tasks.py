@@ -1,7 +1,5 @@
 from power_shovel.task import task
-from power_shovel.utils.process import execute
 from power_shovel.config import CONFIG
-from power_shovel.config import requires_config
 from power_shovel_docker.modules.docker.tasks import compose
 
 
