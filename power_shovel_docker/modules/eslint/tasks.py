@@ -4,21 +4,28 @@ from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.npm.tasks import build_npm
 
 
-@task(category='testing')
+@task(
+    category='testing',
+    short_description='Run all linting tasks'
+)
 def lint():
     """Virtual target for linting."""
 
 
-@task(category='testing')
+@task(
+    category='testing',
+    short_description='Run all javascript linting tasks'
+)
 def lint_js():
     """Virtual target for linting javascript."""
 
 
 @task(
-    parent=['lint'],
+    auto_help=False,
     category='testing',
     depends=[build_npm],
-    auto_help=False,
+    parent=['lint'],
+    short_description='ESLint javascript linter'
 )
 def eslint(*args):
     formatted_args = ' '.join(args)

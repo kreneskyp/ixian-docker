@@ -6,17 +6,26 @@ def python_local_package_mount_flags():
     return []
 
 
-@task(category='testing')
+@task(
+    category='testing',
+    short_description='Run all test tasks'
+)
 def test():
     """Virtual target for testing"""
 
 
-@task(category='testing')
+@task(
+    category='testing',
+    short_description='Run all python test tasks'
+)
 def test_python():
     """Virtual target for python tests"""
 
 
-@task(category='build')
+@task(
+    category='build',
+    short_description='PipEnv environment manager'
+)
 def pipenv(*args):
     """
     Run a pipenv command.
@@ -26,7 +35,10 @@ def pipenv(*args):
     compose('pipenv', *args)
 
 
-@task(category='build')
+@task(
+    category='build',
+    short_description='Install python packages with pipenv'
+)
 def build_pip(*args):
     """Run pipenv install"""
     compose('pipenv install', flags=['--dev'], *args)

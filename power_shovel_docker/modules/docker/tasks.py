@@ -10,9 +10,11 @@ from power_shovel_docker.modules.docker import utils
 @task(
     category='Docker',
     check=FileHash(
-    '{POWER_SHOVEL}',
-    '{DOCKER.ROOT_MODULE_DIR}'
-))
+        '{POWER_SHOVEL}',
+        '{DOCKER.ROOT_MODULE_DIR}'
+    ),
+    short_description='build app\'s dockerfile',
+)
 def build_dockerfile():
     text = utils.build_dockerfile()
     with open(CONFIG.DOCKER.DOCKER_FILE, 'w') as dockerfile:
@@ -21,17 +23,21 @@ def build_dockerfile():
 
 @task(
     category='docker',
-    depends=[build_dockerfile],
     check=FileHash(
         'Dockerfile'
-    )
+    ),
+    depends=[build_dockerfile],
+    short_description='Build app image'
 )
 def build_app():
     """Builds the docker app using CONFIG.DOCKER_FILE"""
     build_image(CONFIG.PROJECT_NAME, CONFIG.DOCKER.DOCKER_FILE)
 
 
-@task(category='docker')
+@task(
+    category='docker',
+    short_description='Docker compose command'
+)
 def compose(*args, **kwargs):
     """
     Docker compose run a command in `app`
@@ -63,19 +69,28 @@ def compose(*args, **kwargs):
 # =============================================================================
 
 
-@task(category='Docker')
+@task(
+    category='Docker',
+    short_description='Bash shell in docker container'
+)
 def bash(*args):
     """Open a bash shell in container"""
     compose('/bin/bash', *args)
 
 
-@task(category='Docker')
+@task(
+    category='Docker',
+    short_description='Start docker container'
+)
 def up():
     """Start app in test-container"""
     compose('up -d app')
 
 
-@task(category='Docker')
+@task(
+    category='Docker',
+    short_description='Stop docker container'
+)
 def down():
     compose('down')
 

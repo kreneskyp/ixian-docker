@@ -8,29 +8,44 @@ NPM_DEPENDS = [build_app]
 NPM_DEPENDS = []
 
 
-@task(depends=NPM_DEPENDS, category='build')
+@task(
+    category='build',
+    depends=NPM_DEPENDS,
+    short_description='Update npm libraries in package.json'
+)
 def npm_update(*args):
     """Update package.json with ncu"""
     compose('ncu -u', *args)
 
 
-@task(depends=NPM_DEPENDS, auto_help=False, category='build')
+@task(
+    auto_help=False,
+    category='build',
+    depends=NPM_DEPENDS,
+    short_description='NPM package updater'
+)
 def ncu(*args):
     """Run NPM Check Updates (NCU)"""
     compose('ncu', *args)
 
 
 @task(
-    depends=NPM_DEPENDS,
     category='build',
-    check=FileHash('{NPM.PACKAGE_JSON}')
+    check=FileHash('{NPM.PACKAGE_JSON}'),
+    depends=NPM_DEPENDS,
+    short_description='Install NPM packages.'
 )
 def build_npm(*args, **kwargs):
     """Run 'npm install' within the context of the app container."""
     compose('npm install', *args, **kwargs)
 
 
-@task(depends=NPM_DEPENDS, category='build', auto_help=False)
+@task(
+    auto_help=False,
+    category='build',
+    depends=NPM_DEPENDS,
+    short_description='NPM package manager.'
+)
 def npm(*args):
     """Run npm within the context of the app container"""
     compose('npm', *args)
