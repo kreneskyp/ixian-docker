@@ -24,7 +24,7 @@ def lint_js():
     auto_help=False,
     category='testing',
     depends=[build_npm],
-    parent=['lint'],
+    parent=['lint', 'lint_js'],
     short_description='ESLint javascript linter'
 )
 def eslint(*args):
