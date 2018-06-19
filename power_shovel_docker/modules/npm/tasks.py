@@ -9,7 +9,7 @@ NPM_DEPENDS = []
 
 
 @task(
-    category='build',
+    category='Libraries',
     depends=NPM_DEPENDS,
     short_description='Update npm libraries in package.json'
 )
@@ -19,8 +19,7 @@ def npm_update(*args):
 
 
 @task(
-    auto_help=False,
-    category='build',
+    category='Libraries',
     depends=NPM_DEPENDS,
     short_description='NPM package updater'
 )
@@ -41,8 +40,7 @@ def build_npm(*args, **kwargs):
 
 
 @task(
-    auto_help=False,
-    category='build',
+    category='Libraries',
     depends=NPM_DEPENDS,
     short_description='NPM package manager.'
 )

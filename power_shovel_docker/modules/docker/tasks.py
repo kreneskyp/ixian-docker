@@ -8,7 +8,7 @@ from power_shovel_docker.modules.docker import utils
 
 
 @task(
-    category='Docker',
+    category='build',
     check=FileHash(
         '{POWER_SHOVEL}',
         '{DOCKER.ROOT_MODULE_DIR}'
@@ -22,7 +22,7 @@ def build_dockerfile():
 
 
 @task(
-    category='docker',
+    category='build',
     check=FileHash(
         'Dockerfile'
     ),

@@ -23,7 +23,7 @@ def test_python():
 
 
 @task(
-    category='build',
+    category='libraries',
     short_description='PipEnv environment manager'
 )
 def pipenv(*args):

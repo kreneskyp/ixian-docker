@@ -15,7 +15,7 @@ def build_bower(*args):
 
 @task(
     depends=[build_app],
-    category='build',
+    category='libraries',
     short_description='Bower package manager'
 )
 def bower(*args):
