@@ -21,7 +21,6 @@ def test_js():
 
 
 @task(
-    auto_help=False,
     category='testing',
     depends=[build_npm],
     parent=['test', 'test_js'],

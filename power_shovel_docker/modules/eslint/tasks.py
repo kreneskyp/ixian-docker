@@ -21,7 +21,6 @@ def lint_js():
 
 
 @task(
-    auto_help=False,
     category='testing',
     depends=[build_npm],
     parent=['lint', 'lint_js'],
