@@ -1,11 +1,24 @@
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import task
+from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import compose, build_app
 
 
 NPM_DEPENDS = [build_app]
 # TODO disable build_app until it can determine rebuilds better
 NPM_DEPENDS = []
+
+
+def clean_npm():
+    """
+    Remove node_modules volume
+    """
+    try:
+        volume = docker_client().volumes.get(CONFIG.PYTHON.VIRTUAL_ENV_VOLUME)
+    except docker.errors.NotFound:
+        pass
+    else:
+        volume.remove(True)
 
 
 @task(
@@ -30,8 +43,13 @@ def ncu(*args):
 
 @task(
     category='build',
-    check=FileHash('{NPM.PACKAGE_JSON}'),
+    check=[
+        FileHash('{NPM.PACKAGE_JSON}'),
+        DockerVolumeExists('{NPM.NODE_MODULES_VOLUME}')
+    ],
+    clean=clean_npm,
     depends=NPM_DEPENDS,
+    parent='build_app',
     short_description='Install NPM packages.'
 )
 def build_npm(*args, **kwargs):

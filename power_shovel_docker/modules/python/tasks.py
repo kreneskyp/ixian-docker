@@ -1,5 +1,9 @@
+from power_shovel.config import CONFIG
+from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import task
+from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.utils import docker_client
 
 
 def python_local_package_mount_flags():
@@ -35,10 +39,26 @@ def pipenv(*args):
     compose('pipenv', *args)
 
 
+def clean_pipenv():
+    """
+    Remove pipenv volume
+    """
+    print('clean pipenv')
+    volume = docker_client().volumes.get(CONFIG.PYTHON.VIRTUAL_ENV_VOLUME)
+    volume.remove(True)
+
+
 @task(
     category='build',
-    short_description='Install python packages with pipenv'
+    clean=clean_pipenv,
+    short_description='Install python packages with pipenv',
+    parent='build_app',
+    check=[
+        FileHash('Pipfile', 'Pipfile.lock'),
+        DockerVolumeExists('{PYTHON.VIRTUAL_ENV_VOLUME}')
+    ]
 )
-def build_pip(*args):
+def build_pipenv(*args):
     """Run pipenv install"""
-    compose('pipenv install', flags=['--dev'], *args)
+    pass
+    #compose('pipenv install', flags=['--dev'], *args)
