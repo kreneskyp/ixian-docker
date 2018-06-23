@@ -40,7 +40,7 @@ def clean_pipenv():
             'Pipfile',
             'Pipfile.lock',
         ),
-        DockerVolumeExists(CONFIG.PYTHON.VIRTUAL_ENV_VOLUME),
+        DockerVolumeExists('{CONFIG.PYTHON.VIRTUAL_ENV_VOLUME}'),
     ]
 )
 def build_pipenv(*args):

@@ -1,12 +1,14 @@
+import docker
+from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import task
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
-from power_shovel_docker.modules.docker.tasks import compose, build_app
+from power_shovel_docker.modules.docker.tasks import build_app_image
+from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.utils import docker_client
 
 
-NPM_DEPENDS = [build_app]
-# TODO disable build_app until it can determine rebuilds better
-NPM_DEPENDS = []
+NPM_DEPENDS = [build_app_image]
 
 
 def clean_npm():
@@ -49,7 +51,7 @@ def ncu(*args):
     ],
     clean=clean_npm,
     depends=NPM_DEPENDS,
-    parent='build_app',
+    parent="build_app",
     short_description='Install NPM packages.'
 )
 def build_npm(*args, **kwargs):
