@@ -13,7 +13,7 @@ class DockerVolumeExists(MultiValueChecker):
 
     def state(self):
         volume_ids = {}
-        for volume_tag in self.keys():
+        for volume_tag in self.keys:
             try:
                 volume = docker_client().volumes.get(volume_tag)
             except docker.errors.NotFound:
