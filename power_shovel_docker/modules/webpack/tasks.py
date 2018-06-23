@@ -1,5 +1,5 @@
 from power_shovel import task
-from power_shovel_docker.modules.docker.tasks import compose, build_app
+from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.npm.tasks import build_npm
 
 

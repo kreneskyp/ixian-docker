@@ -1,12 +1,27 @@
+import docker
 from power_shovel import task
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
-from power_shovel_docker.modules.docker.tasks import build_app_image
 from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import build_app_image
+from power_shovel_docker.modules.docker.utils import docker_client
 
 
 BOWER_DEPENDS = [build_app_image]
+BOWER_DEPENDS = []
+
+
+def clean_bower():
+    """
+    Remove bower volume
+    """
+    try:
+        volume = docker_client().volumes.get(CONFIG.BOWER.COMPONENTS_VOLUME)
+    except docker.errors.NotFound:
+        pass
+    else:
+        volume.remove(True)
 
 
 @task(
@@ -14,6 +29,7 @@ BOWER_DEPENDS = [build_app_image]
     category='build',
     short_description='Install bower packages',
     parent='build_app',
+    clean=clean_bower,
     check=[
         FileHash('{BOWER.CONFIG_FILE}'),
         DockerVolumeExists('{BOWER.COMPONENTS_VOLUME}'),
@@ -27,7 +43,8 @@ def build_bower(*args):
 @task(
     depends=BOWER_DEPENDS,
     category='libraries',
-    short_description='Bower package manager'
+    short_description='Bower package manager',
+    clean=clean_bower
 )
 def bower(*args):
     """

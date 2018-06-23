@@ -35,6 +35,7 @@ def clean_pipenv():
     category='build',
     clean=clean_pipenv,
     short_description='Install python packages with pipenv',
+    parent='build_app',
     check=[
         FileHash(
             'Pipfile',

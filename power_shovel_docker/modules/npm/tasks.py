@@ -54,9 +54,9 @@ def ncu(*args):
     parent="build_app",
     short_description='Install NPM packages.'
 )
-def build_npm(*args, **kwargs):
+def build_npm(*args):
     """Run 'npm install' within the context of the app container."""
-    compose('npm install', *args, **kwargs)
+    compose('npm install', *args)
 
 
 @task(
