@@ -11,7 +11,13 @@ WEBPACK_DEPENDS = [
 @task(
     category='build',
     depends=WEBPACK_DEPENDS,
-    short_description='Webpack javascript/css compiler'
+    short_description='Webpack javascript/css compiler',
+    config=[
+        '{WEBPACK.CONFIG_FILE}',
+        '{WEBPACK.CONFIG_FILE_PATH}',
+        '{WEBPACK.COMPILED_STATIC_DIR}',
+        '{WEBPACK.COMPILED_STATIC_VOLUME}',
+    ]
 )
 def webpack(*args):
     """
@@ -19,12 +25,6 @@ def webpack(*args):
 
     This task runs the webpack compiler. It runs using `compose` to run within
     the context of the app image.
-
-    Configuration:
-      - WEBPACK.CONFIG_FILE:             {WEBPACK.CONFIG_FILE}
-      - WEBPACK.CONFIG_FILE_PATH:        {WEBPACK.CONFIG_FILE_PATH}
-      - WEBPACK.COMPILED_STATIC_DIR:     {WEBPACK.COMPILED_STATIC_DIR}
-      - WEBPACK.COMPILED_STATIC_VOLUME:  {WEBPACK.COMPILED_STATIC_VOLUME}
     """
     compose('./webpack.sh', *args)
 
