@@ -5,8 +5,12 @@ from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import task
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import compose, build_app_image
 from power_shovel_docker.modules.docker.utils import docker_client
+
+
+PYTHON_DEPENDS = [build_app_image]
+PYTHON_DEPENDS = []
 
 
 @task(
@@ -30,10 +34,26 @@ def clean_pipenv():
 
 
 @task(
+    category='libraries',
+    short_description='PipEnv environment manager',
+    depends=PYTHON_DEPENDS,
+    clean=clean_pipenv,
+)
+def pipenv(*args):
+    """
+    Run a pipenv command.
+
+    This runs in the builder container with volumes mounted.
+    """
+    compose('pipenv', *args)
+
+
+@task(
     category='build',
     clean=clean_pipenv,
     short_description='Install python packages with pipenv',
     parent='build_app',
+    depends=PYTHON_DEPENDS,
     check=[
         FileHash(
             'Pipfile',
