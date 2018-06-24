@@ -89,6 +89,9 @@ class DockerConfig(Config):
     APP_BIN = '{DOCKER.APP_DIR}/bin'
     PROJECT_DIR = '{DOCKER.APP_DIR}/project'
 
+    # Image tags
+    APP_IMAGE = '{PROJECT_NAME}'
+
     # Default app in docker-compose file
     DEFAULT_APP = 'app'
 

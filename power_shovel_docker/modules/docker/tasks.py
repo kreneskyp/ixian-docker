@@ -40,11 +40,24 @@ def build_dockerfile():
         dockerfile.write(text)
 
 
+def remove_app_image():
+    try:
+        image = docker_client().images.get(CONFIG.DOCKER.APP_IMAGE)
+    except docker.errors.NotFound:
+        pass
+    else:
+        image.remove(True)
+
+
 @task(
-    category='build'
+    category='build',
+    short_description='Virtual target for building app'
 )
 def build_app():
-    """Runs all build steps for the app"""
+    """
+    Runs all build steps for the app. Other modules should target this task as
+    their parent.
+    """
 
 
 @task(
@@ -54,11 +67,12 @@ def build_app():
         'Dockerfile'
     ),
     parent='build_app',
+    clean=remove_app_image,
     short_description='Build app image',
 )
 def build_app_image():
     """Builds the docker app image using CONFIG.DOCKER_FILE"""
-    build_image(CONFIG.PROJECT_NAME, CONFIG.DOCKER.DOCKER_FILE)
+    build_image(CONFIG.DOCKER.APP_IMAGE, CONFIG.DOCKER.DOCKER_FILE)
 
 
 @task(
