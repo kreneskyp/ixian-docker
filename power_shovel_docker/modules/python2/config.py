@@ -20,5 +20,7 @@ class PythonConfig(Config):
     HOST_ROOT_MODULE_PATH = '{PWD}/{PYTHON.ROOT_MODULE}'
     BIN = 'python'
 
+    PIPFILE = 'Pipfile'
+
     # Docker
     VIRTUAL_ENV_VOLUME = '{PROJECT_NAME}.venv'

@@ -1,14 +1,12 @@
+
 import docker
+
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import task
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils import docker_client
-
-
-def python_local_package_mount_flags():
-    return []
 
 
 @task(
