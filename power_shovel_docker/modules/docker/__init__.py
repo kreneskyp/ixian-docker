@@ -8,5 +8,6 @@ MODULE_CONFIG = {
         '{PWD}:{DOCKER.PROJECT_DIR}',
         '{BUILDER}/.bash_history:{DOCKER.HOME_DIR}/.bash_history',
         '{PWD}/bin/:{DOCKER.APP_DIR}/bin',
+        '{PWD}/.env:{DOCKER.APP_DIR}/.env',
     ],
 }
