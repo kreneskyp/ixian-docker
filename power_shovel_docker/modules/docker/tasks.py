@@ -1,3 +1,4 @@
+from power_shovel import logger
 from power_shovel import task
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
@@ -64,30 +65,63 @@ def build_app_image():
     category='docker',
     short_description='Docker compose command'
 )
-def compose(*args, **kwargs):
+def compose(
+    command=None,
+    app=None,
+    flags=None,
+    env=None,
+    volumes=None
+):
     """
     Docker compose run a command in `app`
-    :param args:
-    :param kwargs:
+    :param command: command and args as single string.
+    :param app: docker-compose app to run, default is {DOCKER.DEFAULT_APP}
+    :param flags: docker-compose flags
+    :param env: ENV variables to set.
+    :param volumes: volumes to set.
     :return:
     """
-    args_str = CONFIG.format(' '.join(args))
-    flags = ' '.join(kwargs.pop('flags', []))
-
-    # convert volume configs provided by modules into flags to pass to compose
-    volumes = ' '.join(convert_volume_flags(
+    app = app or CONFIG.DOCKER.DEFAULT_APP
+    volumes = convert_volume_flags(
         CONFIG.DOCKER.DEV_VOLUMES +
-        CONFIG.DOCKER.VOLUMES))
+        CONFIG.DOCKER.VOLUMES +
+        (volumes or [])
+    )
+    env_ = {
+        'APP_DIR': CONFIG.DOCKER.APP_DIR,
+        'ROOT_MODULE_PATH': CONFIG.PYTHON.ROOT_MODULE_PATH
+    }
+    env_.update(env or {})
+    formatted_env = [
+        '-e {key}={value}'.format(key=k, value=v) for k, v in env_.items()
+    ]
+    flags = flags or ['--rm']
 
-    execute(CONFIG.format(
-        'docker-compose run {volumes} '
-        '-e APP_DIR={DOCKER.APP_DIR} '
-        '-e ROOT_MODULE_PATH={PYTHON.ROOT_MODULE_PATH} '
-        ' --rm {flags} app {args}',
-        args=args_str,
-        volumes=volumes,
-        flags=flags
-    ))
+    template = (
+        'docker-compose run{CR} {flags} {volumes} {env} {app} {command}'
+    )
+
+    def render_command():
+        with_cr = '{} \\\n'
+        formatted = template.format(
+            CR=' \\\n',
+            app=app,
+            command=command or '',
+            env=' '.join((with_cr.format(line) for line in formatted_env)),
+            flags=' '.join((with_cr.format(line) for line in flags)),
+            volumes=' '.join((with_cr.format(line) for line in volumes))
+        )
+        logger.info(CONFIG.format(formatted))
+
+    render_command()
+    execute(template.format(
+        CR='',
+        app=app,
+        command=command or '',
+        env=' '.join(formatted_env),
+        flags=' '.join(flags),
+        volumes=' '.join(volumes)
+    ), silent=True)
 
 
 # =============================================================================

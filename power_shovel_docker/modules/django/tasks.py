@@ -1,3 +1,4 @@
+from power_shovel import logger
 from power_shovel.task import task
 from power_shovel.config import CONFIG
 from power_shovel_docker.modules.docker.tasks import compose
