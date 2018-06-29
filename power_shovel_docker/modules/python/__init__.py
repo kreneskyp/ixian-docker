@@ -1,5 +1,5 @@
 MODULE_CONFIG = {
-    'name': 'python',
+    'name': 'PYTHON',
     'tasks': 'power_shovel_docker.modules.python.tasks',
     'config': 'power_shovel_docker.modules.python.config.PythonConfig',
     'dockerfile_template': '{PYTHON.MODULE_DIR}/Dockerfile.template',

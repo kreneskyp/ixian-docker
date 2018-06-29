@@ -1,5 +1,5 @@
 MODULE_CONFIG = {
-    'name': 'docker',
+    'name': 'DOCKER',
     'tasks': 'power_shovel_docker.modules.docker.tasks',
     'config': 'power_shovel_docker.modules.docker.config.DockerConfig',
 
