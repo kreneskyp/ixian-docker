@@ -35,7 +35,7 @@ def npm_update(*args):
 
     """
     args = args or ['-u']
-    compose('ncu', args)
+    return compose('ncu', args)
 
 
 @task(
@@ -45,7 +45,7 @@ def npm_update(*args):
 )
 def ncu(*args):
     """Run NPM Check Updates (NCU)"""
-    compose('ncu', args)
+    return compose('ncu', args)
 
 
 @task(
@@ -61,7 +61,7 @@ def ncu(*args):
 )
 def build_npm(*args):
     """Run 'npm install' within the context of the app container."""
-    compose('npm install', args)
+    return compose('npm install', args)
 
 
 @task(
@@ -71,4 +71,4 @@ def build_npm(*args):
 )
 def npm(*args):
     """Run npm within the context of the app container"""
-    compose('npm', args)
+    return compose('npm', args)

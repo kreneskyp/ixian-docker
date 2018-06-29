@@ -6,7 +6,7 @@ from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import build_app_image
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils import docker_client
-
+from runner import ERROR_TASK
 
 PYTHON_DEPENDS = [build_app_image]
 PYTHON_DEPENDS = []
@@ -32,9 +32,10 @@ def clean_pipenv():
     try:
         volume = docker_client().volumes.get(CONFIG.PYTHON.VIRTUAL_ENV_VOLUME)
     except docker.errors.NotFound:
-        pass
+        return ERROR_TASK
     else:
         volume.remove(True)
+    return 0
 
 
 @task(
@@ -49,7 +50,7 @@ def pipenv(*args):
 
     This runs in the builder container with volumes mounted.
     """
-    compose('pipenv', *args)
+    return compose('pipenv', *args)
 
 
 @task(

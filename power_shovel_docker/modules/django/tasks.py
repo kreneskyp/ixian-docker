@@ -21,7 +21,7 @@ def manage(*args):
 
     Type `shovel manage --help` for it's built-in help.
     """
-    compose('{PYTHON.BIN} manage.py', args)
+    return compose('{PYTHON.BIN} manage.py', args)
 
 
 @task(
@@ -36,7 +36,7 @@ def shell(*args):
     environment variables for loaded modules are loaded automatically via
     docker-compose.
     """
-    manage('shell_plus', *args)
+    return manage('shell_plus', *args)
 
 
 @task(
@@ -51,7 +51,7 @@ def shell_plus(*args):
     environment variables for loaded modules are loaded automatically via
     docker-compose.
     """
-    manage('shell_plus', *args)
+    return manage('shell_plus', *args)
 
 
 @task(
@@ -80,7 +80,7 @@ def django_test(*args):
     )
 
     # call command with args, if no args are given run tests from root module.
-    manage(command, *(args or [CONFIG.PYTHON.ROOT_MODULE]))
+    return manage(command, *(args or [CONFIG.PYTHON.ROOT_MODULE]))
 
 
 @task(
@@ -88,7 +88,7 @@ def django_test(*args):
     short_description='run database migrations'
 )
 def migrate(*args):
-    manage('migrate', *args)
+    return manage('migrate', *args)
 
 
 @task(
@@ -103,7 +103,7 @@ def makemigrations(*args):
     By default this will generate migrations only for {CONFIG.PROJECT_NAME}.
     This is overridden whenever args are passed to this task.
     """
-    manage('makemigrations %s' % ' '.join(args or [CONFIG.PROJECT_NAME]))
+    return manage('makemigrations %s' % ' '.join(args or [CONFIG.PROJECT_NAME]))
 
 
 @task(
@@ -114,7 +114,7 @@ def dbshell(*args):
     """
     Shortcut to `manage.py dbshell`
     """
-    manage('dbshell', *args)
+    return manage('dbshell', *args)
 
 
 @task(
@@ -129,7 +129,7 @@ def runserver(*args):
     container. Additional args are passed through to the command but the IP and
     port can not be changed.
     """
-    compose(
+    return compose(
         CONFIG.format('{PYTHON.BIN} manage.py runserver'),
         args,
         flags=['-p 8000:8000'],

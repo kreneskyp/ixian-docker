@@ -72,7 +72,7 @@ def build_app():
 )
 def build_app_image():
     """Builds the docker app image using CONFIG.DOCKER_FILE"""
-    build_image(CONFIG.DOCKER.APP_IMAGE, CONFIG.DOCKER.DOCKER_FILE)
+    return build_image(CONFIG.DOCKER.APP_IMAGE, CONFIG.DOCKER.DOCKER_FILE)
 
 
 @task(
@@ -131,7 +131,7 @@ def compose(
         logger.info(CONFIG.format(formatted))
 
     render_command()
-    execute(template.format(
+    return execute(template.format(
         CR='',
         app=app,
         args=' '.join(formatted_args),
@@ -153,7 +153,7 @@ def compose(
 )
 def bash(*args):
     """Open a bash shell in container"""
-    compose('/bin/bash', *args)
+    return compose('/bin/bash', *args)
 
 
 @task(
@@ -162,7 +162,7 @@ def bash(*args):
 )
 def up():
     """Start app container"""
-    compose('up -d app')
+    return compose('up -d app')
 
 
 @task(
@@ -171,7 +171,7 @@ def up():
 )
 def down():
     """Stop app container"""
-    compose('down')
+    return compose('down')
 
 
 # =============================================================================

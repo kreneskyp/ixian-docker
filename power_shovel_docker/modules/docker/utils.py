@@ -110,7 +110,7 @@ def build_image(
     arg_flags = ' '.join(
         ['--build-arg %s=%s' % item for item in (args or {}).items()])
 
-    execute('docker build -t {name} -f {file} {args} {context}'.format(
+    return execute('docker build -t {name} -f {file} {args} {context}'.format(
         name=tag,
         file=file,
         context=context,

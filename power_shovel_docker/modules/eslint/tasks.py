@@ -44,4 +44,4 @@ def eslint(*args):
         '{ESLINT.BIN} {args} {DOCKER.PROJECT_DIR}',
         args=formatted_args
     )
-    compose(command)
+    return compose(command)

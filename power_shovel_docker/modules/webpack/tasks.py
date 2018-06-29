@@ -26,7 +26,7 @@ def webpack(*args):
     This task runs the webpack compiler. It runs using `compose` to run within
     the context of the app image.
     """
-    compose('./webpack.sh', *args)
+    return compose('./webpack.sh', *args)
 
 
 @task(
@@ -36,4 +36,4 @@ def webpack(*args):
 )
 def webpack_watch(*args):
     """Run webpack builder with --watch flag so it will continuously build."""
-    compose('./webpack.sh --watch', *args)
+    return compose('./webpack.sh --watch', *args)

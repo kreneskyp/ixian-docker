@@ -37,4 +37,4 @@ def jest(*args):
     For Jest help type: shovel jest --help
     """
     command = CONFIG.format('{JEST.BIN} --config={JEST.CONFIG_FILE_PATH}')
-    compose(command, *args)
+    return compose(command, *args)
