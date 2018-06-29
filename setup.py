@@ -21,14 +21,17 @@ setup(
     author_email='kreneskyp@gmail.com',
     maintainer='Peter Krenesky',
     maintainer_email='kreneskyp@gmail.com',
-    description='Docker multi-stage builder pattern.',
+    keywords='tasks, shovel, rake, make, power_shovel, docker',
+    description='Docker multi-stage builder for power_shovel.',
     long_description=open('%s/README.md' % DIR, 'r').read(),
     url='https://github.com',
-    packages=find_packages(exclude=["*.tests",
-                                    "*.tests.*",
-                                    "tests.*",
-                                    "tests"]),
-    include_package_data=True,
+    packages=['power_shovel_docker'],
     install_requires=requirements,
     zip_safe=False,
+    classifiers=[
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent'
+    ]
 )
