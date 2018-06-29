@@ -12,6 +12,7 @@ WEBPACK_DEPENDS = [
     category='build',
     depends=WEBPACK_DEPENDS,
     short_description='Webpack javascript/css compiler',
+    parent='build_app',
     config=[
         '{WEBPACK.CONFIG_FILE}',
         '{WEBPACK.CONFIG_FILE_PATH}',
