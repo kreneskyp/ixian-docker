@@ -7,7 +7,7 @@ from power_shovel.task import task
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import compose, build_app_image
 from power_shovel_docker.modules.docker.utils import docker_client
-from runner import ERROR_TASK
+from power_shovel.runner import ERROR_TASK
 
 PYTHON_DEPENDS = [build_app_image]
 PYTHON_DEPENDS = []
