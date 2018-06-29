@@ -1,4 +1,6 @@
 import docker
+
+from power_shovel import logger
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import task
@@ -21,6 +23,8 @@ def clean_npm():
         pass
     else:
         volume.remove(True)
+        logger.debug('Deleted docker image: %s'
+                     % CONFIG.PYTHON.VIRTUAL_ENV_VOLUME)
 
 
 @task(
