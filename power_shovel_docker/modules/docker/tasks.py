@@ -81,6 +81,7 @@ def build_app_image():
 )
 def compose(
     command=None,
+    args=None,
     app=None,
     flags=None,
     env=None,
@@ -110,9 +111,10 @@ def compose(
         '-e {key}={value}'.format(key=k, value=v) for k, v in env_.items()
     ]
     flags = flags or ['--rm']
+    formatted_args = [CONFIG.format(arg) for arg in args or []]
 
     template = (
-        'docker-compose run{CR} {flags} {volumes} {env} {app} {command}'
+        'docker-compose run{CR} {flags} {volumes} {env} {app} {command} {args}'
     )
 
     def render_command():
@@ -120,6 +122,7 @@ def compose(
         formatted = template.format(
             CR=' \\\n',
             app=app,
+            args=' '.join(formatted_args),
             command=command or '',
             env=' '.join((with_cr.format(line) for line in formatted_env)),
             flags=' '.join((with_cr.format(line) for line in flags)),
@@ -131,6 +134,7 @@ def compose(
     execute(template.format(
         CR='',
         app=app,
+        args=' '.join(formatted_args),
         command=command or '',
         env=' '.join(formatted_env),
         flags=' '.join(flags),

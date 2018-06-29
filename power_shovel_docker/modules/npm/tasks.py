@@ -29,8 +29,13 @@ def clean_npm():
     short_description='Update npm libraries in package.json'
 )
 def npm_update(*args):
-    """Update package.json with ncu"""
-    compose('ncu -u', *args)
+    """
+    Update package.json with Node Check Update (ncu)
+
+
+    """
+    args = args or ['-u']
+    compose('ncu', args)
 
 
 @task(
@@ -40,7 +45,7 @@ def npm_update(*args):
 )
 def ncu(*args):
     """Run NPM Check Updates (NCU)"""
-    compose('ncu', *args)
+    compose('ncu', args)
 
 
 @task(
@@ -56,7 +61,7 @@ def ncu(*args):
 )
 def build_npm(*args):
     """Run 'npm install' within the context of the app container."""
-    compose('npm install', *args)
+    compose('npm install', args)
 
 
 @task(
@@ -66,4 +71,4 @@ def build_npm(*args):
 )
 def npm(*args):
     """Run npm within the context of the app container"""
-    compose('npm', *args)
+    compose('npm', args)

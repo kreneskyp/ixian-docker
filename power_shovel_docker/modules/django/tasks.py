@@ -21,7 +21,7 @@ def manage(*args):
 
     Type `shovel manage --help` for it's built-in help.
     """
-    compose('{PYTHON.BIN} manage.py', *args)
+    compose('{PYTHON.BIN} manage.py', args)
 
 
 @task(
@@ -130,7 +130,7 @@ def runserver(*args):
     port can not be changed.
     """
     compose(
-        CONFIG.format('{PYTHON.BIN} manage.py runserver 0.0.0.0:8000'),
+        CONFIG.format('{PYTHON.BIN} manage.py runserver'),
+        args,
         flags=['-p 8000:8000'],
-        *args
     )
