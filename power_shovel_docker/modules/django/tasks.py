@@ -1,14 +1,10 @@
 from power_shovel import logger
-from power_shovel.task import task
+from power_shovel.task import Task
 from power_shovel.config import CONFIG
 from power_shovel_docker.modules.docker.tasks import compose
 
 
-@task(
-    category='django',
-    short_description='Django manage.py script.',
-)
-def manage(*args):
+class Manage(Task):
     """
     Shortcut to Django's manage.py script.
 
@@ -21,14 +17,21 @@ def manage(*args):
 
     Type `shovel manage --help` for it's built-in help.
     """
-    return compose('{PYTHON.BIN} manage.py', args)
+    name = 'manage'
+    category = 'django'
+    short_description = 'Django manage.py script.'
+    depends = ['build_pipenv']
+
+    def execute(self, *args):
+        return compose('{PYTHON.BIN} manage.py', args)
 
 
-@task(
-    category='django',
-    short_description='open django python shell'
-)
-def shell(*args):
+def manage(*args):
+    """Shim around `Manage`"""
+    return Manage()(*args)
+
+
+class Shell(Task):
     """
     Shortcut to Django python shell.
 
@@ -36,14 +39,15 @@ def shell(*args):
     environment variables for loaded modules are loaded automatically via
     docker-compose.
     """
-    return manage('shell_plus', *args)
+    name = 'shell'
+    category = 'django'
+    short_description = 'open django python shell'
+
+    def execute(self, *args):
+        return manage('shell_plus', *args)
 
 
-@task(
-    category='django',
-    short_description='open django shell_plus'
-)
-def shell_plus(*args):
+class ShellPlus(Task):
     """
     Shortcut to Django extensions shell_plus.
 
@@ -51,15 +55,15 @@ def shell_plus(*args):
     environment variables for loaded modules are loaded automatically via
     docker-compose.
     """
-    return manage('shell_plus', *args)
+    name = 'shell_plus'
+    category = 'django'
+    short_description = 'open django shell_plus'
+
+    def execute(self, *args):
+        return manage('shell_plus', *args)
 
 
-@task(
-    category='testing',
-    parent = ['test', 'test_python'],
-    short_description='django test runner'
-)
-def django_test(*args):
+class DjangoTest(Task):
     """
     Shortcut to Django test runner
 
@@ -73,29 +77,33 @@ def django_test(*args):
 
     Arguments are passed through to the command.
     """
-    command = (
-        '''test '''
-        '''--settings={DJANGO.SETTINGS_TEST} '''
-        '''--exclude-dir={DJANGO.SETTINGS_MODULE} '''
-    )
+    name = 'django_test'
+    category = 'testing'
+    parent = ['test', 'test_python']
+    short_description = 'django test runner'
 
-    # call command with args, if no args are given run tests from root module.
-    return manage(command, *(args or [CONFIG.PYTHON.ROOT_MODULE]))
-
-
-@task(
-    category='django',
-    short_description='run database migrations'
-)
-def migrate(*args):
-    return manage('migrate', *args)
+    def execute(self, *args):
+        command = (
+            '''test '''
+            '''--settings={DJANGO.SETTINGS_TEST} '''
+            '''--exclude-dir={DJANGO.SETTINGS_MODULE} '''
+        )
+        return manage(command, *(args or [CONFIG.PYTHON.ROOT_MODULE]))
 
 
-@task(
-    category='django',
-    short_description='generate missing database migrations'
-)
-def makemigrations(*args):
+class Migrate(Task):
+    """
+    Run django migrations.
+    """
+    name = 'migrate'
+    category = 'django'
+    short_description = 'run database migrations'
+
+    def execute(self, *args):
+        return manage('migrate', *args)
+
+
+class MakeMigrations(Task):
     """
     Generate missing django migrations. This is a shortcut to
     `manage.py makemigrations`.
@@ -103,25 +111,29 @@ def makemigrations(*args):
     By default this will generate migrations only for {CONFIG.PROJECT_NAME}.
     This is overridden whenever args are passed to this task.
     """
-    return manage('makemigrations %s' % ' '.join(args or [CONFIG.PROJECT_NAME]))
+    name = 'makemigrations'
+    category = 'django'
+    short_description = 'generate missing database migrations'
+
+    def execute(self, *args):
+        return manage('makemigrations %s' % ' '.join(
+            args or [CONFIG.PROJECT_NAME]
+        ))
 
 
-@task(
-    category='django',
-    short_description='open a database shell'
-)
-def dbshell(*args):
+class DBShell(Task):
     """
     Shortcut to `manage.py dbshell`
     """
-    return manage('dbshell', *args)
+    name = 'dbshell'
+    category = 'django'
+    short_description = 'open a database shell'
+
+    def execute(self, *args):
+        return manage('dbshell', *args)
 
 
-@task(
-    category='django',
-    short_description='start django test server'
-)
-def runserver(*args):
+class Runserver(Task):
     """
     Shortcut to `manage.py runserver 0.0.0.0:8000`
 
@@ -129,8 +141,13 @@ def runserver(*args):
     container. Additional args are passed through to the command but the IP and
     port can not be changed.
     """
-    return compose(
-        CONFIG.format('{PYTHON.BIN} manage.py runserver'),
-        args,
-        flags=['-p 8000:8000'],
-    )
+    name = 'runserver'
+    category = 'django'
+    short_description = 'start django test server'
+
+    def execute(self, *args):
+        return compose(
+            CONFIG.format('{PYTHON.BIN} manage.py runserver'),
+            args,
+            flags=['-p 8000:8000'],
+        )

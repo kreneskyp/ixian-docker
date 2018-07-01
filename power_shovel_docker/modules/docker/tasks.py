@@ -1,22 +1,29 @@
+import docker
 from power_shovel import logger
-from power_shovel import task
+from power_shovel import Task, VirtualTarget
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
 from power_shovel_docker.modules.docker.utils import build_image
+from power_shovel_docker.modules.docker.utils import docker_client
 from power_shovel_docker.modules.docker.utils import convert_volume_flags
 from power_shovel_docker.modules.docker import utils
 
 
-@task(
-    category='build',
-    check=FileHash(
-        '{POWER_SHOVEL}',
-        '{DOCKER.ROOT_MODULE_DIR}'
-    ),
-    short_description='build app\'s dockerfile',
-)
-def build_dockerfile():
+class CleanDocker(Task):
+    """
+    Clean Docker:
+        - kill and remove all containers
+    """
+    name = 'clean_docker'
+    category = 'docker'
+
+    def execute(self):
+        execute('docker-compose kill')
+        execute('docker-compose rm -f -v')
+
+
+class BuildDockerfile(Task):
     """
     Build dockerfile from configured modules and settings.
 
@@ -35,9 +42,18 @@ def build_dockerfile():
         - DOCKER.DOCKERFILE_TEMPLATE:  Jinja2 base template.
         - DOCKER.DOCKER_FILE:          Dockerfile output.
     """
-    text = utils.build_dockerfile()
-    with open(CONFIG.DOCKER.DOCKER_FILE, 'w') as dockerfile:
-        dockerfile.write(text)
+    name = 'build_dockerfile'
+    category = 'build'
+    check = FileHash(
+        '{POWER_SHOVEL}',
+        '{DOCKER.ROOT_MODULE_DIR}'
+    )
+    short_description = 'build app\'s dockerfile'
+
+    def execute(self):
+        text = utils.build_dockerfile()
+        with open(CONFIG.DOCKER.DOCKER_FILE, 'w') as dockerfile:
+            dockerfile.write(text)
 
 
 def remove_app_image():
@@ -49,46 +65,36 @@ def remove_app_image():
         image.remove(True)
 
 
-@task(
-    category='build',
-    short_description='Virtual target for building app'
-)
-def build_app():
+class BuildApp(VirtualTarget):
     """
     Runs all build steps for the app. Other modules should target this task as
     their parent.
     """
+    name = 'build_app'
+    category = 'build'
+    short_description = 'Virtual target for building app'
 
 
-@task(
-    category='build',
-    depends=[build_dockerfile],
-    check=FileHash(
-        'Dockerfile'
-    ),
-    parent='build_app',
-    clean=remove_app_image,
-    short_description='Build app image',
-)
-def build_app_image():
+class BuildAppImage(Task):
     """Builds the docker app image using CONFIG.DOCKER_FILE"""
-    return build_image(CONFIG.DOCKER.APP_IMAGE, CONFIG.DOCKER.DOCKER_FILE)
+
+    name = 'build_app_image'
+    category = 'build'
+    depends = ['build_dockerfile']
+    check = FileHash('Dockerfile')
+    parent = 'build_app'
+    clean = remove_app_image
+    short_description = 'Build app image'
+
+    def execute(self):
+        return build_image(CONFIG.DOCKER.APP_IMAGE, CONFIG.DOCKER.DOCKER_FILE)
 
 
-@task(
-    category='docker',
-    short_description='Docker compose command'
-)
-def compose(
-    command=None,
-    args=None,
-    app=None,
-    flags=None,
-    env=None,
-    volumes=None
-):
+# TODO: TaskRunner/Shim doesn't support multiple args or kwargs. fix that.
+class Compose(Task):
     """
     Docker compose run a command in `app`
+
     :param command: command and args as single string.
     :param app: docker-compose app to run, default is {DOCKER.DEFAULT_APP}
     :param flags: docker-compose flags
@@ -96,50 +102,69 @@ def compose(
     :param volumes: volumes to set.
     :return:
     """
-    app = app or CONFIG.DOCKER.DEFAULT_APP
-    volumes = convert_volume_flags(
-        CONFIG.DOCKER.DEV_VOLUMES +
-        CONFIG.DOCKER.VOLUMES +
-        (volumes or [])
-    )
-    env_ = {
-        'APP_DIR': CONFIG.DOCKER.APP_DIR,
-        'ROOT_MODULE_PATH': CONFIG.PYTHON.ROOT_MODULE_PATH
-    }
-    env_.update(env or {})
-    formatted_env = [
-        '-e {key}={value}'.format(key=k, value=v) for k, v in env_.items()
-    ]
-    flags = flags or ['--rm']
-    formatted_args = [CONFIG.format(arg) for arg in args or []]
 
-    template = (
-        'docker-compose run{CR} {flags} {volumes} {env} {app} {command} {args}'
-    )
+    name = 'compose'
+    category = 'docker'
+    short_description = 'Docker compose command'
 
-    def render_command():
-        with_cr = '{} \\\n'
-        formatted = template.format(
-            CR=' \\\n',
+    def execute(
+        self,
+        command=None,
+        args=None,
+        app=None,
+        flags=None,
+        env=None,
+        volumes=None
+    ):
+
+        app = app or CONFIG.DOCKER.DEFAULT_APP
+        volumes = convert_volume_flags(
+            CONFIG.DOCKER.DEV_VOLUMES +
+            CONFIG.DOCKER.VOLUMES +
+            (volumes or [])
+        )
+        env_ = {
+            'APP_DIR': CONFIG.DOCKER.APP_DIR,
+            'ROOT_MODULE_PATH': CONFIG.PYTHON.ROOT_MODULE_PATH
+        }
+        env_.update(env or {})
+        formatted_env = [
+            '-e {key}={value}'.format(key=k, value=v) for k, v in env_.items()
+        ]
+        flags = flags or ['--rm']
+        formatted_args = [CONFIG.format(arg) for arg in args or []]
+
+        template = (
+            'docker-compose run{CR} {flags} {volumes} {env} {app} {command} {args}'
+        )
+
+        def render_command():
+            with_cr = '{} \\\n'
+            formatted = template.format(
+                CR=' \\\n',
+                app=app,
+                args=' '.join(formatted_args),
+                command=command or '',
+                env=' '.join((with_cr.format(line) for line in formatted_env)),
+                flags=' '.join((with_cr.format(line) for line in flags)),
+                volumes=' '.join((with_cr.format(line) for line in volumes))
+            )
+            logger.info(CONFIG.format(formatted))
+
+        render_command()
+        return execute(template.format(
+            CR='',
             app=app,
             args=' '.join(formatted_args),
             command=command or '',
-            env=' '.join((with_cr.format(line) for line in formatted_env)),
-            flags=' '.join((with_cr.format(line) for line in flags)),
-            volumes=' '.join((with_cr.format(line) for line in volumes))
-        )
-        logger.info(CONFIG.format(formatted))
+            env=' '.join(formatted_env),
+            flags=' '.join(flags),
+            volumes=' '.join(volumes)
+        ), silent=True)
 
-    render_command()
-    return execute(template.format(
-        CR='',
-        app=app,
-        args=' '.join(formatted_args),
-        command=command or '',
-        env=' '.join(formatted_env),
-        flags=' '.join(flags),
-        volumes=' '.join(volumes)
-    ), silent=True)
+
+def compose(*args):
+    return Compose()(*args)
 
 
 # =============================================================================
@@ -147,31 +172,37 @@ def compose(
 # =============================================================================
 
 
-@task(
-    category='Docker',
-    short_description='Bash shell in docker container'
-)
-def bash(*args):
+class Bash(Task):
     """Open a bash shell in container"""
-    return compose('/bin/bash', *args)
+
+    name = 'bash'
+    category = 'Docker'
+    short_description = 'Bash shell in docker container'
+
+    def execute(self, *args):
+        return compose('/bin/bash', *args)
 
 
-@task(
-    category='Docker',
-    short_description='Start docker container'
-)
-def up():
+class Up(Task):
     """Start app container"""
-    return compose('up -d app')
+
+    name = 'up'
+    category = 'Docker'
+    short_description = 'Start docker container'
+
+    def execute(self):
+        return compose('up -d app')
 
 
-@task(
-    category='Docker',
-    short_description='Stop docker container'
-)
-def down():
+class Down(Task):
     """Stop app container"""
-    return compose('down')
+
+    name = 'task'
+    category = 'Docker'
+    short_description = 'Stop docker container'
+
+    def execute(self):
+        return compose('down')
 
 
 # =============================================================================

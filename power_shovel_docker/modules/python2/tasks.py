@@ -3,22 +3,20 @@ import docker
 
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
-from power_shovel.task import task
+from power_shovel.task import Task, VirtualTarget
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
-from power_shovel_docker.modules.docker.tasks import compose, build_app_image
+from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils import docker_client
 from power_shovel.runner import ERROR_TASK
 
-PYTHON_DEPENDS = [build_app_image]
-PYTHON_DEPENDS = []
+PYTHON_DEPENDS = ['build_app_image']
 
 
-@task(
-    category='testing',
-    short_description='Run all python test tasks'
-)
-def test_python():
+class TestPython(VirtualTarget):
     """Virtual target for python tests"""
+    name = 'test_python'
+    category = 'testing'
+    short_description = 'Run all python test tasks'
 
 
 def clean_pipenv():
@@ -33,35 +31,40 @@ def clean_pipenv():
         volume.remove(True)
 
 
-@task(
-    category='libraries',
-    short_description='PipEnv environment manager',
-    depends=PYTHON_DEPENDS,
-    clean=clean_pipenv,
-)
-def pipenv(*args):
+class Pipenv(Task):
     """
     Run a pipenv command.
 
     This runs in the builder container with volumes mounted.
     """
-    return compose('pipenv', *args)
+
+    name = 'pipenv'
+    category = 'libraries'
+    short_description = 'PipEnv environment manager'
+    depends = PYTHON_DEPENDS
+    clean = clean_pipenv
+
+    def execute(self, *args):
+        return compose('pipenv', *args)
 
 
-@task(
-    category='build',
-    clean=clean_pipenv,
-    short_description='Install python packages with pipenv',
-    parent='build_app',
-    depends=PYTHON_DEPENDS,
-    check=[
+class BuildPipenv(Task):
+    """Run pipenv install"""
+
+    name = 'build_pipenv'
+    category = 'build'
+    clean = clean_pipenv
+    short_description = 'Install python packages with pipenv'
+    parent = 'build_app'
+    depends = PYTHON_DEPENDS
+    check = [
         FileHash(
             'Pipfile',
             'Pipfile.lock',
         ),
         DockerVolumeExists('{CONFIG.PYTHON.VIRTUAL_ENV_VOLUME}'),
     ]
-)
-def build_pipenv(*args):
-    """Run pipenv install"""
-    return compose('pipenv install', flags=['--dev'], *args)
+
+    def execute(self, *args):
+        pass
+        #return compose('pipenv install', flags=['--dev'], *args)

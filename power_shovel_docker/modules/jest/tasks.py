@@ -1,28 +1,19 @@
 from power_shovel.config import CONFIG
-from power_shovel import task
+from power_shovel import Task, VirtualTarget
 from power_shovel_docker.modules.docker.tasks import compose
-from power_shovel_docker.modules.npm.tasks import build_npm
 
 
-JEST_DEPENDS = [build_npm]
+JEST_DEPENDS = ['build_npm']
 
 
-@task(
-    category='testing',
-    short_description='Run all javascript testing tasks',
-    depends=[JEST_DEPENDS]
-)
-def test_js():
+class TestJS(VirtualTarget):
     """Virtual target for testing javascript"""
+    name = 'test_js'
+    category = 'testing'
+    short_description = 'Run all javascript testing tasks'
 
 
-@task(
-    category='testing',
-    depends=JEST_DEPENDS,
-    parent=['test', 'test_js'],
-    short_description='Jest javascript test runner.'
-)
-def jest(*args):
+class Jest(Task):
     """
     Jest javascript test runner.
 
@@ -36,5 +27,13 @@ def jest(*args):
 
     For Jest help type: shovel jest --help
     """
-    command = CONFIG.format('{JEST.BIN} --config={JEST.CONFIG_FILE_PATH}')
-    return compose(command, *args)
+
+    name = 'jest'
+    category = 'testing'
+    depends = JEST_DEPENDS
+    parent = ['test', 'test_js']
+    short_description = 'Jest javascript test runner.'
+
+    def execute(self, *args):
+        command = CONFIG.format('{JEST.BIN} --config={JEST.CONFIG_FILE_PATH}')
+        return compose(command, *args)
