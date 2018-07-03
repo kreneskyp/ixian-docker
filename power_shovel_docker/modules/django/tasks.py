@@ -1,7 +1,7 @@
 from power_shovel import logger
 from power_shovel.task import Task
 from power_shovel.config import CONFIG
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import compose, Compose
 
 
 class Manage(Task):
@@ -144,10 +144,11 @@ class Runserver(Task):
     name = 'runserver'
     category = 'django'
     short_description = 'start django test server'
+    depends = ['build_pipenv']
 
     def execute(self, *args):
-        return compose(
+        return Compose().execute(
             CONFIG.format('{PYTHON.BIN} manage.py runserver'),
-            args,
+            *(args or ['0.0.0.0:8000']),
             flags=['-p 8000:8000'],
         )
