@@ -51,6 +51,8 @@ class Pipenv(Task):
 
 
 class BuildPipenv(Task):
+    """Run pipenv install"""
+
     name = 'build_pipenv'
     category = 'build'
     clean = clean_pipenv
@@ -63,6 +65,5 @@ class BuildPipenv(Task):
     ]
 
     def execute(self, *args):
-        """Run pipenv install"""
         pass
         #return compose('pipenv install', flags=['--dev'], *args)

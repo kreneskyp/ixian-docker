@@ -3,6 +3,14 @@ from pipenv.patched.pipfile.api import PipfileParser
 
 
 def pipenv_local_package_mount_flags():
+    """
+    Reads Pipfile and returns a list of paths for all locally installed
+    packages.
+
+    Returns:
+        List of filesystem paths.
+    """
+
     from power_shovel.config import CONFIG
     pipfile = PipfileParser(CONFIG.PYTHON.PIPFILE)
     data = pipfile.parse()
