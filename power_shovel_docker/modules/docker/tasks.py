@@ -46,7 +46,7 @@ class BuildDockerfile(Task):
     category = 'build'
     check = FileHash(
         '{POWER_SHOVEL}',
-        '{DOCKER.ROOT_MODULE_DIR}'
+        'shovel.py'
     )
     short_description = 'build app\'s dockerfile'
 
