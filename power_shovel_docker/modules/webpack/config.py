@@ -15,8 +15,11 @@ class WebpackConfig(Config):
     COMPILED_STATIC_DIR = '{DOCKER.APP_DIR}/compiled_static'
     CONFIG_FILE = 'webpack.config.js'
     CONFIG_FILE_PATH = '{DOCKER.PROJECT_DIR}/{WEBPACK.CONFIG_FILE}'
-
+    SOURCE_DIRS = [
+        'static'
+    ]
     DOCKER_CONTEXT = '{WEBPACK.MODULE_DIR}/context'
     COMPILED_STATIC_VOLUME = '{PROJECT_NAME}.compiled_static'
+
 
 WEBPACK_CONFIG = WebpackConfig()

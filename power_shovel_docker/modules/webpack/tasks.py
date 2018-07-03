@@ -1,4 +1,6 @@
 from power_shovel import Task
+from power_shovel.config import CONFIG
+from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel_docker.modules.docker.tasks import compose
 
 
@@ -20,6 +22,10 @@ class Webpack(Task):
     depends = WEBPACK_DEPENDS
     short_description = 'Webpack javascript/css compiler'
     parent = 'build_app'
+    check = FileHash(
+        '{WEBPACK.CONFIG_FILE}',
+        *CONFIG.WEBPACK.SOURCE_DIRS
+    )
     config = [
         '{WEBPACK.CONFIG_FILE}',
         '{WEBPACK.CONFIG_FILE_PATH}',
