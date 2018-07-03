@@ -110,28 +110,24 @@ class Compose(Task):
     def execute(
         self,
         command=None,
-        args=None,
-        app=None,
-        flags=None,
-        env=None,
-        volumes=None
+        *args,
+        **kwargs
     ):
-
-        app = app or CONFIG.DOCKER.DEFAULT_APP
+        app = kwargs.get('app', CONFIG.DOCKER.DEFAULT_APP)
         volumes = convert_volume_flags(
             CONFIG.DOCKER.DEV_VOLUMES +
             CONFIG.DOCKER.VOLUMES +
-            (volumes or [])
+            kwargs.get('volumes', [])
         )
-        env_ = {
+        env = {
             'APP_DIR': CONFIG.DOCKER.APP_DIR,
             'ROOT_MODULE_PATH': CONFIG.PYTHON.ROOT_MODULE_PATH
         }
-        env_.update(env or {})
+        env.update(kwargs.get('env', {}))
         formatted_env = [
-            '-e {key}={value}'.format(key=k, value=v) for k, v in env_.items()
+            '-e {key}={value}'.format(key=k, value=v) for k, v in env.items()
         ]
-        flags = flags or ['--rm']
+        flags = kwargs.get('flags', ['--rm'])
         formatted_args = [CONFIG.format(arg) for arg in args or []]
 
         template = (
@@ -163,8 +159,8 @@ class Compose(Task):
         ), silent=True)
 
 
-def compose(*args):
-    return Compose()(*args)
+def compose(*args, **kwargs):
+    return Compose()(*args, **kwargs)
 
 
 # =============================================================================
