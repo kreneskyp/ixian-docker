@@ -31,10 +31,11 @@ class Webpack(Task):
         '{WEBPACK.CONFIG_FILE_PATH}',
         '{WEBPACK.COMPILED_STATIC_DIR}',
         '{WEBPACK.COMPILED_STATIC_VOLUME}',
+        '{WEBPACK.ARGS}',
     ]
 
     def execute(self, *args):
-        return compose('./webpack.sh', *args)
+        return compose('webpack', *(CONFIG.WEBPACK.ARGS + list(args)))
 
 
 class WebpackWatch(Task):
@@ -46,4 +47,4 @@ class WebpackWatch(Task):
     short_description = 'Webpack builder with file-watching.'
 
     def execute(self, *args):
-        return compose('./webpack.sh --watch', *args)
+        return compose('webpack --watch', *(CONFIG.WEBPACK.ARGS + list(args)))

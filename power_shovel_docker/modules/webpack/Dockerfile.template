@@ -1,9 +1,9 @@
-ENV WEBPACK $APP_DIR/node_modules/.bin/webpack
-ENV WEBPACK_CONFIG {{ CONFIG.WEBPACK.CONFIG_FILE_PATH }}
-ENV WEBPACK_OUTPUT_DIR {{ CONFIG.WEBPACK.COMPILED_STATIC_DIR }}
-ADD {{ CONFIG.DOCKER.MODULE_CONTEXT }}/WEBPACK/webpack.sh $APP_DIR
-RUN chmod +x $APP_DIR/webpack.sh
+RUN ln -s $PROJECT_DIR/.babelrc $APP_DIR
+RUN ln -s {{ CONFIG.NPM.NODE_MODULES_DIR }}/.bin/webpack /usr/local/bin/webpack
 
 {% if CONFIG.ENV == 'PRODUCTION' %}
-RUN webpack.sh
+# TODO: formatted args from config
+RUN webpack \
+    --config {{ CONFIG.WEBPACK.CONFIG_FILE_PATH }} \
+    --output-path {{ CONFIG.WEBPACK.COMPILED_STATIC_DIR }}
 {% endif %}
