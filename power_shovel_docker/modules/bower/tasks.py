@@ -36,7 +36,8 @@ class BuildBower(Task):
     ]
 
     def execute(self, *args):
-        compose('./bower.sh', *args)
+        compose('{BOWER.BIN} install {BOWER.CONFIG_FILE_PATH}',
+                *(CONFIG.BOWER.ARGS + list(args)))
 
 
 class Bower(Task):
@@ -56,4 +57,4 @@ class Bower(Task):
     clean = clean_bower
 
     def execute(self, *args):
-        compose(CONFIG.format('{BOWER.BIN}'), *args)
+        compose('{BOWER.BIN}', *(CONFIG.BOWER.ARGS + list(args)))
