@@ -6,11 +6,11 @@ from power_shovel_docker.modules.docker.tasks import compose
 ESLINT_DEPENDS = ['build_npm']
 
 
-class lint(VirtualTarget):
+class Lint(VirtualTarget):
     """Virtual target for linting."""
     name = 'lint'
     category = 'testing'
-    short_description = 'Run all linting tasks',
+    short_description = 'Run all linting tasks'
 
 
 class lint_js(VirtualTarget):
