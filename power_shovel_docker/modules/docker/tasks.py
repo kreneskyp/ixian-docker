@@ -127,7 +127,7 @@ class Compose(Task):
         formatted_env = [
             '-e {key}={value}'.format(key=k, value=v) for k, v in env.items()
         ]
-        flags = kwargs.get('flags', ['--rm'])
+        flags = CONFIG.DOCKER.COMPOSE_FLAGS + kwargs.get('flags', [])
         formatted_args = [CONFIG.format(arg) for arg in args or []]
 
         template = (

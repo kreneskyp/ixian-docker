@@ -101,5 +101,8 @@ class DockerConfig(Config):
     # Template is used for compiling the Dockerfile.
     DOCKERFILE_TEMPLATE = '{DOCKER.MODULE_DIR}/Dockerfile.template'
 
-    # Modules contributed files to add to docker build context.
+    # Module files added to docker build context.
     MODULE_CONTEXT = '{BUILDER_DIR}/module_context'
+
+    # Default flags passed to Compose
+    COMPOSE_FLAGS = ['--rm', '-u root']
