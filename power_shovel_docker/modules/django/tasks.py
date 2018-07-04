@@ -1,4 +1,3 @@
-from power_shovel import logger
 from power_shovel.task import Task
 from power_shovel.config import CONFIG
 from power_shovel_docker.modules.docker.tasks import compose, Compose
@@ -23,7 +22,7 @@ class Manage(Task):
     depends = ['build_pipenv']
 
     def execute(self, *args):
-        return compose('{PYTHON.BIN} manage.py', args)
+        return compose('{PYTHON.BIN} manage.py', *args)
 
 
 def manage(*args):
