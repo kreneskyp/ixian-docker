@@ -140,7 +140,7 @@ class Compose(Task):
                 CR=' \\\n',
                 app=app,
                 args=' '.join(formatted_args),
-                command=command or '',
+                command=CONFIG.format(command or ''),
                 env=' '.join((with_cr.format(line) for line in formatted_env)),
                 flags=' '.join((with_cr.format(line) for line in flags)),
                 volumes=' '.join((with_cr.format(line) for line in volumes))
