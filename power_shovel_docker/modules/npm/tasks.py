@@ -38,7 +38,7 @@ class NPMUpdate(Task):
 
     def execute(self, *args):
         args = args or ['-u']
-        return compose('ncu', args)
+        return compose('ncu', *args)
 
 
 class NCU(Task):
@@ -50,7 +50,7 @@ class NCU(Task):
     short_description = 'NPM package updater'
 
     def execute(self, *args):
-        return compose('ncu', args)
+        return compose('ncu', *args)
 
 
 class BuildNPM(Task):
@@ -68,7 +68,7 @@ class BuildNPM(Task):
     short_description = 'Install NPM packages.'
 
     def execute(self, *args):
-        return compose('npm install', args)
+        return compose('npm install', *args)
 
 
 class NPM(Task):
@@ -80,4 +80,4 @@ class NPM(Task):
     short_description = 'NPM package manager.'
 
     def execute(self, *args):
-        return compose('npm', args)
+        return compose('npm', *args)
