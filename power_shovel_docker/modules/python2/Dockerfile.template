@@ -18,14 +18,15 @@ RUN apt-get install -y \
 RUN pip install \
     pipenv
 
-# Environment
-ENV PYTHON_VERSION=2.7 \
+ENV \
+    # Environment
+    PYTHON_VERSION=2.7 \
     PYTHONUNBUFFERED=1 \
     LC_ALL=C.UTF-8 \
-    LANG=C.UTF-8s
-
-# Pipenv / Virtualenv
-ENV PYTHONPATH=$PROJECT_DIR \
+    LANG=C.UTF-8s \
+    \
+    # Pipenv / Virtualenv
+    PYTHONPATH=$PROJECT_DIR \
     PIPENV_SHELL_FANCY=1 \
     PIPENV_VENV_IN_PROJECT=1 \
     PIPENV_NOSPIN=1

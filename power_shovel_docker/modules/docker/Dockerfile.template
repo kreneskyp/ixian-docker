@@ -5,33 +5,47 @@ ENV PROJECT_NAME {{ CONFIG.PROJECT_NAME }}
 # Platform Installation
 # =============================================================================
 
-# Project directories
-ENV APP_DIR {{ CONFIG.DOCKER.APP_DIR }}
-ENV PROJECT_DIR {{ CONFIG.DOCKER.PROJECT_DIR }}
-ENV VAR_DIR /var/run/$PROJECT_NAME
-RUN mkdir -p $VAR_DIR && chown -R daemon $VAR_DIR
-RUN mkdir $APP_DIR
-WORKDIR $APP_DIR
-
-# Source root of project
-ENV PROJECT_ROOT {{ CONFIG.DOCKER.PROJECT_DIR }}
-RUN mkdir -p $APP_DIR
-RUN mkdir -p $PROJECT_ROOT
-ADD . $PROJECT_ROOT
+# Environment
+ENV \
+    # Project directories
+    APP_DIR={{ CONFIG.DOCKER.APP_DIR }} \
+    PROJECT_DIR={{ CONFIG.DOCKER.PROJECT_DIR }} \
+    VAR_DIR=/var/run/$PROJECT_NAME \
+    \
+    # Source root of project
+    PROJECT_ROOT={{ CONFIG.DOCKER.PROJECT_DIR }} \
+    \
+    # bin - utils used to run or manage app
+    APP_BIN={{ CONFIG.DOCKER.APP_BIN }}
 
 # bin - utils used to run or manage app
-ENV APP_BIN {{ CONFIG.DOCKER.APP_BIN }}
 ADD bin/ $APP_BIN
-RUN chmod +x $APP_BIN*
-RUN chown daemon:daemon $APP_BIN
 
-# misc
-RUN touch /root/.bash_history
+RUN echo $APP_DIR
+RUN echo $PROJECT_ROOT
 
-# Required packages
-RUN apt-get update --fix-missing && \
+RUN \
+    # Required packages
+    apt-get update --fix-missing && \
     apt-get install -y \
-        git
+        git && \
+    \
+    # Project directories
+    mkdir -p $VAR_DIR && \
+    chown -R daemon $VAR_DIR && \
+    \
+    # Source root of project
+    \
+    # bin - utils used to run or manage app
+    chmod +x $APP_BIN* && \
+    chown daemon:daemon $APP_BIN && \
+    \
+    # misc
+    touch /root/.bash_history
+
+
+WORKDIR $APP_DIR
+ADD . $PROJECT_ROOT
 
 
 {% for module in modules %}

@@ -19,17 +19,18 @@ RUN apt-get install -y \
 RUN pip3 install \
     pipenv
 
-# Environment
-ENV PYTHON_VERSION 3.6
-ENV PYTHONUNBUFFERED 1
-ENV LC_ALL C.UTF-8
-ENV LANG C.UTF-8s
-
-# Pipenv / Virtualenv
-ENV PYTHONPATH $PROJECT_DIR
-ENV PIPENV_SHELL_FANCY 1
-ENV PIPENV_VENV_IN_PROJECT 1
-ENV PIPENV_NOSPIN 1
+ENV \
+    # Environment
+    PYTHON_VERSION=3.6 \
+    PYTHONUNBUFFERED=1 \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8s \
+    \
+    # Pipenv / Virtualenv
+    PYTHONPATH=$PROJECT_DIR \
+    PIPENV_SHELL_FANCY=1 \
+    PIPENV_VENV_IN_PROJECT=1 \
+    PIPENV_NOSPIN =1
 
 # Pipfile needs to be added instead of symlinked. Pipenv follows symlinks and
 # creates the pipenv in the directory where the Pipfile is located. The Pipfile
