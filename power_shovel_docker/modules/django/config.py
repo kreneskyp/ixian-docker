@@ -24,7 +24,7 @@ class DjangoConfig(Config):
     SETTINGS_TEST = '{DJANGO.SETTINGS_MODULE}.test'
 
     # Path to UWSGI configuration file on host.
-    UWSGI_INI = '{PWD}/uwsgi.ini'
+    UWSGI_INI = 'uwsgi.ini'
 
     # Host for Compose. 0.0.0.0 should be used for docker default network
     # config.
