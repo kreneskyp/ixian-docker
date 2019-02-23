@@ -1,5 +1,5 @@
-RUN ln -s {{ CONFIG.BOWER.BIN }} /usr/local/bin/
 RUN npm install bower
+RUN ln -s {{ CONFIG.BOWER.BIN }} /usr/local/bin/
 
 {% if CONFIG.ENV == 'PRODUCTION' %}
 # Install packages - This is skipped in DEV builds because they may include
