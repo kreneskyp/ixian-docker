@@ -1,13 +1,13 @@
-RUN ln -s $PROJECT_DIR/package.json $APP_DIR
-RUN ln -s $PROJECT_DIR/package-lock.json $APP_DIR
+RUN ln -s $PROJECT_DIR/package.json $APP_DIR \
+ && ln -s $PROJECT_DIR/package-lock.json $APP_DIR
 
 # install NodeJS
 ARG NODE_VERSION=8.x
-RUN apt-get install -y curl man git
-RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION | bash -
-RUN apt-get install -y nodejs
-RUN npm config set ca="" --global
-RUN mkdir {{ CONFIG.NPM.NODE_MODULES_DIR }}
+RUN apt-get install -y curl man git \
+ && curl -sL https://deb.nodesource.com/setup_$NODE_VERSION | bash - \
+ && apt-get install -y nodejs \
+ && npm config set ca="" --global \
+ && mkdir {{ CONFIG.NPM.NODE_MODULES_DIR }} \
 
 # install NPM Check Update
 RUN npm install -g npm-check-updates
