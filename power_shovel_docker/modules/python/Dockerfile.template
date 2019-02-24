@@ -30,7 +30,7 @@ ENV \
     PYTHONPATH=$PROJECT_DIR \
     PIPENV_SHELL_FANCY=1 \
     PIPENV_VENV_IN_PROJECT=1 \
-    PIPENV_NOSPIN =1
+    PIPENV_NOSPIN=1
 
 # Pipfile needs to be added instead of symlinked. Pipenv follows symlinks and
 # creates the pipenv in the directory where the Pipfile is located. The Pipfile
