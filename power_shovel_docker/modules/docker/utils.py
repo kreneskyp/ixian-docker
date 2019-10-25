@@ -91,6 +91,7 @@ def build_image(
         tag,
         file='Dockerfile',
         context='.',
+        no_cache=False,
         args=None):
     """Build a docker image.
 
@@ -102,13 +103,20 @@ def build_image(
     :param context: build context, default is the working directory.
     :param args: args to pass as build-args to build
     """
-
+    args = args or {}
     gather_context()
 
-    # TODO: --no-cache for clean builds
+    if no_cache:
+        args["--no-cache"] = None
 
     arg_flags = ' '.join(
-        ['--build-arg %s=%s' % item for item in (args or {}).items()])
+        [
+            '{key}'.format(key=key)
+            if value is None else
+            '--build-arg {key}={value}'.format(key=key, value=value)
+            for key, value in (args or {}).items()
+        ]
+    )
 
     return execute('docker build -t {name} -f {file} {args} {context}'.format(
         name=tag,
