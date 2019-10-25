@@ -6,8 +6,7 @@ from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import Task
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import compose
-from power_shovel_docker.modules.docker.utils import docker_client
-
+from power_shovel_docker.modules.docker.utils import docker_client, build_image_if_needed
 
 NPM_DEPENDS = ['build_app_image']
 
@@ -24,6 +23,30 @@ def clean_npm():
         volume.remove(True)
         logger.debug('Deleted docker image: %s'
                      % CONFIG.PYTHON.VIRTUAL_ENV_VOLUME)
+
+
+class BuildNPMImage(Task):
+    name = 'build_npm_image'
+    parent = 'build_app_image'
+    depends = ['build_base_image']
+    category = 'build'
+    short_description = 'Build NPM image'
+    check = FileHash('{NPM.PACKAGE_JSON}')
+        #DockerImageExists('{NPM.IMAGE}')
+
+    def execute(self, pull=True):
+        build_image_if_needed(
+            repository=CONFIG.NPM.REPOSITORY,
+            tag=CONFIG.NPM.IMAGE_TAG,
+            file=CONFIG.NPM.DOCKERFILE,
+            force=self.__task__.force,
+            pull=pull,
+            recheck=self.check.check,
+            args = {
+                "FROM_REPOSITORY": CONFIG.DOCKER.REPOSITORY,
+                "FROM_TAG": CONFIG.DOCKER.BASE_IMAGE_TAG
+            }
+        )
 
 
 class NPMUpdate(Task):

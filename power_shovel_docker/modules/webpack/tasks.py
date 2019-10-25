@@ -2,11 +2,40 @@ from power_shovel import Task
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel_docker.modules.docker.tasks import compose
-
+from power_shovel_docker.modules.docker.utils import build_image_if_needed
 
 WEBPACK_DEPENDS = [
     'build_npm'
 ]
+
+
+class BuildWebpackImage(Task):
+    """
+    Build image with javascript, css, etc. compiled by Webpack.
+    """
+    name = 'build_webpack_image'
+    parent = 'build_app_image'
+    depends = ['build_npm_image']
+    category = 'build'
+    short_description = 'Build Webpack image'
+    check = [
+        FileHash('{WEBPACK.CONFIG_FILE}'),
+        #DockerImageExists('{WEBPACK.IMAGE}')
+    ]
+
+    def execute(self, pull=True):
+        build_image_if_needed(
+            repository=CONFIG.WEBPACK.REPOSITORY,
+            tag=CONFIG.WEBPACK.IMAGE_TAG,
+            file=CONFIG.WEBPACK.DOCKERFILE,
+            force=self.__task__.force,
+            pull=pull,
+            recheck=self.check.check,
+            args={
+                "FROM_REPOSITORY": CONFIG.DOCKER.APP_IMAGE,
+                "FROM_TAG": CONFIG.NPM.IMAGE_TAG
+            }
+        )
 
 
 class Webpack(Task):

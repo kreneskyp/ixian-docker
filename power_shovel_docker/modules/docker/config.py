@@ -19,6 +19,21 @@ class DockerConfig(Config):
         from power_shovel_docker.modules import docker
         return os.path.dirname(os.path.realpath(docker.__file__))
 
+    @classproperty
+    def IMAGE_TAG(cls):
+        """
+        Tag calculated from the current state of inputs to the Dockerfile.
+        """
+        #return hash_object(cls.APP_IMAGE_TAG_CHECKER.state())
+        return "todo"
+
+    @classproperty
+    def BASE_IMAGE_TAG(cls):
+        # TODO: hash from checker
+        return "base-todo"
+
+    APP_IMAGE_TAG_CHECKER = None
+
     # TODO: is this still needed since we're moving away from volumes
     @classproperty
     def VOLUMES(self):
@@ -89,14 +104,21 @@ class DockerConfig(Config):
     APP_BIN = '{DOCKER.APP_DIR}/bin'
     PROJECT_DIR = '{DOCKER.APP_DIR}/project'
 
+    # Registry settings
+    REGISTRY = 'docker.io'
+    REGISTRY_PATH = 'library'
+
     # Image tags
-    APP_IMAGE = '{PROJECT_NAME}'
+    REPOSITORY = '{DOCKER.REGISTRY}/{DOCKER.REGISTRY_PATH}/{PROJECT_NAME}'
+    APP_IMAGE = "{DOCKER.REPOSITORY}"
+    BASE_IMAGE = "{DOCKER.REPOSITORY}:{DOCKER.BASE_IMAGE_TAG}"
 
     # Default app in docker-compose file
     DEFAULT_APP = 'app'
 
     # Name of Dockerfile to build with build_app
-    DOCKER_FILE = 'Dockerfile'
+    DOCKERFILE = 'Dockerfile'
+    DOCKERFILE_BASE = 'Dockerfile.base'
 
     # Template is used for compiling the Dockerfile.
     DOCKERFILE_TEMPLATE = '{DOCKER.MODULE_DIR}/Dockerfile.template'

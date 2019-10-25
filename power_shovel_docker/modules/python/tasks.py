@@ -4,7 +4,7 @@ from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import Task, VirtualTarget
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import compose
-from power_shovel_docker.modules.docker.utils import docker_client
+from power_shovel_docker.modules.docker.utils import docker_client, build_image_if_needed
 from power_shovel.runner import ERROR_TASK
 
 PYTHON_DEPENDS = ['build_app_image']
@@ -12,6 +12,31 @@ PYTHON_DEPENDS = ['build_app_image']
 
 def python_local_package_mount_flags():
     return []
+
+
+class BuildPythonImage(Task):
+
+    name = 'build_python_image'
+    parent = 'build_app_image'
+    depends = ['build_base_image']
+    category = 'build'
+    short_description = 'Build Python image'
+    check = FileHash('{PYTHON.REQUIREMENTS}')
+        #DockerImageExists('{NPM.IMAGE}')
+
+    def execute(self, pull=True):
+        build_image_if_needed(
+            repository=CONFIG.PYTHON.REPOSITORY,
+            tag=CONFIG.PYTHON.IMAGE_TAG,
+            file=CONFIG.PYTHON.DOCKERFILE,
+            force=self.__task__.force,
+            pull=pull,
+            recheck=self.check.check,
+            args={
+                "FROM_REPOSITORY": CONFIG.DOCKER.APP_IMAGE,
+                "FROM_TAG": CONFIG.DOCKER.BASE_IMAGE_TAG
+            }
+        )
 
 
 class TestPython(VirtualTarget):

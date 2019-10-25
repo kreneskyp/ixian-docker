@@ -24,3 +24,12 @@ class NPMConfig(Config):
     # Dockerfile template for NPM support. This snippet is rendered with the
     # base dockerfile template to create a single combined docker image.
     DOCKERFILE_TEMPLATE = '{NPM.MODULE_DIR}/Dockerfile.template'
+    DOCKERFILE = 'Dockerfile.npm'
+
+    @classproperty
+    def IMAGE_TAG(cls):
+        # TODO hash inputs
+        return 'npm-todo'
+
+    REPOSITORY = "{DOCKER.REPOSITORY}"
+    IMAGE = "{NPM.REPOSITORY}:{NPM.IMAGE_TAG}"

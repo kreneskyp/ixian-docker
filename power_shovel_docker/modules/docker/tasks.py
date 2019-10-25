@@ -1,10 +1,13 @@
 import docker
 from power_shovel import logger
 from power_shovel import Task, VirtualTarget
+from power_shovel.check.checker import All
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
-from power_shovel_docker.modules.docker.utils import build_image
+from power_shovel_docker.modules.docker.checker import DockerImageExists
+from power_shovel_docker.modules.docker.utils import build_image, image_exists_in_registry, build_image_if_needed, \
+    pull_image, push_image
 from power_shovel_docker.modules.docker.utils import docker_client
 from power_shovel_docker.modules.docker.utils import convert_volume_flags
 from power_shovel_docker.modules.docker import utils
@@ -79,15 +82,54 @@ class BuildAppImage(Task):
     """Builds the docker app image using CONFIG.DOCKER_FILE"""
 
     name = 'build_app_image'
+    depends = ['build_base_image']
     category = 'build'
-    depends = ['build_dockerfile']
-    check = FileHash('Dockerfile')
-    parent = 'build_app'
+    check = FileHash(
+            'Dockerfile',
+        )
+        #DockerImageExists('{CONFIG.DOCKER.APP_IMAGE}:{CONFIG.DOCKER.APP_IMAGE_TAG}')
+    #)
     clean = remove_app_image
     short_description = 'Build app image'
 
-    def execute(self):
-        return build_image(CONFIG.DOCKER.APP_IMAGE, CONFIG.DOCKER.DOCKER_FILE)
+    def execute(self, pull=True):
+        build_image_if_needed(
+            repository=CONFIG.DOCKER.REPOSITORY,
+            tag=CONFIG.DOCKER.IMAGE_TAG,
+            file=CONFIG.DOCKER.DOCKERFILE,
+            force=self.__task__.force,
+            pull=pull,
+            recheck=self.check.check,
+            args={
+                "BASE_IMAGE": CONFIG.DOCKER.BASE_IMAGE,
+                "PYTHON_IMAGE": CONFIG.PYTHON.IMAGE,
+                "COMPILED_STATIC_IMAGE": CONFIG.WEBPACK.IMAGE,
+                "BOWER_IMAGE": CONFIG.BOWER.IMAGE,
+            }
+        )
+
+
+class BuildBaseImage(Task):
+    """Builds the docker app image using CONFIG.DOCKER_FILE"""
+
+    name = 'build_base_image'
+    category = 'build'
+    check = FileHash(
+            'Dockerfile',
+        )
+        #DockerImageExists('{CONFIG.DOCKER.APP_IMAGE}:{CONFIG.DOCKER.APP_IMAGE_TAG}')
+
+    clean = remove_app_image
+    short_description = 'Build app image'
+
+    def execute(self, pull=True):
+        build_image_if_needed(
+            repository=CONFIG.DOCKER.REPOSITORY,
+            tag=CONFIG.DOCKER.BASE_IMAGE_TAG,
+            file=CONFIG.DOCKER.DOCKERFILE_BASE,
+            force=self.__task__.force,
+            pull=pull,
+            recheck=self.check.check)
 
 
 # TODO: TaskRunner/Shim doesn't support multiple args or kwargs. fix that.

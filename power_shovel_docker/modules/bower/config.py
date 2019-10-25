@@ -31,3 +31,12 @@ class BowerConfig(Config):
 
     # Path to Dockerfile template snippet.
     DOCKERFILE_TEMPLATE = '{BOWER.MODULE_DIR}/Dockerfile.template'
+    DOCKERFILE = 'Dockerfile.bower'
+
+    @classproperty
+    def IMAGE_TAG(cls):
+        # TODO: hash from checker
+        return "bower-todo"
+
+    REPOSITORY = "{DOCKER.REPOSITORY}"
+    IMAGE = "{BOWER.REPOSITORY}:{BOWER.IMAGE_TAG}"

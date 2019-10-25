@@ -38,5 +38,15 @@ class WebpackConfig(Config):
         '--output-path {WEBPACK.COMPILED_STATIC_DIR}'
     ]
 
+    DOCKERFILE = 'Dockerfile.webpack'
+
+    @classproperty
+    def IMAGE_TAG(cls):
+        # TODO: hash from checker
+        return "webpack-todo"
+
+    REPOSITORY = "{DOCKER.REPOSITORY}"
+    IMAGE = "{WEBPACK.REPOSITORY}:{WEBPACK.IMAGE_TAG}"
+
 
 WEBPACK_CONFIG = WebpackConfig()

@@ -22,3 +22,14 @@ class PythonConfig(Config):
 
     # Docker
     VIRTUAL_ENV_VOLUME = '{PROJECT_NAME}.venv'
+
+    DOCKERFILE = 'Dockerfile.python'
+    REQUIREMENTS = 'requirements*.txt'
+
+    @classproperty
+    def IMAGE_TAG(cls):
+        # TODO: hash inputs
+        return "python-todo"
+
+    REPOSITORY = "{DOCKER.REPOSITORY}"
+    IMAGE = "{PYTHON.REPOSITORY}:{PYTHON.IMAGE_TAG}"

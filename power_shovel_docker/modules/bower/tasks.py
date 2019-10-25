@@ -4,8 +4,7 @@ from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import compose
-from power_shovel_docker.modules.docker.utils import docker_client
-
+from power_shovel_docker.modules.docker.utils import docker_client, build_image_if_needed
 
 BOWER_DEPENDS = ['build_app_image']
 
@@ -20,6 +19,31 @@ def clean_bower():
         pass
     else:
         volume.remove(True)
+
+
+class BuildBowerImage(Task):
+    name = 'build_bower_image'
+    parent = 'build_app_image'
+    depends = ['build_base_image']
+    category = 'build'
+    short_description = 'Build bower image'
+    check = FileHash('{BOWER.CONFIG_FILE}')
+        #DockerImageExists('{BOWER.IMAGE}')
+    #]
+
+    def execute(self, pull=False):
+        build_image_if_needed(
+            repository=CONFIG.BOWER.REPOSITORY,
+            tag=CONFIG.BOWER.IMAGE_TAG,
+            file=CONFIG.BOWER.DOCKERFILE,
+            force=self.__task__.force,
+            pull=pull,
+            recheck=self.check.check,
+            args={
+                "FROM_REPOSITORY": CONFIG.DOCKER.REPOSITORY,
+                "FROM_TAG": CONFIG.DOCKER.BASE_IMAGE_TAG
+            }
+        )
 
 
 class BuildBower(Task):
