@@ -132,6 +132,24 @@ class BuildBaseImage(Task):
             recheck=self.check.check)
 
 
+class PullAppImage(Task):
+    name = "pull"
+    short_description = 'Pull the app image'
+
+    def execute(self):
+        name = "docker-registry.counsyl.com/counsyl/wetlab-base"
+        pull_image(name)
+
+
+class PushAppImage(Task):
+    name = "push"
+    short_description = 'Push the app image'
+
+    def execute(self):
+        name = "docker-registry.counsyl.com/counsyl/test"
+        push_image(name)
+
+
 # TODO: TaskRunner/Shim doesn't support multiple args or kwargs. fix that.
 class Compose(Task):
     """
