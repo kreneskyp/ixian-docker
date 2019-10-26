@@ -14,7 +14,7 @@ def volume_exists(tag):
     else:
         return True
 
-g
+
 def build_volume_from_image(image, path, tag=None):
     """Build a volume from a docker image.
 

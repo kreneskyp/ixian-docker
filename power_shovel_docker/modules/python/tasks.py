@@ -4,7 +4,8 @@ from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import Task, VirtualTarget
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
 from power_shovel_docker.modules.docker.tasks import compose
-from power_shovel_docker.modules.docker.utils import docker_client, build_image_if_needed
+from power_shovel_docker.modules.docker.utils.client import docker_client
+from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
 from power_shovel.runner import ERROR_TASK
 
 PYTHON_DEPENDS = ['build_app_image']

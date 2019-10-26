@@ -1,15 +1,14 @@
 import docker
 from power_shovel import logger
 from power_shovel import Task, VirtualTarget
-from power_shovel.check.checker import All
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
 from power_shovel_docker.modules.docker.checker import DockerImageExists
-from power_shovel_docker.modules.docker.utils import build_image, image_exists_in_registry, build_image_if_needed, \
+from power_shovel_docker.modules.docker.utils.images import build_image_if_needed, \
     pull_image, push_image
-from power_shovel_docker.modules.docker.utils import docker_client
-from power_shovel_docker.modules.docker.utils import convert_volume_flags
+from power_shovel_docker.modules.docker.utils.client import docker_client
+from power_shovel_docker.modules.docker.utils.volumes import convert_volume_flags
 from power_shovel_docker.modules.docker import utils
 
 
@@ -133,6 +132,10 @@ class BuildBaseImage(Task):
 
 
 class PullAppImage(Task):
+    """
+    Pull the App Image as specified by {DOCKER.APP_IMAGE}
+    """
+
     name = "pull"
     short_description = 'Pull the app image'
 
@@ -142,6 +145,9 @@ class PullAppImage(Task):
 
 
 class PushAppImage(Task):
+    """
+    Push the App Image as specified by {DOCKER.APP_IMAGE}
+    """
     name = "push"
     short_description = 'Push the app image'
 

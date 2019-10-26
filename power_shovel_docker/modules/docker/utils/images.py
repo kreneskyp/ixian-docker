@@ -10,7 +10,7 @@ from power_shovel.module import MODULES
 from power_shovel.utils.process import execute
 from power_shovel.config import CONFIG
 from power_shovel_docker.modules.docker.utils.client import Docker
-from power_shovel_docker.modules.docker.utils.docker.print import print_docker_transfer_events
+from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events
 
 
 def image_exists(name):

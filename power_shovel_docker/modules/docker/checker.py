@@ -2,7 +2,7 @@ import docker
 
 from power_shovel.check.checker import MultiValueChecker
 from power_shovel.config import CONFIG
-from power_shovel_docker.modules.docker.utils import docker_client
+from power_shovel_docker.modules.docker.utils.client import docker_client
 
 
 class DockerVolumeExists(MultiValueChecker):
