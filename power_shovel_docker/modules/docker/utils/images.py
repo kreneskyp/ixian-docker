@@ -7,9 +7,10 @@ from docker.errors import NotFound as DockerNotFound
 
 from power_shovel import logger
 from power_shovel.module import MODULES
+from power_shovel.utils.decorators import cached_property
 from power_shovel.utils.process import execute
 from power_shovel.config import CONFIG
-from power_shovel_docker.modules.docker.utils.client import Docker
+from power_shovel_docker.modules.docker.utils.client import Docker, UnknownRegistry
 from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events
 
 
@@ -35,13 +36,11 @@ def image_exists_in_registry(repository, tag=None):
     :return: True/False
     """
     # Disable check till ECR Client works
-    return False
     registry = parse_registry(repository)
     client = Docker.for_registry(registry)
     client.login()
     logger.debug("Checking registry for {}:{}".format(repository, tag or "latest"))
     try:
-        print(client.client, id(client.client))
         client.client.images.get_registry_data("{}:{}".format(repository, tag or "latest"))
     except DockerNotFound:
         return False
@@ -128,31 +127,38 @@ def build_image_if_needed(
     recheck=None,
     force=False
 ):
-    pass
     # if local: skip
     # if remote: pull & skip
     # else: build
     image_and_tag = "{}:{}".format(repository, tag or "latest")
 
+    logger.debug(f"Attempting to build {image_and_tag}")
+
     if not force:
         if image_exists(image_and_tag):
-            logger.debug("Image exists: {}".format(tag))
-            logger.debug("Skipping build.")
+            logger.debug("Image exists, skipping build.")
             return
+        else:
+            logger.debug("Image does not exist.".format(tag))
 
-        if 0 and pull and image_exists_in_registry(repository, tag):
-            logger.debug("Image exists on registry. Pulling image.")
-            try:
-                pull_image(repository, tag)
-            except DockerNotFound:
-                logger.debug("Image could not be pulled: NotFound")
-                pass
-            else:
-                logger.debug("Image pulled.")
-                # Re-check, if task now passes then build can be skipped
-                if not recheck or recheck():
-                    logger.debug("Check passed, skipping build.")
-                    return
+        try:
+            if pull and image_exists_in_registry(repository, tag):
+                logger.debug("Image exists on registry. Pulling image.")
+                try:
+                    pull_image(repository, tag)
+                except DockerNotFound:
+                    logger.debug("Image could not be pulled: NotFound")
+                    pass
+                else:
+                    logger.debug("Image pulled.")
+                    # Re-check, if task now passes then build can be skipped
+                    if not recheck or recheck():
+                        logger.debug("Check passed, skipping build.")
+                        return
+            elif pull:
+                logger.debug("Image does not exist on registry.")
+        except UnknownRegistry:
+            pass
 
     build_image(image_and_tag, file=file, context=context, args=args, no_cache=force)
 
