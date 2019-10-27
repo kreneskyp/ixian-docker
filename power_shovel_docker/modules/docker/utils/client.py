@@ -4,6 +4,7 @@ import boto3
 import docker
 
 from power_shovel import logger
+from power_shovel.config import CONFIG
 from power_shovel.utils.decorators import cached_property
 
 
@@ -15,7 +16,15 @@ def docker_client():
     return docker.from_env()
 
 
+class UnknownRegistry(Exception):
+    """Exception raised when registry is not configured"""
+    pass
+
+
 class Docker:
+
+    def __init__(self, **options):
+        self.options = options
 
     @classmethod
     def for_registry(cls, registry):
@@ -23,10 +32,18 @@ class Docker:
             return DOCKER_REGISTRIES[registry]
         except KeyError:
             pass
-        #instance = cls()
-        # TODO: need to decide out how to map registries
-        instance = ECRDockerClient()
+
+        # Instantiate client for registry
+        try:
+            config = CONFIG.DOCKER.REGISTRIES[registry]
+        except KeyError:
+            logger.warn(f"Registry missing from DOCKER.REGISTRIES: {registry}")
+            raise UnknownRegistry(registry)
+
+        Client = config["client"]
+        instance = Client(**config.get("options", {}))
         DOCKER_REGISTRIES[registry] = instance
+
         return instance
 
     @cached_property
@@ -41,37 +58,17 @@ class ECRDockerClient(Docker):
 
     @cached_property
     def ecr_client(self):
-        # TODO: where are initialized from?
-        return boto3.client('ecr', region_name='eu-west-2')
+        kwargs = {}
+        if 'region' in self.options:
+            kwargs["region_name"] = self.options["region"]
+        return boto3.client('ecr', **kwargs)
 
     def login(self):
         # fetch credentials from ECR
-        logger.debug("Authenticating with ECR: {}".format('eu-west-2'))
+        logger.debug("Authenticating with ECR: {}".format(self.options.get("region", "default")))
         token = self.ecr_client.get_authorization_token()
         username, password = base64.b64decode(token['authorizationData'][0]['authorizationToken']).decode().split(':')
         registry = token['authorizationData'][0]['proxyEndpoint']
 
         # authenticate
         self.client.login(username, password, "", registry=registry)
-        print(self.client, id(self.client))
-        #import ipdb
-        #ipdb.sset_trace()
-
-        logger.debug("Authenticated.")
-
-
-def authenticate_client(client):
-    """
-    Helper to create an authenticated docker client.
-
-    TODO: this is just a temp solution. Need something more extensible that can handle different authentication methods
-    """
-
-    # ECR requires that creds be fetched from the API
-    ecr_client = boto3.client('ecr', region_name='eu-west-2')
-    token = ecr_client.get_authorization_token()
-    username, password = base64.b64decode(token['authorizationData'][0]['authorizationToken']).decode().split(':')
-    registry = token['authorizationData'][0]['proxyEndpoint']
-
-    client.login(username, password, "", registry=registry)
-    return docker_client
