@@ -1,6 +1,8 @@
 import os
 
-from power_shovel.config import Config
+from power_shovel.check.checker import hash_object
+from power_shovel.config import Config, CONFIG
+from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.decorators import classproperty
 
 
@@ -27,9 +29,17 @@ class PythonConfig(Config):
     REQUIREMENTS = 'requirements*.txt'
 
     @classproperty
-    def IMAGE_TAG(cls):
-        # TODO: hash inputs
-        return "python-todo"
+    def IMAGE_HASH(cls):
+        return hash_object(
+            [
+                CONFIG.DOCKER.BASE_IMAGE_HASH,
+                FileHash(
+                    '{PYTHON.DOCKERFILE}',
+                    '{PYTHON.REQUIREMENTS}'
+                ).state()
+            ]
+        )
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
+    IMAGE_TAG = "python-{PYTHON.IMAGE_HASH}"
     IMAGE = "{PYTHON.REPOSITORY}:{PYTHON.IMAGE_TAG}"

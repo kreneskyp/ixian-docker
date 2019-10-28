@@ -2,7 +2,7 @@ import docker
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import Task, VirtualTarget
-from power_shovel_docker.modules.docker.checker import DockerVolumeExists
+from power_shovel_docker.modules.docker.checker import DockerVolumeExists, DockerImageExists
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
@@ -22,8 +22,13 @@ class BuildPythonImage(Task):
     depends = ['build_base_image']
     category = 'build'
     short_description = 'Build Python image'
-    check = FileHash('{PYTHON.REQUIREMENTS}')
-        #DockerImageExists('{NPM.IMAGE}')
+    check = [
+        FileHash(
+            '{PYTHON.DOCKERFILE}',
+            '{PYTHON.REQUIREMENTS}'
+        ),
+        DockerImageExists('{PYTHON.IMAGE}')
+    ]
 
     def execute(self, pull=True):
         build_image_if_needed(

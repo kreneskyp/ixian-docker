@@ -1,6 +1,9 @@
 import os
-from power_shovel.config import Config
+
+from power_shovel.check.checker import hash_object
+from power_shovel.config import Config, CONFIG
 from power_shovel.module import MODULES
+from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.decorators import classproperty
 
 
@@ -20,19 +23,37 @@ class DockerConfig(Config):
         return os.path.dirname(os.path.realpath(docker.__file__))
 
     @classproperty
-    def IMAGE_TAG(cls):
+    def IMAGE_HASH(cls):
         """
-        Tag calculated from the current state of inputs to the Dockerfile.
+        Hash calculated from the current state of inputs to the Dockerfile.
         """
-        #return hash_object(cls.APP_IMAGE_TAG_CHECKER.state())
-        return "todo"
+        return hash_object(
+            [
+                CONFIG.BOWER.IMAGE_HASH,
+                CONFIG.PYTHON.IMAGE_HASH,
+                CONFIG.WEBPACK.IMAGE_HASH,
+                FileHash(
+                    'Dockerfile',
+                    *CONFIG.DOCKER.IMAGE_FILES
+                ).state(),
+            ]
+        )
 
     @classproperty
-    def BASE_IMAGE_TAG(cls):
-        # TODO: hash from checker
-        return "base-todo"
+    def BASE_IMAGE_HASH(cls):
+        """
+        Hash calculated from current state of inputs to the Dockerfile.
+        :return:
+        """
+        return hash_object(
+            FileHash(
+                '{DOCKER.DOCKERFILE_BASE}',
+                *CONFIG.DOCKER.BASE_IMAGE_FILES
+            ).state()
+        )
 
-    APP_IMAGE_TAG_CHECKER = None
+    IMAGE_TAG = "runtime-{DOCKER.IMAGE_HASH}"
+    BASE_IMAGE_TAG = "base-{DOCKER.BASE_IMAGE_HASH}"
 
     # TODO: is this still needed since we're moving away from volumes
     @classproperty
@@ -111,6 +132,7 @@ class DockerConfig(Config):
     # Image tags
     REPOSITORY = '{DOCKER.REGISTRY}/{DOCKER.REGISTRY_PATH}/{PROJECT_NAME}'
     APP_IMAGE = "{DOCKER.REPOSITORY}"
+    APP_IMAGE_FULL = "{DOCKER.REPOSITORY}:{DOCKER.IMAGE_TAG}"
     BASE_IMAGE = "{DOCKER.REPOSITORY}:{DOCKER.BASE_IMAGE_TAG}"
 
     # Default app in docker-compose file
@@ -119,6 +141,10 @@ class DockerConfig(Config):
     # Name of Dockerfile to build with build_app
     DOCKERFILE = 'Dockerfile'
     DOCKERFILE_BASE = 'Dockerfile.base'
+
+    # Files needed for build
+    IMAGE_FILES = []
+    BASE_IMAGE_FILES = []
 
     # Template is used for compiling the Dockerfile.
     DOCKERFILE_TEMPLATE = '{DOCKER.MODULE_DIR}/Dockerfile.template'

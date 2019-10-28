@@ -1,6 +1,8 @@
 import os
 
-from power_shovel.config import Config
+from power_shovel.check.checker import hash_object
+from power_shovel.config import Config, CONFIG
+from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.decorators import classproperty
 
 
@@ -27,9 +29,17 @@ class NPMConfig(Config):
     DOCKERFILE = 'Dockerfile.npm'
 
     @classproperty
-    def IMAGE_TAG(cls):
-        # TODO hash inputs
-        return 'npm-todo'
+    def IMAGE_HASH(cls):
+        return hash_object(
+            [
+                CONFIG.DOCKER.BASE_IMAGE_HASH,
+                FileHash(
+                    '{NPM.DOCKERFILE}',
+                    '{NPM.PACKAGE_JSON}'
+                ).state()
+            ]
+        )
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
+    IMAGE_TAG = "npm-{NPM.IMAGE_HASH}"
     IMAGE = "{NPM.REPOSITORY}:{NPM.IMAGE_TAG}"

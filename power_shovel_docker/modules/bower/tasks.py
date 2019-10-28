@@ -2,7 +2,7 @@ import docker
 from power_shovel import Task
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
-from power_shovel_docker.modules.docker.checker import DockerVolumeExists
+from power_shovel_docker.modules.docker.checker import DockerVolumeExists, DockerImageExists
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
@@ -28,9 +28,13 @@ class BuildBowerImage(Task):
     depends = ['build_base_image']
     category = 'build'
     short_description = 'Build bower image'
-    check = FileHash('{BOWER.CONFIG_FILE}')
-        #DockerImageExists('{BOWER.IMAGE}')
-    #]
+    check = [
+        FileHash(
+            '{BOWER.DOCKERFILE}',
+            '{BOWER.CONFIG_FILE}'
+        ),
+        DockerImageExists('{BOWER.IMAGE}')
+    ]
 
     def execute(self, pull=False):
         build_image_if_needed(

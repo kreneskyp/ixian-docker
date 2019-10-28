@@ -1,6 +1,8 @@
 import os
 
-from power_shovel.config import Config
+from power_shovel.check.checker import hash_object
+from power_shovel.config import Config, CONFIG
+from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.decorators import classproperty
 
 
@@ -41,11 +43,19 @@ class WebpackConfig(Config):
     DOCKERFILE = 'Dockerfile.webpack'
 
     @classproperty
-    def IMAGE_TAG(cls):
-        # TODO: hash from checker
-        return "webpack-todo"
+    def IMAGE_HASH(cls):
+        return hash_object(
+            [
+                CONFIG.NPM.IMAGE_HASH,
+                FileHash(
+                    '{WEBPACK.DOCKERFILE}',
+                    '{WEBPACK.CONFIG_FILE}'
+                ).state()
+            ]
+        )
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
+    IMAGE_TAG = "webpack-{WEBPACK.IMAGE_HASH}"
     IMAGE = "{WEBPACK.REPOSITORY}:{WEBPACK.IMAGE_TAG}"
 
 

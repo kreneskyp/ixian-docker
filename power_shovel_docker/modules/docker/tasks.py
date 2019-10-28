@@ -83,11 +83,12 @@ class BuildAppImage(Task):
     name = 'build_app_image'
     depends = ['build_base_image']
     category = 'build'
-    check = FileHash(
+    check = [
+        FileHash(
             'Dockerfile',
-        )
-        #DockerImageExists('{CONFIG.DOCKER.APP_IMAGE}:{CONFIG.DOCKER.APP_IMAGE_TAG}')
-    #)
+        ),
+        DockerImageExists('{DOCKER.APP_IMAGE_FULL}')
+    ]
     clean = remove_app_image
     short_description = 'Build app image'
 
@@ -100,7 +101,6 @@ class BuildAppImage(Task):
             pull=pull,
             recheck=self.check.check,
             args={
-                "BASE_IMAGE": CONFIG.DOCKER.BASE_IMAGE,
                 "PYTHON_IMAGE": CONFIG.PYTHON.IMAGE,
                 "COMPILED_STATIC_IMAGE": CONFIG.WEBPACK.IMAGE,
                 "BOWER_IMAGE": CONFIG.BOWER.IMAGE,
@@ -113,11 +113,14 @@ class BuildBaseImage(Task):
 
     name = 'build_base_image'
     category = 'build'
-    check = FileHash(
-            'Dockerfile',
-        )
-        #DockerImageExists('{CONFIG.DOCKER.APP_IMAGE}:{CONFIG.DOCKER.APP_IMAGE_TAG}')
-
+    check = [
+        FileHash(
+            '{DOCKER.DOCKERFILE_BASE}',
+            # TODO: FileHash should recursively expand and format list values
+            #*CONFIG.format('{DOCKER.BASE_IMAGE_FILES}')
+        ),
+        DockerImageExists('{DOCKER.BASE_IMAGE}')
+    ]
     clean = remove_app_image
     short_description = 'Build app image'
 
