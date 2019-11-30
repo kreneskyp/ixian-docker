@@ -1,22 +1,23 @@
 import os
-from setuptools import find_packages, setup
 
-from pip.download import PipSession
-from pip.req import parse_requirements
+from pip._internal.download import PipSession
+from pip._internal.req import parse_requirements
+from setuptools import setup
 
-from power_shovel import VERSION
+#from power_shovel_docker import VERSION
 
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 
-requirements_path = '%s/requirements.txt' % DIR
+requirements_path = f"{DIR}/requirements.txt"
 requirements = [
-    str(ir.req)
-    for ir in parse_requirements(requirements_path, session=PipSession())]
+    str(ir.req) for ir in parse_requirements(requirements_path, session=PipSession())
+]
+
 
 setup(
     name='power_shovel.docker',
-    version=VERSION,
+    version="0.0.1",
     author='Peter Krenesky',
     author_email='kreneskyp@gmail.com',
     maintainer='Peter Krenesky',
