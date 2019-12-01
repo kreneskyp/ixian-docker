@@ -58,6 +58,16 @@ def mock_docker_environment(mock_environment):
     # clean_volumes
     # clean_containers
     # clean_images
+    for client in DOCKER_REGISTRIES.values():
+        try:
+            del client.__dict__["client"]
+        except KeyError:
+            pass
+        try:
+            del client.__dict__["ecr_client"]
+        except KeyError:
+            pass
+
     DOCKER_REGISTRIES.clear()
     CONFIG.DOCKER.REGISTRIES = {}
 
