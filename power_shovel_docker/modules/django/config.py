@@ -9,29 +9,30 @@ class DjangoConfig(Config):
     def MODULE_DIR(cls):
         """Directory where shovel.python is installed"""
         from power_shovel_docker.modules import django
+
         return os.path.dirname(os.path.realpath(django.__file__))
 
     # Directory containing django settings
-    SETTINGS_DIR = '{PYTHON.ROOT_MODULE}/settings'
+    SETTINGS_DIR = "{PYTHON.ROOT_MODULE}/settings"
 
     # Module containing settings
-    SETTINGS_MODULE = '{PYTHON.ROOT_MODULE}.settings'
+    SETTINGS_MODULE = "{PYTHON.ROOT_MODULE}.settings"
 
     # default settings
-    SETTINGS_FILE = '{DJANGO.SETTINGS_MODULE}.base'
+    SETTINGS_FILE = "{DJANGO.SETTINGS_MODULE}.base"
 
     # settings file for tests
-    SETTINGS_TEST = '{DJANGO.SETTINGS_MODULE}.test'
+    SETTINGS_TEST = "{DJANGO.SETTINGS_MODULE}.test"
 
     # Path to UWSGI configuration file on host.
-    UWSGI_INI = 'uwsgi.ini'
+    UWSGI_INI = "uwsgi.ini"
 
     # Host for Compose. 0.0.0.0 should be used for docker default network
     # config.
-    HOST = '0.0.0.0'
+    HOST = "0.0.0.0"
 
     # Port to expose for both Compose and Docker run.
-    PORT = '8000'
+    PORT = "8000"
 
 
 DJANGO_CONFIG = DjangoConfig()

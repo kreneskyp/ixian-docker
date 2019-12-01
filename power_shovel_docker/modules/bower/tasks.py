@@ -2,12 +2,15 @@ import docker
 from power_shovel import Task
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
-from power_shovel_docker.modules.docker.checker import DockerVolumeExists, DockerImageExists
+from power_shovel_docker.modules.docker.checker import (
+    DockerVolumeExists,
+    DockerImageExists,
+)
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
 
-BOWER_DEPENDS = ['build_app_image']
+BOWER_DEPENDS = ["build_app_image"]
 
 
 def clean_bower():
@@ -23,17 +26,14 @@ def clean_bower():
 
 
 class BuildBowerImage(Task):
-    name = 'build_bower_image'
-    parent = 'build_app_image'
-    depends = ['build_base_image']
-    category = 'build'
-    short_description = 'Build bower image'
+    name = "build_bower_image"
+    parent = "build_app_image"
+    depends = ["build_base_image"]
+    category = "build"
+    short_description = "Build bower image"
     check = [
-        FileHash(
-            '{BOWER.DOCKERFILE}',
-            '{BOWER.CONFIG_FILE}'
-        ),
-        DockerImageExists('{BOWER.IMAGE}')
+        FileHash("{BOWER.DOCKERFILE}", "{BOWER.CONFIG_FILE}"),
+        DockerImageExists("{BOWER.IMAGE}"),
     ]
 
     def execute(self, pull=False):
@@ -43,30 +43,33 @@ class BuildBowerImage(Task):
             file=CONFIG.BOWER.DOCKERFILE,
             force=self.__task__.force,
             pull=pull,
-            recheck=self.check.check,
+            # recheck=self.check.check,
             args={
                 "FROM_REPOSITORY": CONFIG.DOCKER.REPOSITORY,
-                "FROM_TAG": CONFIG.DOCKER.BASE_IMAGE_TAG
-            }
+                "FROM_TAG": CONFIG.DOCKER.BASE_IMAGE_TAG,
+            },
         )
 
 
 class BuildBower(Task):
     """Install bower packages to the app container"""
-    name = 'build_bower'
+
+    name = "build_bower"
     depends = BOWER_DEPENDS
-    category = 'build'
-    short_description = 'Install bower packages'
-    parent = 'build_app'
+    category = "build"
+    short_description = "Install bower packages"
+    parent = "build_app"
     clean = clean_bower
     check = [
-        FileHash('{BOWER.CONFIG_FILE}'),
-        DockerVolumeExists('{BOWER.COMPONENTS_VOLUME}')
+        FileHash("{BOWER.CONFIG_FILE}"),
+        DockerVolumeExists("{BOWER.COMPONENTS_VOLUME}"),
     ]
 
     def execute(self, *args):
-        compose('{BOWER.BIN} install {BOWER.CONFIG_FILE_PATH}',
-                *(CONFIG.BOWER.ARGS + list(args)))
+        compose(
+            "{BOWER.BIN} install {BOWER.CONFIG_FILE_PATH}",
+            *(CONFIG.BOWER.ARGS + list(args))
+        )
 
 
 class Bower(Task):
@@ -79,11 +82,12 @@ class Bower(Task):
 
     For bower help type: shovel bower --help
     """
-    name = 'bower'
+
+    name = "bower"
     depends = BOWER_DEPENDS
-    category = 'libraries'
-    short_description = 'Bower package manager'
+    category = "libraries"
+    short_description = "Bower package manager"
     clean = clean_bower
 
     def execute(self, *args):
-        compose('{BOWER.BIN}', *(CONFIG.BOWER.ARGS + list(args)))
+        compose("{BOWER.BIN}", *(CONFIG.BOWER.ARGS + list(args)))

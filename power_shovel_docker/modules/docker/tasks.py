@@ -5,10 +5,12 @@ from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
 from power_shovel_docker.modules.docker.checker import DockerImageExists
-from power_shovel_docker.modules.docker.utils.images import build_image_if_needed, \
-    pull_image, push_image
+from power_shovel_docker.modules.docker.utils.images import (
+    build_image_if_needed,
+    pull_image,
+    push_image,
+)
 from power_shovel_docker.modules.docker.utils.client import docker_client
-from power_shovel_docker.modules.docker.utils.volumes import convert_volume_flags
 from power_shovel_docker.modules.docker import utils
 
 
@@ -17,12 +19,13 @@ class CleanDocker(Task):
     Clean Docker:
         - kill and remove all containers
     """
-    name = 'clean_docker'
-    category = 'docker'
+
+    name = "clean_docker"
+    category = "docker"
 
     def execute(self):
-        execute('docker-compose kill')
-        execute('docker-compose rm -f -v')
+        execute("docker-compose kill")
+        execute("docker-compose rm -f -v")
 
 
 class BuildDockerfile(Task):
@@ -44,17 +47,15 @@ class BuildDockerfile(Task):
         - DOCKER.DOCKERFILE_TEMPLATE:  Jinja2 base template.
         - DOCKER.DOCKER_FILE:          Dockerfile output.
     """
-    name = 'build_dockerfile'
-    category = 'build'
-    check = FileHash(
-        '{POWER_SHOVEL}',
-        'shovel.py'
-    )
-    short_description = 'build app\'s dockerfile'
+
+    name = "build_dockerfile"
+    category = "build"
+    check = FileHash("{POWER_SHOVEL}", "shovel.py")
+    short_description = "build app's dockerfile"
 
     def execute(self):
         text = utils.build_dockerfile()
-        with open(CONFIG.DOCKER.DOCKER_FILE, 'w') as dockerfile:
+        with open(CONFIG.DOCKER.DOCKER_FILE, "w") as dockerfile:
             dockerfile.write(text)
 
 
@@ -72,25 +73,21 @@ class BuildApp(VirtualTarget):
     Runs all build steps for the app. Other modules should target this task as
     their parent.
     """
-    name = 'build_app'
-    category = 'build'
-    short_description = 'Virtual target for building app'
+
+    name = "build_app"
+    category = "build"
+    short_description = "Virtual target for building app"
 
 
 class BuildAppImage(Task):
     """Builds the docker app image using CONFIG.DOCKER_FILE"""
 
-    name = 'build_app_image'
-    depends = ['build_base_image']
-    category = 'build'
-    check = [
-        FileHash(
-            'Dockerfile',
-        ),
-        DockerImageExists('{DOCKER.APP_IMAGE_FULL}')
-    ]
+    name = "build_app_image"
+    depends = ["build_base_image"]
+    category = "build"
+    check = [FileHash("Dockerfile",), DockerImageExists("{DOCKER.APP_IMAGE_FULL}")]
     clean = remove_app_image
-    short_description = 'Build app image'
+    short_description = "Build app image"
 
     def execute(self, pull=True):
         build_image_if_needed(
@@ -104,25 +101,25 @@ class BuildAppImage(Task):
                 "PYTHON_IMAGE": CONFIG.PYTHON.IMAGE,
                 "COMPILED_STATIC_IMAGE": CONFIG.WEBPACK.IMAGE,
                 "BOWER_IMAGE": CONFIG.BOWER.IMAGE,
-            }
+            },
         )
 
 
 class BuildBaseImage(Task):
     """Builds the docker app image using CONFIG.DOCKER_FILE"""
 
-    name = 'build_base_image'
-    category = 'build'
+    name = "build_base_image"
+    category = "build"
     check = [
         FileHash(
-            '{DOCKER.DOCKERFILE_BASE}',
+            "{DOCKER.DOCKERFILE_BASE}",
             # TODO: FileHash should recursively expand and format list values
-            #*CONFIG.format('{DOCKER.BASE_IMAGE_FILES}')
+            # *CONFIG.format('{DOCKER.BASE_IMAGE_FILES}')
         ),
-        DockerImageExists('{DOCKER.BASE_IMAGE}')
+        DockerImageExists("{DOCKER.BASE_IMAGE}"),
     ]
     clean = remove_app_image
-    short_description = 'Build app image'
+    short_description = "Build app image"
 
     def execute(self, pull=True):
         build_image_if_needed(
@@ -140,7 +137,7 @@ class PullAppImage(Task):
     """
 
     name = "pull"
-    short_description = 'Pull the app image'
+    short_description = "Pull the app image"
 
     def execute(self):
         name = "docker-registry.counsyl.com/counsyl/wetlab-base"
@@ -151,8 +148,9 @@ class PushAppImage(Task):
     """
     Push the App Image as specified by {DOCKER.APP_IMAGE}
     """
+
     name = "push"
-    short_description = 'Push the app image'
+    short_description = "Push the app image"
 
     def execute(self):
         name = "docker-registry.counsyl.com/counsyl/test"
@@ -172,60 +170,59 @@ class Compose(Task):
     :return:
     """
 
-    name = 'compose'
-    category = 'docker'
-    short_description = 'Docker compose command'
+    name = "compose"
+    category = "docker"
+    short_description = "Docker compose command"
 
-    def execute(
-        self,
-        command=None,
-        *args,
-        **kwargs
-    ):
-        app = kwargs.get('app', CONFIG.DOCKER.DEFAULT_APP)
-        volumes = convert_volume_flags(
-            CONFIG.DOCKER.DEV_VOLUMES +
-            CONFIG.DOCKER.VOLUMES +
-            kwargs.get('volumes', [])
-        )
+    def execute(self, command=None, *args, **kwargs):
+        app = kwargs.get("app", CONFIG.DOCKER.DEFAULT_APP)
+        # volumes = convert_volume_flags(
+        #    CONFIG.DOCKER.DEV_VOLUMES +
+        #    CONFIG.DOCKER.VOLUMES +
+        #    kwargs.get('volumes', [])
+        # )
         env = {
-            'APP_DIR': CONFIG.DOCKER.APP_DIR,
-            'ROOT_MODULE_PATH': CONFIG.PYTHON.ROOT_MODULE_PATH
+            "APP_DIR": CONFIG.DOCKER.APP_DIR,
+            "ROOT_MODULE_PATH": CONFIG.PYTHON.ROOT_MODULE_PATH,
         }
-        env.update(kwargs.get('env', {}))
+        env.update(kwargs.get("env", {}))
         formatted_env = [
-            '-e {key}={value}'.format(key=k, value=v) for k, v in env.items()
+            "-e {key}={value}".format(key=k, value=v) for k, v in env.items()
         ]
-        flags = CONFIG.DOCKER.COMPOSE_FLAGS + kwargs.get('flags', [])
+        flags = CONFIG.DOCKER.COMPOSE_FLAGS + kwargs.get("flags", [])
         formatted_args = [CONFIG.format(arg) for arg in args or []]
 
         template = (
-            'docker-compose run{CR} {flags} {volumes} {env} {app} {command} {args}'
+            "docker-compose run{CR} {flags} {volumes} {env} {app} {command} {args}"
         )
 
         def render_command():
-            with_cr = '{} \\\n'
+            with_cr = "{} \\\n"
             formatted = template.format(
-                CR=' \\\n',
+                CR=" \\\n",
                 app=app,
-                args=' '.join(formatted_args),
-                command=CONFIG.format(command or ''),
-                env=' '.join((with_cr.format(line) for line in formatted_env)),
-                flags=' '.join((with_cr.format(line) for line in flags)),
-                volumes=' '.join((with_cr.format(line) for line in volumes))
+                args=" ".join(formatted_args),
+                command=CONFIG.format(command or ""),
+                env=" ".join((with_cr.format(line) for line in formatted_env)),
+                flags=" ".join((with_cr.format(line) for line in flags)),
+                volumes=" ".join((with_cr.format(line) for line in volumes)),
+                image=CONFIG.DOCKER.APP_IMAGE,
             )
             logger.info(CONFIG.format(formatted))
 
         render_command()
-        return execute(template.format(
-            CR='',
-            app=app,
-            args=' '.join(formatted_args),
-            command=command or '',
-            env=' '.join(formatted_env),
-            flags=' '.join(flags),
-            volumes=' '.join(volumes)
-        ), silent=True)
+        return execute(
+            template.format(
+                CR="",
+                app=app,
+                args=" ".join(formatted_args),
+                command=command or "",
+                env=" ".join(formatted_env),
+                flags=" ".join(flags),
+                volumes=" ".join(volumes),
+            ),
+            silent=True,
+        )
 
 
 def compose(*args, **kwargs):
@@ -240,34 +237,34 @@ def compose(*args, **kwargs):
 class Bash(Task):
     """Open a bash shell in container"""
 
-    name = 'bash'
-    category = 'Docker'
-    short_description = 'Bash shell in docker container'
+    name = "bash"
+    category = "Docker"
+    short_description = "Bash shell in docker container"
 
     def execute(self, *args):
-        return compose('/bin/bash', *args)
+        return compose("/bin/bash", *args)
 
 
 class Up(Task):
     """Start app container"""
 
-    name = 'up'
-    category = 'Docker'
-    short_description = 'Start docker container'
+    name = "up"
+    category = "Docker"
+    short_description = "Start docker container"
 
     def execute(self):
-        return compose('up -d app')
+        return compose("up -d app")
 
 
 class Down(Task):
     """Stop app container"""
 
-    name = 'task'
-    category = 'Docker'
-    short_description = 'Stop docker container'
+    name = "task"
+    category = "Docker"
+    short_description = "Stop docker container"
 
     def execute(self):
-        return compose('down')
+        return compose("down")
 
 
 # =============================================================================
@@ -283,4 +280,3 @@ def docker_full_teardown():
     execute("docker ps -q | xargs docker kill")
     execute("docker ps -q -a | xargs docker rm -v")
     execute("docker images -q | xargs docker rmi")
-

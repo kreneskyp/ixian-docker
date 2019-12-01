@@ -3,21 +3,23 @@ from power_shovel import Task, VirtualTarget
 from power_shovel_docker.modules.docker.tasks import compose
 
 
-ESLINT_DEPENDS = ['build_npm']
+ESLINT_DEPENDS = ["build_npm"]
 
 
 class Lint(VirtualTarget):
     """Virtual target for linting."""
-    name = 'lint'
-    category = 'testing'
-    short_description = 'Run all linting tasks'
+
+    name = "lint"
+    category = "testing"
+    short_description = "Run all linting tasks"
 
 
 class lint_js(VirtualTarget):
     """Virtual target for linting javascript."""
-    name = 'lint_js'
-    category = 'testing'
-    short_description = 'Run all javascript linting tasks'
+
+    name = "lint_js"
+    category = "testing"
+    short_description = "Run all javascript linting tasks"
 
 
 class ESLint(Task):
@@ -30,16 +32,15 @@ class ESLint(Task):
     For ESLint help type: shovel eslint --help
     """
 
-    name = 'eslint'
-    category = 'testing'
+    name = "eslint"
+    category = "testing"
     depends = ESLINT_DEPENDS
-    parent = ['lint', 'lint_js']
-    short_description = 'ESLint javascript linter'
+    parent = ["lint", "lint_js"]
+    short_description = "ESLint javascript linter"
 
     def execute(self, *args):
-        formatted_args = ' '.join(args)
+        formatted_args = " ".join(args)
         command = CONFIG.format(
-            '{ESLINT.BIN} {args} {DOCKER.PROJECT_DIR}',
-            args=formatted_args
+            "{ESLINT.BIN} {args} {DOCKER.PROJECT_DIR}", args=formatted_args
         )
         return compose(command)

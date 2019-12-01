@@ -4,12 +4,7 @@ from power_shovel_docker.modules.docker.utils.volumes import convert_volume_flag
 
 
 def run_builder(
-    image,
-    outputs=None,
-    command='build',
-    flags=None,
-    env=None,
-    volumes=None
+    image, outputs=None, command="build", flags=None, env=None, volumes=None
 ):
     """Run a docker builder container.
 
@@ -36,35 +31,41 @@ def run_builder(
     """
     # TODO use docker-py
 
-    env_flags = ' '.join(['-e %s=%s' % item for item in (env or {}).items()])
-    volume_flags = ' '.join(convert_volume_flags(volumes or []))
+    env_flags = " ".join(["-e %s=%s" % item for item in (env or {}).items()])
+    volume_flags = " ".join(convert_volume_flags(volumes or []))
 
     # mount outputs into volumes.
     # TODO move this into build_library_volume
-    output_volume_flags = ' '.join([
-        CONFIG.format(
-            '-v {PROJECT_NAME}.{output}:{DOCKER.APP_DIR}/{output}',
-            image=image,
-            output=output)
-        for output in outputs or []])
+    output_volume_flags = " ".join(
+        [
+            CONFIG.format(
+                "-v {PROJECT_NAME}.{output}:{DOCKER.APP_DIR}/{output}",
+                image=image,
+                output=output,
+            )
+            for output in outputs or []
+        ]
+    )
 
     # run builder
-    execute(CONFIG.format(
-        'docker run -it ' +
-        # '--name container.npm ' +
-        '-e APP_DIR={DOCKER.APP_DIR} ' +
-        '-e DEV_UID={uid} ' +
-        '-e DEV_GID={gid} ' +
-        '{flags} {env_flags} {output_volumes} {volumes} {image} {command}',
-        image=image,
-        command=command or 'build',
-        uid=get_dev_uid(),
-        gid=get_dev_gid(),
-        env_flags=env_flags,
-        flags=flags or '',
-        output_volumes=output_volume_flags,
-        volumes=volume_flags
-    ))
+    execute(
+        CONFIG.format(
+            "docker run -it " +
+            # '--name container.npm ' +
+            "-e APP_DIR={DOCKER.APP_DIR} "
+            + "-e DEV_UID={uid} "
+            + "-e DEV_GID={gid} "
+            + "{flags} {env_flags} {output_volumes} {volumes} {image} {command}",
+            image=image,
+            command=command or "build",
+            uid=get_dev_uid(),
+            gid=get_dev_gid(),
+            env_flags=env_flags,
+            flags=flags or "",
+            output_volumes=output_volume_flags,
+            volumes=volume_flags,
+        )
+    )
 
 
 def build_library_image(tag, image, env=None, volumes=None):
@@ -83,13 +84,17 @@ def build_library_image(tag, image, env=None, volumes=None):
     # commit the builder first to create a blank container for the new image.
     # This ensures that this command doesn't update the builder container and
     # taint it for other builds.
-    execute('docker commit {image} {library_image}'.format(
-        image=image, library_image=tag))
+    execute(
+        "docker commit {image} {library_image}".format(image=image, library_image=tag)
+    )
 
     # run the builder and commit the changes
     run_builder(tag, env=env, volumes=volumes)
-    execute('docker commit {library_image} {library_image}'.format(
-        image=image, library_image=tag))
+    execute(
+        "docker commit {library_image} {library_image}".format(
+            image=image, library_image=tag
+        )
+    )
 
 
 def build_library_volumes(image, outputs, env=None, volumes=None):

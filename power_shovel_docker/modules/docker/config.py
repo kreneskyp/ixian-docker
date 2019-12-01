@@ -14,12 +14,14 @@ class DockerConfig(Config):
     def ROOT_MODULE_DIR(cls):
         """Directory where power_shovel.docker is installed"""
         import power_shovel_docker
+
         return os.path.dirname(os.path.realpath(power_shovel_docker.__file__))
 
     @classproperty
     def MODULE_DIR(cls):
         """Directory where modules.docker is installed"""
         from power_shovel_docker.modules import docker
+
         return os.path.dirname(os.path.realpath(docker.__file__))
 
     @classproperty
@@ -32,10 +34,7 @@ class DockerConfig(Config):
                 CONFIG.BOWER.IMAGE_HASH,
                 CONFIG.PYTHON.IMAGE_HASH,
                 CONFIG.WEBPACK.IMAGE_HASH,
-                FileHash(
-                    'Dockerfile',
-                    *CONFIG.DOCKER.IMAGE_FILES
-                ).state(),
+                FileHash("Dockerfile", *CONFIG.DOCKER.IMAGE_FILES).state(),
             ]
         )
 
@@ -47,8 +46,7 @@ class DockerConfig(Config):
         """
         return hash_object(
             FileHash(
-                '{DOCKER.DOCKERFILE_BASE}',
-                *CONFIG.DOCKER.BASE_IMAGE_FILES
+                "{DOCKER.DOCKERFILE_BASE}", *CONFIG.DOCKER.BASE_IMAGE_FILES
             ).state()
         )
 
@@ -67,7 +65,7 @@ class DockerConfig(Config):
         """
         volumes = []
         for module_configs in MODULES:
-            volumes.extend(module_configs.get('volumes', []))
+            volumes.extend(module_configs.get("volumes", []))
         return volumes
 
     @classproperty
@@ -83,7 +81,7 @@ class DockerConfig(Config):
         """
         volumes = []
         for module_configs in MODULES:
-            volumes.extend(module_configs.get('dev_volumes', []))
+            volumes.extend(module_configs.get("dev_volumes", []))
         return volumes
 
     @classproperty
@@ -96,7 +94,7 @@ class DockerConfig(Config):
         """
         env = {}
         for module_configs in MODULES:
-            env.update(module_configs.get('dev_environment', {}))
+            env.update(module_configs.get("dev_environment", {}))
         return env
 
     @classproperty
@@ -110,7 +108,7 @@ class DockerConfig(Config):
         """
         env = {}
         for module_configs in MODULES:
-            env.update(module_configs.get('dev_env', {}))
+            env.update(module_configs.get("dev_env", {}))
         return env
 
     # App file structure:
@@ -119,38 +117,38 @@ class DockerConfig(Config):
     #  - APP_DIR: root directory for the app
     #  - APP_BIN: run scripts and other utilities for managing app.
     #  - PROJECT_DIR: root dir for project.
-    HOME_DIR = '/root'
-    ENV_DIR = '/srv'
-    APP_DIR = '{DOCKER.ENV_DIR}/{PROJECT_NAME}'
-    APP_BIN = '{DOCKER.APP_DIR}/bin'
-    PROJECT_DIR = '{DOCKER.APP_DIR}/project'
+    HOME_DIR = "/root"
+    ENV_DIR = "/srv"
+    APP_DIR = "{DOCKER.ENV_DIR}/{PROJECT_NAME}"
+    APP_BIN = "{DOCKER.APP_DIR}/bin"
+    PROJECT_DIR = "{DOCKER.APP_DIR}/project"
 
     # Registry settings
-    REGISTRY = 'docker.io'
-    REGISTRY_PATH = 'library'
+    REGISTRY = "docker.io"
+    REGISTRY_PATH = "library"
 
     # Image tags
-    REPOSITORY = '{DOCKER.REGISTRY}/{DOCKER.REGISTRY_PATH}/{PROJECT_NAME}'
+    REPOSITORY = "{DOCKER.REGISTRY}/{DOCKER.REGISTRY_PATH}/{PROJECT_NAME}"
     APP_IMAGE = "{DOCKER.REPOSITORY}"
     APP_IMAGE_FULL = "{DOCKER.REPOSITORY}:{DOCKER.IMAGE_TAG}"
     BASE_IMAGE = "{DOCKER.REPOSITORY}:{DOCKER.BASE_IMAGE_TAG}"
 
     # Default app in docker-compose file
-    DEFAULT_APP = 'app'
+    DEFAULT_APP = "app"
 
     # Name of Dockerfile to build with build_app
-    DOCKERFILE = 'Dockerfile'
-    DOCKERFILE_BASE = 'Dockerfile.base'
+    DOCKERFILE = "Dockerfile"
+    DOCKERFILE_BASE = "Dockerfile.base"
 
     # Files needed for build
     IMAGE_FILES = []
     BASE_IMAGE_FILES = []
 
     # Template is used for compiling the Dockerfile.
-    DOCKERFILE_TEMPLATE = '{DOCKER.MODULE_DIR}/Dockerfile.template'
+    DOCKERFILE_TEMPLATE = "{DOCKER.MODULE_DIR}/Dockerfile.template"
 
     # Module files added to docker build context.
-    MODULE_CONTEXT = '{BUILDER_DIR}/module_context'
+    MODULE_CONTEXT = "{BUILDER_DIR}/module_context"
 
     # Default flags passed to Compose
-    COMPOSE_FLAGS = ['--rm', '-u root']
+    COMPOSE_FLAGS = ["--rm", "-u root"]

@@ -2,7 +2,7 @@ import json
 import re
 from power_shovel.config import CONFIG
 
-LOCAL_PACKAGE = re.compile(r'^file:(?P<var>.*)')
+LOCAL_PACKAGE = re.compile(r"^file:(?P<var>.*)")
 
 
 def get_package_json():
@@ -19,11 +19,11 @@ def npm_local_packages():
     local_dependencies = {}
     local_dev_dependencies = {}
     package_json = get_package_json()
-    for name, version in package_json.get('dependencies', {}).items():
+    for name, version in package_json.get("dependencies", {}).items():
         match = LOCAL_PACKAGE.match(version)
         if match:
             [local_dependencies[name]] = match.groups()
-    for name, version in package_json.get('devDependencies', {}).items():
+    for name, version in package_json.get("devDependencies", {}).items():
         match = LOCAL_PACKAGE.match(version)
         if match:
             [local_dev_dependencies[name]] = match.groups()
@@ -45,12 +45,8 @@ def npm_local_package_mount_flags():
     volumes = []
     dependencies, dev_dependencies = npm_local_packages()
     for name, local_path in dependencies.items():
-        volumes.append('{path}:{path}'.format(
-            path=local_path
-        ))
+        volumes.append("{path}:{path}".format(path=local_path))
     for name, local_path in dev_dependencies.items():
-        volumes.append('{path}:{path}'.format(
-            path=local_path
-        ))
+        volumes.append("{path}:{path}".format(path=local_path))
 
     return volumes

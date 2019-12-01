@@ -16,23 +16,23 @@ requirements = [
 
 
 setup(
-    name='power_shovel.docker',
+    name="power_shovel.docker",
     version="0.0.1",
-    author='Peter Krenesky',
-    author_email='kreneskyp@gmail.com',
-    maintainer='Peter Krenesky',
-    maintainer_email='kreneskyp@gmail.com',
-    keywords='tasks, shovel, rake, make, power_shovel, docker',
-    description='Docker multi-stage builder for power_shovel.',
-    long_description=open('%s/README.md' % DIR, 'r').read(),
-    url='https://github.com',
-    packages=['power_shovel_docker'],
+    author="Peter Krenesky",
+    author_email="kreneskyp@gmail.com",
+    maintainer="Peter Krenesky",
+    maintainer_email="kreneskyp@gmail.com",
+    keywords="tasks, shovel, rake, make, power_shovel, docker",
+    description="Docker multi-stage builder for power_shovel.",
+    long_description=open("%s/README.md" % DIR, "r").read(),
+    url="https://github.com",
+    packages=["power_shovel_docker"],
     install_requires=requirements,
     zip_safe=False,
     classifiers=[
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
-        'Intended Audience :: Developers',
-        'Operating System :: OS Independent'
-    ]
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python",
+        "Intended Audience :: Developers",
+        "Operating System :: OS Independent",
+    ],
 )

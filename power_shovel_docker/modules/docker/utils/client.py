@@ -54,21 +54,26 @@ class Docker:
         raise NotImplementedError
 
 
-class ECRDockerClient(Docker):
-
+class ECRDockerClient(DockerClient):
     @cached_property
     def ecr_client(self):
-        kwargs = {}
-        if 'region' in self.options:
-            kwargs["region_name"] = self.options["region"]
-        return boto3.client('ecr', **kwargs)
+        kwargs = dict(region_name="us-west-2", **self.options)
+        return boto3.client("ecr", **kwargs)
 
     def login(self):
         # fetch credentials from ECR
-        logger.debug("Authenticating with ECR: {}".format(self.options.get("region", "default")))
+        logger.debug(
+            "Authenticating with ECR: {}".format(
+                self.options.get("region_name", "us-west-2")
+            )
+        )
         token = self.ecr_client.get_authorization_token()
-        username, password = base64.b64decode(token['authorizationData'][0]['authorizationToken']).decode().split(':')
-        registry = token['authorizationData'][0]['proxyEndpoint']
+        username, password = (
+            base64.b64decode(token["authorizationData"][0]["authorizationToken"])
+            .decode()
+            .split(":")
+        )
+        registry = token["authorizationData"][0]["proxyEndpoint"]
 
         # authenticate
         self.client.login(username, password, "", registry=registry)

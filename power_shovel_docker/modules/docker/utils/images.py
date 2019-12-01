@@ -10,7 +10,10 @@ from power_shovel.module import MODULES
 from power_shovel.utils.decorators import cached_property
 from power_shovel.utils.process import execute
 from power_shovel.config import CONFIG
-from power_shovel_docker.modules.docker.utils.client import Docker, UnknownRegistry
+from power_shovel_docker.modules.docker.utils.client import (
+    DockerClient,
+    UnknownRegistry,
+)
 from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events
 
 
@@ -37,11 +40,13 @@ def image_exists_in_registry(repository, tag=None):
     """
     # Disable check till ECR Client works
     registry = parse_registry(repository)
-    client = Docker.for_registry(registry)
+    client = DockerClient.for_registry(registry)
     client.login()
     logger.debug("Checking registry for {}:{}".format(repository, tag or "latest"))
     try:
-        client.client.images.get_registry_data("{}:{}".format(repository, tag or "latest"))
+        client.client.images.get_registry_data(
+            "{}:{}".format(repository, tag or "latest")
+        )
     except DockerNotFound:
         return False
     return True
@@ -60,13 +65,12 @@ def gather_context():
     `CONFIG.DOCKER.MODULE_CONTEXT/npm`.
     """
     for module in MODULES:
-        if 'docker_context' not in module:
+        if "docker_context" not in module:
             continue
 
-        source = CONFIG.format(module['docker_context'])
+        source = CONFIG.format(module["docker_context"])
         dest = CONFIG.format(
-            '{DOCKER.MODULE_CONTEXT}/{module_name}',
-            module_name=module['name']
+            "{DOCKER.MODULE_CONTEXT}/{module_name}", module_name=module["name"]
         )
 
         # shutil.copytree requires the dest does not exist. Docker checks use
@@ -78,12 +82,7 @@ def gather_context():
         shutil.copytree(source, dest, symlinks=False)
 
 
-def build_image(
-        tag,
-        file='Dockerfile',
-        context='.',
-        no_cache=False,
-        args=None):
+def build_image(tag, file="Dockerfile", context=".", no_cache=False, args=None):
     """Build a docker image.
 
     Builds a docker image. This is a shim around Docker-py that adds some
@@ -97,35 +96,34 @@ def build_image(
     args = args or {}
     gather_context()
 
-    if no_cache:
-        args["--no-cache"] = None
+    # if no_cache:
+    #    args["--no-cache"] = None
 
-    arg_flags = ' '.join(
+    arg_flags = " ".join(
         [
-            '{key}'.format(key=key)
-            if value is None else
-            '--build-arg {key}={value}'.format(key=key, value=value)
+            "{key}".format(key=key)
+            if value is None
+            else "--build-arg {key}={value}".format(key=key, value=value)
             for key, value in (args or {}).items()
         ]
     )
 
-    return execute('docker build -t {name} -f {file} {args} {context}'.format(
-        name=tag,
-        file=file,
-        context=context,
-        args=arg_flags
-    ))
+    return execute(
+        "docker build -t {name} -f {file} {args} {context}".format(
+            name=tag, file=file, context=context, args=arg_flags
+        )
+    )
 
 
 def build_image_if_needed(
     repository,
     tag=None,
-    file='Dockerfile',
-    context='.',
+    file="Dockerfile",
+    context=".",
     args=None,
     pull=True,
     recheck=None,
-    force=False
+    force=False,
 ):
     # if local: skip
     # if remote: pull & skip
@@ -192,13 +190,15 @@ def pull_image(repository, tag=None, silent=False):
     resolved_tag = tag or "latest"
 
     registry = parse_registry(repository)
-    client = Docker.for_registry(registry)
+    client = DockerClient.for_registry(registry)
     client.login()
 
     if not silent and tag is None:
         print("Using default tag: latest")
 
-    event_stream = client.client.api.pull(repository, resolved_tag or "latest", stream=not silent, decode=not silent)
+    event_stream = client.client.api.pull(
+        repository, resolved_tag or "latest", stream=not silent, decode=not silent
+    )
     if not silent:
         print_docker_transfer_events(event_stream)
 
@@ -220,9 +220,11 @@ def push_image(repository, tag=None, silent=False):
     resolved_tag = tag or "latest"
 
     registry = parse_registry(repository)
-    client = Docker.for_registry(registry)
+    client = DockerClient.for_registry(registry)
     client.login()
 
-    event_stream = client.client.api.push(repository, resolved_tag or "latest", stream=not silent, decode=not silent)
+    event_stream = client.client.api.push(
+        repository, resolved_tag or "latest", stream=not silent, decode=not silent
+    )
     if not silent:
         print_docker_transfer_events(event_stream)

@@ -16,13 +16,14 @@ class Manage(Task):
 
     Type `shovel manage --help` for it's built-in help.
     """
-    name = 'manage'
-    category = 'django'
-    short_description = 'Django manage.py script.'
-    depends = ['build_pipenv']
+
+    name = "manage"
+    category = "django"
+    short_description = "Django manage.py script."
+    depends = ["build_pipenv"]
 
     def execute(self, *args):
-        return compose('{PYTHON.BIN} manage.py', *args)
+        return compose("{PYTHON.BIN} manage.py", *args)
 
 
 def manage(*args):
@@ -38,12 +39,13 @@ class Shell(Task):
     environment variables for loaded modules are loaded automatically via
     docker-compose.
     """
-    name = 'shell'
-    category = 'django'
-    short_description = 'open django python shell'
+
+    name = "shell"
+    category = "django"
+    short_description = "open django python shell"
 
     def execute(self, *args):
-        return manage('shell_plus', *args)
+        return manage("shell_plus", *args)
 
 
 class ShellPlus(Task):
@@ -54,12 +56,13 @@ class ShellPlus(Task):
     environment variables for loaded modules are loaded automatically via
     docker-compose.
     """
-    name = 'shell_plus'
-    category = 'django'
-    short_description = 'open django shell_plus'
+
+    name = "shell_plus"
+    category = "django"
+    short_description = "open django shell_plus"
 
     def execute(self, *args):
-        return manage('shell_plus', *args)
+        return manage("shell_plus", *args)
 
 
 class DjangoTest(Task):
@@ -76,16 +79,17 @@ class DjangoTest(Task):
 
     Arguments are passed through to the command.
     """
-    name = 'django_test'
-    category = 'testing'
-    parent = ['test', 'test_python']
-    short_description = 'django test runner'
+
+    name = "django_test"
+    category = "testing"
+    parent = ["test", "test_python"]
+    short_description = "django test runner"
 
     def execute(self, *args):
         command = (
-            '''test '''
-            '''--settings={DJANGO.SETTINGS_TEST} '''
-            '''--exclude-dir={DJANGO.SETTINGS_MODULE} '''
+            """test """
+            """--settings={DJANGO.SETTINGS_TEST} """
+            """--exclude-dir={DJANGO.SETTINGS_MODULE} """
         )
         return manage(command, *(args or [CONFIG.PYTHON.ROOT_MODULE]))
 
@@ -94,12 +98,13 @@ class Migrate(Task):
     """
     Run django migrations.
     """
-    name = 'migrate'
-    category = 'django'
-    short_description = 'run database migrations'
+
+    name = "migrate"
+    category = "django"
+    short_description = "run database migrations"
 
     def execute(self, *args):
-        return manage('migrate', *args)
+        return manage("migrate", *args)
 
 
 class MakeMigrations(Task):
@@ -110,26 +115,26 @@ class MakeMigrations(Task):
     By default this will generate migrations only for {CONFIG.PROJECT_NAME}.
     This is overridden whenever args are passed to this task.
     """
-    name = 'makemigrations'
-    category = 'django'
-    short_description = 'generate missing database migrations'
+
+    name = "makemigrations"
+    category = "django"
+    short_description = "generate missing database migrations"
 
     def execute(self, *args):
-        return manage('makemigrations %s' % ' '.join(
-            args or [CONFIG.PROJECT_NAME]
-        ))
+        return manage("makemigrations %s" % " ".join(args or [CONFIG.PROJECT_NAME]))
 
 
 class DBShell(Task):
     """
     Shortcut to `manage.py dbshell`
     """
-    name = 'dbshell'
-    category = 'django'
-    short_description = 'open a database shell'
+
+    name = "dbshell"
+    category = "django"
+    short_description = "open a database shell"
 
     def execute(self, *args):
-        return manage('dbshell', *args)
+        return manage("dbshell", *args)
 
 
 class Runserver(Task):
@@ -140,14 +145,15 @@ class Runserver(Task):
     container. Additional args are passed through to the command but the IP and
     port can not be changed.
     """
-    name = 'runserver'
-    category = 'django'
-    short_description = 'start django test server'
-    depends = ['build_pipenv']
+
+    name = "runserver"
+    category = "django"
+    short_description = "start django test server"
+    depends = ["build_pipenv"]
 
     def execute(self, *args):
         return Compose().execute(
-            CONFIG.format('{PYTHON.BIN} manage.py runserver'),
-            *(args or ['0.0.0.0:8000']),
-            flags=['-p 8000:8000'],
+            CONFIG.format("{PYTHON.BIN} manage.py runserver"),
+            *(args or ["0.0.0.0:8000"]),
+            flags=["-p 8000:8000"],
         )

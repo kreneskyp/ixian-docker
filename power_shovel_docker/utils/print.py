@@ -1,8 +1,7 @@
-
 # ANSI cursor movement codes
-UP = "\033[{}A"     # Move up N rows
-DOWN = "\033[{}B"   # Move down N rows
-LEFT = "\r"         # Move to left most column
+UP = "\033[{}A"  # Move up N rows
+DOWN = "\033[{}B"  # Move down N rows
+LEFT = "\r"  # Move to left most column
 
 
 class ProgressPrinter:
@@ -85,9 +84,7 @@ class ProgressPrinter:
         # Move to line and then print the text
         line_number = self.line_numbers[line_id]
         self.goto(line_number)
-        print("{}\033[K".format(
-            text,
-        ), end=LEFT),
+        print("{}\033[K".format(text,), end=LEFT),
 
     def complete(self):
         self.is_complete = True

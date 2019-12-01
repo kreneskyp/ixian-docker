@@ -3,14 +3,15 @@ from power_shovel import Task, VirtualTarget
 from power_shovel_docker.modules.docker.tasks import compose
 
 
-JEST_DEPENDS = ['build_npm']
+JEST_DEPENDS = ["build_npm"]
 
 
 class TestJS(VirtualTarget):
     """Virtual target for testing javascript"""
-    name = 'test_js'
-    category = 'testing'
-    short_description = 'Run all javascript testing tasks'
+
+    name = "test_js"
+    category = "testing"
+    short_description = "Run all javascript testing tasks"
 
 
 class Jest(Task):
@@ -28,12 +29,12 @@ class Jest(Task):
     For Jest help type: shovel jest --help
     """
 
-    name = 'jest'
-    category = 'testing'
+    name = "jest"
+    category = "testing"
     depends = JEST_DEPENDS
-    parent = ['test', 'test_js']
-    short_description = 'Jest javascript test runner.'
+    parent = ["test", "test_js"]
+    short_description = "Jest javascript test runner."
 
     def execute(self, *args):
-        command = CONFIG.format('{JEST.BIN} --config={JEST.CONFIG_FILE_PATH}')
+        command = CONFIG.format("{JEST.BIN} --config={JEST.CONFIG_FILE_PATH}")
         return compose(command, *args)

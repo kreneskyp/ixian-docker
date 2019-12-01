@@ -17,9 +17,7 @@ def print_docker_transfer_events(events):
                 printer.add_line(file_id)
             printer.print(
                 file_id,
-                "{}: {} {}".format(
-                    file_id, event["status"], event.get("progress", "")
-                )
+                "{}: {} {}".format(file_id, event["status"], event.get("progress", "")),
             )
 
         else:
