@@ -1,6 +1,5 @@
 from unittest import mock
 
-import botocore
 import pytest
 import docker
 
