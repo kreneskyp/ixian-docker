@@ -18,12 +18,13 @@ def docker_client():
 
 class UnknownRegistry(Exception):
     """Exception raised when registry is not configured"""
+
     pass
 
 
-class Docker:
-
-    def __init__(self, **options):
+class DockerClient:
+    def __init__(self, registry, **options):
+        self.registry = registry
         self.options = options
 
     @classmethod
@@ -41,7 +42,7 @@ class Docker:
             raise UnknownRegistry(registry)
 
         Client = config["client"]
-        instance = Client(**config.get("options", {}))
+        instance = Client(registry, **config.get("options", {}))
         DOCKER_REGISTRIES[registry] = instance
 
         return instance
@@ -51,7 +52,21 @@ class Docker:
         return docker_client()
 
     def login(self):
-        raise NotImplementedError
+        # authenticate
+        try:
+            username = self.options["username"]
+        except KeyError:
+            raise KeyError(
+                f"Cannot login to {self.registry}, username not found in options."
+            )
+        try:
+            password = self.options["password"]
+        except KeyError:
+            raise KeyError(
+                f"Cannot login to {self.registry}, password not found in options."
+            )
+
+        self.client.login(username, password, "", registry=self.registry)
 
 
 class ECRDockerClient(DockerClient):
