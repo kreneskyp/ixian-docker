@@ -9,18 +9,21 @@ ENV PROJECT_NAME power_shovel_docker
 RUN apt-get update --fix-missing && \
     apt-get upgrade -y && \
     install_clean \
-        git \
-        wget \
+        build-essential \
         curl \
+        docker.io \
+        docker-compose \
+        git \
         libbz2-dev \
         libffi-dev \
         libreadline-dev \
         libsqlite3-dev \
         libssl-dev \
         python3 \
+        python3-dev \
         python3-pip \
         python3-setuptools \
-        build-essential \
+        wget \
         zlib1g-dev
 
 
