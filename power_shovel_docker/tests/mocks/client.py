@@ -15,8 +15,15 @@ from power_shovel_docker.modules.docker.utils.client import (
     DockerClient,
     ECRDockerClient,
 )
+from power_shovel_docker.modules.docker.utils.images import build_image
+from power_shovel_docker.tests import event_streams
+
 
 MOCK_REGISTRY_CONFIGS = {
+    "docker.io": {
+        "client": DockerClient,
+        "options": {"username": "tester", "password": "secret"},
+    },
     "MOCK_DEFAULT_REGISTRY": {"client": DockerClient,},
     "MOCK_DEFAULT_REGISTRY_WITH_OPTIONS": {
         "client": DockerClient,
@@ -43,9 +50,13 @@ def mock_docker_environment(mock_environment):
     CONFIG.DOCKER.REGISTRIES = MOCK_REGISTRY_CONFIGS
 
     # mock docker remote methods
-    mock_client = docker.from_env()
-    mock_client.api.pull = mock.Mock()
-    mock_client.api.push = mock.Mock()
+    mock_client = mock.MagicMock()
+    mock_client.api.pull.return_value = (
+        event for event in event_streams.PULL_SUCCESSFUL
+    )
+    mock_client.api.push.return_value = (
+        event for event in event_streams.PUSH_SUCCESSFUL
+    )
     mock_client.login = mock.Mock()
     patcher = mock.patch("power_shovel_docker.modules.docker.utils.client.docker")
     mock_docker = patcher.start()
