@@ -9,7 +9,7 @@ from power_shovel_docker.modules.docker.checker import (
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
-from power_shovel.runner import ERROR_TASK
+from power_shovel.runner import ExitCodes
 
 PYTHON_DEPENDS = ["build_app_image"]
 
@@ -60,10 +60,10 @@ def clean_pipenv():
     try:
         volume = docker_client().volumes.get(CONFIG.PYTHON.VIRTUAL_ENV_VOLUME)
     except docker.errors.NotFound:
-        return ERROR_TASK
+        return ExitCodes.ERROR_TASK
     else:
         volume.remove(True)
-    return 0
+    return ExitCodes.SUCCESS
 
 
 class Pipenv(Task):

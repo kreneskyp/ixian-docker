@@ -1,4 +1,4 @@
-MODULE_CONFIG = {
+OPTIONS = {
     "name": "BOWER",
     "tasks": "power_shovel_docker.modules.bower.tasks",
     "config": "power_shovel_docker.modules.bower.config.BowerConfig",

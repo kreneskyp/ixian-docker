@@ -1,4 +1,4 @@
-MODULE_CONFIG = {
+OPTIONS = {
     "name": "PYTHON",
     "tasks": "power_shovel_docker.modules.python.tasks",
     "config": "power_shovel_docker.modules.python.config.PythonConfig",

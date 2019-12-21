@@ -36,4 +36,4 @@ class NPMModuleConfig(object):
         ] + npm_local_package_mount_flags()
 
 
-MODULE_CONFIG = NPMModuleConfig()
+OPTIONS = NPMModuleConfig()

@@ -1,4 +1,4 @@
-MODULE_CONFIG = {
+OPTIONS = {
     "name": "DJANGO",
     "tasks": "power_shovel_docker.modules.django.tasks",
     "config": "power_shovel_docker.modules.django.config.DjangoConfig",

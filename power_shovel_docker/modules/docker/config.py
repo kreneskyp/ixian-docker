@@ -64,7 +64,7 @@ class DockerConfig(Config):
         This property aggregates volumes from all configured modules.
         """
         volumes = []
-        for module_configs in MODULES:
+        for module_configs in MODULES.values():
             volumes.extend(module_configs.get("volumes", []))
         return volumes
 
@@ -80,7 +80,7 @@ class DockerConfig(Config):
         This property aggregates dev_volumes from all configured modules.
         """
         volumes = []
-        for module_configs in MODULES:
+        for module_configs in MODULES.values():
             volumes.extend(module_configs.get("dev_volumes", []))
         return volumes
 
@@ -93,7 +93,7 @@ class DockerConfig(Config):
         This property aggregates `env` from all configured modules.
         """
         env = {}
-        for module_configs in MODULES:
+        for module_configs in MODULES.values():
             env.update(module_configs.get("dev_environment", {}))
         return env
 
@@ -107,7 +107,7 @@ class DockerConfig(Config):
         This property aggregates dev_environment from all configured modules.
         """
         env = {}
-        for module_configs in MODULES:
+        for module_configs in MODULES.values():
             env.update(module_configs.get("dev_env", {}))
         return env
 

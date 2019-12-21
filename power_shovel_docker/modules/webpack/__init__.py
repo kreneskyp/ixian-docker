@@ -1,4 +1,4 @@
-MODULE_CONFIG = {
+OPTIONS = {
     "name": "WEBPACK",
     "tasks": "power_shovel_docker.modules.webpack.tasks",
     "config": "power_shovel_docker.modules.webpack.config.WebpackConfig",
