@@ -53,15 +53,13 @@ class DockerClient:
 
     def login(self):
         # authenticate
-        try:
-            username = self.options["username"]
-        except KeyError:
+        username = self.options.get("username", None)
+        password = self.options.get("password", None)
+        if not username:
             raise KeyError(
                 f"Cannot login to {self.registry}, username not found in options."
             )
-        try:
-            password = self.options["password"]
-        except KeyError:
+        if not password:
             raise KeyError(
                 f"Cannot login to {self.registry}, password not found in options."
             )

@@ -39,6 +39,25 @@ class TestDockerClient:
         assert isinstance(client, DockerClient)
         assert client.client is mock_client
 
+    def test_login(self, mock_docker_environment):
+        client = DockerClient.for_registry("MOCK_DEFAULT_REGISTRY")
+        client.login()
+        client.client.login.assert_called_with(
+            "tester", "secret", "", registry="MOCK_DEFAULT_REGISTRY"
+        )
+
+    def test_login_without_username(self, mock_docker_environment):
+        client = DockerClient.for_registry("MOCK_DEFAULT_REGISTRY")
+        client.options.pop("username", None)
+        with pytest.raises(KeyError):
+            client.login()
+
+    def test_login_without_password(self, mock_docker_environment):
+        client = DockerClient.for_registry("MOCK_DEFAULT_REGISTRY")
+        client.options.pop("password", None)
+        with pytest.raises(KeyError):
+            client.login()
+
 
 class TestECRDockerClient:
     def test_for_registry(self, mock_docker_environment, mock_ecr):

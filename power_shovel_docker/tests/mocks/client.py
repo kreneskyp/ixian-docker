@@ -24,7 +24,10 @@ MOCK_REGISTRY_CONFIGS = {
         "client": DockerClient,
         "options": {"username": "tester", "password": "secret"},
     },
-    "MOCK_DEFAULT_REGISTRY": {"client": DockerClient,},
+    "MOCK_DEFAULT_REGISTRY": {
+        "client": DockerClient,
+        "options": {"username": "tester", "password": "secret"},
+    },
     "MOCK_DEFAULT_REGISTRY_WITH_OPTIONS": {
         "client": DockerClient,
         "options": {"foo": "bar"},
