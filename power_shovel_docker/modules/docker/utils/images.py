@@ -1,18 +1,17 @@
 import shutil
 from urllib.parse import urlparse
 
-import docker
 import os
 from docker.errors import NotFound as DockerNotFound
 
 from power_shovel import logger
 from power_shovel.module import MODULES
-from power_shovel.utils.decorators import cached_property
 from power_shovel.utils.process import execute
 from power_shovel.config import CONFIG
 from power_shovel_docker.modules.docker.utils.client import (
     DockerClient,
     UnknownRegistry,
+    docker_client,
 )
 from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events
 
@@ -23,7 +22,7 @@ def image_exists(name):
     :param name: name of image.
     :return: True/False
     """
-    client = docker.from_env()
+    client = docker_client()
     try:
         client.images.get(name)
     except DockerNotFound:
