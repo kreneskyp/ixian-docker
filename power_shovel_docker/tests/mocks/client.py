@@ -19,6 +19,7 @@ from power_shovel_docker.modules.docker.utils.images import build_image
 from power_shovel_docker.tests import event_streams
 
 
+TEST_IMAGE_NAME = "power_shovel_docker.test"
 MOCK_REGISTRY_CONFIGS = {
     "docker.io": {
         "client": DockerClient,
@@ -54,6 +55,11 @@ def mock_docker_environment(mock_environment):
 
     # mock docker remote methods
     mock_client = mock.MagicMock()
+
+    # mock image get
+    mock_client.images.get.return_value = True
+
+    # mock pull/push
     mock_client.api.pull.return_value = (
         event for event in event_streams.PULL_SUCCESSFUL
     )
