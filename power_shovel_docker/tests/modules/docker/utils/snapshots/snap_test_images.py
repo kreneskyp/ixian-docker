@@ -25,16 +25,16 @@ snapshots['TestPull.test_pull 1'] = '''Using default tag: latest
 latest: Pulling from library/alpine \x1b[K\r
 89d9c30c1d48: Pulling fs layer \x1b[K\r89d9c30c1d48: Downloading [>                                                  ]  28.02kB/2.787MB\x1b[K\r89d9c30c1d48: Downloading [=====================>                             ]  1.178MB/2.787MB\x1b[K\r89d9c30c1d48: Downloading [=========================================>         ]  2.309MB/2.787MB\x1b[K\r89d9c30c1d48: Verifying Checksum \x1b[K\r89d9c30c1d48: Download complete \x1b[K\r89d9c30c1d48: Extracting [>                                                  ]  32.77kB/2.787MB\x1b[K\r89d9c30c1d48: Extracting [======>                                            ]  360.4kB/2.787MB\x1b[K\r89d9c30c1d48: Extracting [==================================================>]  2.787MB/2.787MB\x1b[K\r89d9c30c1d48: Pull complete \x1b[K\r\x1b[1B\rDigest: sha256:c19173c5ada610a5989151111163d28a67368362762534d8a8121ce95cf2bd5a
 Status: Downloaded newer image for alpine:latest
-power_shovel_docker.scratch:latest
+power_shovel_docker.test:latest
 '''
 
-snapshots['TestPull.test_pull_silent 1'] = '''power_shovel_docker.scratch:latest
+snapshots['TestPull.test_pull_silent 1'] = '''power_shovel_docker.test:latest
 '''
 
 snapshots['TestPull.test_pull_tag 1'] = '''latest: Pulling from library/alpine \x1b[K\r
 89d9c30c1d48: Pulling fs layer \x1b[K\r89d9c30c1d48: Downloading [>                                                  ]  28.02kB/2.787MB\x1b[K\r89d9c30c1d48: Downloading [=====================>                             ]  1.178MB/2.787MB\x1b[K\r89d9c30c1d48: Downloading [=========================================>         ]  2.309MB/2.787MB\x1b[K\r89d9c30c1d48: Verifying Checksum \x1b[K\r89d9c30c1d48: Download complete \x1b[K\r89d9c30c1d48: Extracting [>                                                  ]  32.77kB/2.787MB\x1b[K\r89d9c30c1d48: Extracting [======>                                            ]  360.4kB/2.787MB\x1b[K\r89d9c30c1d48: Extracting [==================================================>]  2.787MB/2.787MB\x1b[K\r89d9c30c1d48: Pull complete \x1b[K\r\x1b[1B\rDigest: sha256:c19173c5ada610a5989151111163d28a67368362762534d8a8121ce95cf2bd5a
 Status: Downloaded newer image for alpine:latest
-power_shovel_docker.scratch:custom_tag
+power_shovel_docker.test:custom_tag
 '''
 
 snapshots['TestPush.test_push_error 1'] = '''The push refers to repository [FAKE.dkr.ecr.us-west-2.amazonaws.com/testing]
