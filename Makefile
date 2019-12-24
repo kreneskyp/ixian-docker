@@ -1,7 +1,7 @@
 PROJECT_NAME=power_shovel_docker
 IMAGE=chang_docker_tests
 PROJECT_DIR=/opt/${PROJECT_NAME}
-DOCKER_RUN=docker run -it -v `pwd`:${PROJECT_DIR} ${IMAGE}
+DOCKER_RUN=docker run -it -v `pwd`:${PROJECT_DIR} -v /var/run/docker.sock:/var/run/docker.sock ${IMAGE}
 PYENV_DIR=/opt/pyenv
 
 
