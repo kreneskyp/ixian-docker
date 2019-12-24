@@ -22,7 +22,6 @@ EXPECTED_FIELDS = [
 
 
 class TestPythonConfig:
-
     @pytest.mark.parametrize("field", EXPECTED_FIELDS)
     def test_read(self, field, mock_python_environment, snapshot):
         """

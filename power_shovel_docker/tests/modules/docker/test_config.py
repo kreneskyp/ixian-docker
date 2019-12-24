@@ -3,7 +3,6 @@ import pytest
 from power_shovel.config import CONFIG
 
 
-
 EXPECTED_FIELDS = [
     "APP_BIN",
     "APP_DIR",
@@ -37,7 +36,6 @@ EXPECTED_FIELDS = [
 
 
 class TestDockerConfig:
-
     @pytest.mark.parametrize("field", EXPECTED_FIELDS)
     def test_read(self, field, mock_environment, snapshot):
         """

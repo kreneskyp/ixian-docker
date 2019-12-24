@@ -15,31 +15,23 @@ TEST_IMAGE_TWO_NAME = "power_shovel_docker.test.two"
 # Mock images and Docker api
 # =================================================================================================
 
+
 def build_test_image(
     dockerfile="Dockerfile.one",
     tag=TEST_IMAGE_NAME,
     context="/opt/power_shovel_docker/power_shovel_docker/tests/",
-    **kwargs
+    **kwargs,
 ):
-    return build_image(
-        tag=tag,
-        context=context,
-        dockerfile=dockerfile,
-        **kwargs
-    )
+    return build_image(tag=tag, context=context, dockerfile=dockerfile, **kwargs)
+
 
 def build_test_image_two(
     dockerfile="Dockerfile.two",
     tag=TEST_IMAGE_TWO_NAME,
     context="/opt/power_shovel_docker/power_shovel_docker/tests/",
-    **kwargs
+    **kwargs,
 ):
-    return build_image(
-        tag=tag,
-        context=context,
-        dockerfile=dockerfile,
-        **kwargs
-    )
+    return build_image(tag=tag, context=context, dockerfile=dockerfile, **kwargs)
 
 
 @pytest.fixture
@@ -83,6 +75,7 @@ def test_image_two():
 # =================================================================================================
 # Mock module environments
 # =================================================================================================
+
 
 @pytest.fixture
 def mock_environment(base_mock_power_shovel_environment):

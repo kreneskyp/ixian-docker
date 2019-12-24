@@ -11,7 +11,6 @@ EXPECTED_FIELDS = [
 
 
 class TestJestConfig:
-
     @pytest.mark.parametrize("field", EXPECTED_FIELDS)
     def test_read(self, field, mock_jest_environment, snapshot):
         """

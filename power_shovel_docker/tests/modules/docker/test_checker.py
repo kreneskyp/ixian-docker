@@ -9,7 +9,6 @@ from power_shovel_docker.tests.mocks.client import TEST_IMAGE_NAME
 
 
 class TestDockerImageExists:
-
     def assert_state(self, snapshot, checker, passes=True):
         snapshot.assert_match(checker.file_path())
         snapshot.assert_match(checker.filename())
@@ -83,7 +82,9 @@ class TestDockerImageExists:
         self.assert_state(snapshot, checker)
 
     @pytest.mark.parametrize("not_found_image", [TEST_IMAGE_NAME, TEST_IMAGE_TWO_NAME])
-    def test_multiple_only_one_image_exists(self, snapshot, mock_get_image, not_found_image):
+    def test_multiple_only_one_image_exists(
+        self, snapshot, mock_get_image, not_found_image
+    ):
         mock_get_image.images.get.side_effect.not_found.add(not_found_image)
         assert not image_exists(not_found_image)
 

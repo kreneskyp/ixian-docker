@@ -19,7 +19,6 @@ EXPECTED_FIELDS = [
 
 
 class TestBowerConfig:
-
     @pytest.mark.parametrize("field", EXPECTED_FIELDS)
     def test_read(self, field, mock_bower_environment, snapshot):
         """

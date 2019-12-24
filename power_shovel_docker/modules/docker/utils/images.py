@@ -78,12 +78,7 @@ def build_image(dockerfile, tag, context=None, **kwargs):
         context = pwd()
 
     client = docker_client()
-    return client.images.build(
-        path=context,
-        dockerfile=dockerfile,
-        tag=tag,
-        **kwargs
-    )
+    return client.images.build(path=context, dockerfile=dockerfile, tag=tag, **kwargs)
 
 
 def build_image_if_needed(
@@ -94,7 +89,7 @@ def build_image_if_needed(
     pull=True,
     recheck=None,
     force=False,
-    **kwargs
+    **kwargs,
 ):
     # if local: skip
     # if remote: pull & skip

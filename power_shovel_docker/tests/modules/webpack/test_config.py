@@ -19,7 +19,6 @@ EXPECTED_FIELDS = [
 
 
 class TestConfig:
-
     @pytest.mark.parametrize("field", EXPECTED_FIELDS)
     def test_read(self, field, mock_webpack_environment, snapshot):
         """

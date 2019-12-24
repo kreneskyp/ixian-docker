@@ -16,12 +16,9 @@ EXPECTED_FIELDS = [
 
 
 class TestDjangoConfig:
-
     @pytest.mark.parametrize("field", EXPECTED_FIELDS)
     def test_read(self, field, mock_django_environment, snapshot):
         """
         Test reading default config values and testing property getter functions.
         """
-        snapshot.assert_match({
-            "field": getattr(CONFIG.DJANGO, field)
-        })
+        snapshot.assert_match({"field": getattr(CONFIG.DJANGO, field)})
