@@ -49,8 +49,6 @@ def mock_docker_environment(mock_environment):
     - containers, images, volumes dropped when fixture exits
     :return:
     """
-    load_module("power_shovel_docker.modules.docker")
-
     CONFIG.DOCKER.REGISTRIES = MOCK_REGISTRY_CONFIGS
 
     # mock docker remote methods
