@@ -16,6 +16,7 @@ from power_shovel_docker.modules.docker.utils.client import (
     docker_client,
 )
 from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events
+from power_shovel_docker.utils.net import is_valid_hostname
 
 
 def image_exists(name):
@@ -140,15 +141,16 @@ def parse_registry(repository):
     :param repository: image name, which may or may not include hostname
     :return: hostname of registry
     """
-    parsed_url = urlparse("http://{}".format(repository))
-    if parsed_url.netloc == repository:
-        # if only a hostname is parsed assume no host was given. This will break if a repository
-        # is just a hostname without a path. I think most repositories include paths to support
-        # multiple images, so this is ok for now.
-        host = "docker.io"
+
+    # the repository hostname can only be before the slash. So trim it off because it confuses the
+    # netloc parsing method below.
+    hostname = repository.split("/")[0]
+
+    # Use the hostname if it's valid, otherwise return the default docker registry (docker.io)
+    if is_valid_hostname(hostname):
+        return hostname
     else:
-        host = parsed_url.netloc
-    return host
+        return "docker.io"
 
 
 def pull_image(repository, tag=None, silent=False):
