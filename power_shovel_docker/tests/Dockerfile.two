@@ -1,0 +1,3 @@
+# this is an extremely simple Dockerfile used for tests building and interacting with images.
+FROM alpine
+RUN touch /tmp/foo

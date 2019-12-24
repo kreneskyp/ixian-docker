@@ -1,21 +1,88 @@
 import pytest
+from docker import errors as docker_errors
+
 from power_shovel.conftest import *
 from power_shovel.conftest import mock_environment as base_mock_power_shovel_environment
-from power_shovel_docker.modules.docker.utils.images import build_image
+from power_shovel_docker.modules.docker.utils.images import build_image, delete_image
 from power_shovel_docker.tests.mocks.client import *
 
 
-TEST_IMAGE_NAME = "power_shovel_docker.scratch"
+TEST_IMAGE_NAME = "power_shovel_docker.test"
+TEST_IMAGE_TWO_NAME = "power_shovel_docker.test.two"
+
+
+# =================================================================================================
+# Mock images and Docker api
+# =================================================================================================
+
+def build_test_image(
+    dockerfile="Dockerfile.one",
+    tag=TEST_IMAGE_NAME,
+    context="/opt/power_shovel_docker/power_shovel_docker/tests/",
+    **kwargs
+):
+    return build_image(
+        tag=tag,
+        context=context,
+        dockerfile=dockerfile,
+        **kwargs
+    )
+
+def build_test_image_two(
+    dockerfile="Dockerfile.two",
+    tag=TEST_IMAGE_TWO_NAME,
+    context="/opt/power_shovel_docker/power_shovel_docker/tests/",
+    **kwargs
+):
+    return build_image(
+        tag=tag,
+        context=context,
+        dockerfile=dockerfile,
+        **kwargs
+    )
 
 
 @pytest.fixture
-def test_image(mock_docker_environment):
-    build_image(
-        TEST_IMAGE_NAME,
-        file="/opt/power_shovel_docker/power_shovel_docker/tests/Dockerfile.scratch",
-    )
-    yield
+def mock_get_image(mock_docker_environment):
+    """
+    Mock image TEST_IMAGE_NAME
+    """
+    not_found = set()
 
+    def get_image_mock(image):
+        if image in not_found:
+            raise docker_errors.NotFound(image)
+        image_mock = mock.Mock()
+        image_mock.id = f"MOCK_ID__{image}"
+        return image_mock
+
+    get_image_mock.not_found = not_found
+
+    mock_docker_environment.images.get.side_effect = get_image_mock
+    yield mock_docker_environment
+
+
+@pytest.fixture
+def test_image():
+    """
+    Sets up a real docker image by building it.
+    """
+    yield build_test_image()
+    delete_image(TEST_IMAGE_NAME, force=True)
+
+
+@pytest.fixture
+def test_image_two():
+    """
+    Sets up a real docker image by building it.
+    """
+    yield build_test_image_two()
+    delete_image(TEST_IMAGE_TWO_NAME, force=True)
+
+
+# =================================================================================================
+# Mock module environments
+# =================================================================================================
 
 @pytest.fixture
 def mock_environment(base_mock_power_shovel_environment):
