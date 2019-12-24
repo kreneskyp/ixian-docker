@@ -23,7 +23,6 @@ class TestDockerClient:
         assert client.client is mock_client
 
         # sanity test mocks
-        print(client, client.client, mock_client)
         client.client.api.push.assert_not_called()
         client.client.api.pull.assert_not_called()
         client.client.login.assert_not_called()
