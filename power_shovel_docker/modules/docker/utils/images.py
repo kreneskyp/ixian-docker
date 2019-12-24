@@ -3,9 +3,11 @@ from urllib.parse import urlparse
 
 import os
 from docker.errors import NotFound as DockerNotFound
+from docker.errors import ImageNotFound as ImageNotFound
 
 from power_shovel import logger
 from power_shovel.module import MODULES
+from power_shovel.utils.filesystem import pwd
 from power_shovel.utils.process import execute
 from power_shovel.config import CONFIG
 from power_shovel_docker.modules.docker.utils.client import (
@@ -41,47 +43,26 @@ def image_exists_in_registry(repository, tag=None):
     registry = parse_registry(repository)
     client = DockerClient.for_registry(registry)
     client.login()
-    logger.debug("Checking registry for {}:{}".format(repository, tag or "latest"))
+    image = f"{repository}:{tag or 'latest'}"
+    logger.debug(f"Checking registry for {image}")
     try:
-        client.client.images.get_registry_data(
-            "{}:{}".format(repository, tag or "latest")
-        )
+        client.client.images.get_registry_data(image)
     except DockerNotFound:
         return False
     return True
 
 
-def gather_context():
-    """Gathers context directories from modules needed for docker build.
-
-    Docker only allows files to be added from directories that are within the
-    build context. Modules may be in python libraries installed in various
-    places in the build system. Rather than requiring module libraries to exist
-    in a specific place, this helper copies them to the builder cache.
-
-    The directories are stored in under `CONFIG.DOCKER.MODULE_CONTEXT`. Each
-    directory is renamed for it's module. e.g. context files for npm will be in
-    `CONFIG.DOCKER.MODULE_CONTEXT/npm`.
-    """
-    for module in MODULES:
-        if "docker_context" not in module:
-            continue
-
-        source = CONFIG.format(module["docker_context"])
-        dest = CONFIG.format(
-            "{DOCKER.MODULE_CONTEXT}/{module_name}", module_name=module["name"]
-        )
-
-        # shutil.copytree requires the dest does not exist. Docker checks use
-        # hashes so it shouldn't matter if files are physically different.
-        if os.path.exists(dest):
-            shutil.rmtree(dest)
-
-        # docker does not honor symlinks so do not honor them here either.
-        shutil.copytree(source, dest, symlinks=False)
+def delete_image(name, force=False):
+    client = docker_client()
+    try:
+        image = client.images.get(name)
+    except ImageNotFound:
+        return False
+    client.images.remove(image.id, force=force)
+    return True
 
 
-def build_image(tag, file="Dockerfile", context=".", no_cache=False, args=None):
+def build_image(dockerfile, tag, context=None, **kwargs):
     """Build a docker image.
 
     Builds a docker image. This is a shim around Docker-py that adds some
@@ -92,37 +73,27 @@ def build_image(tag, file="Dockerfile", context=".", no_cache=False, args=None):
     :param context: build context, default is the working directory.
     :param args: args to pass as build-args to build
     """
-    args = args or {}
-    gather_context()
+    if not context:
+        context = pwd()
 
-    # if no_cache:
-    #    args["--no-cache"] = None
-
-    arg_flags = " ".join(
-        [
-            "{key}".format(key=key)
-            if value is None
-            else "--build-arg {key}={value}".format(key=key, value=value)
-            for key, value in (args or {}).items()
-        ]
-    )
-
-    return execute(
-        "docker build -t {name} -f {file} {args} {context}".format(
-            name=tag, file=file, context=context, args=arg_flags
-        )
+    client = docker_client()
+    return client.images.build(
+        path=context,
+        dockerfile=dockerfile,
+        tag=tag,
+        **kwargs
     )
 
 
 def build_image_if_needed(
     repository,
     tag=None,
-    file="Dockerfile",
-    context=".",
-    args=None,
+    dockerfile="Dockerfile",
+    context=None,
     pull=True,
     recheck=None,
     force=False,
+    **kwargs
 ):
     # if local: skip
     # if remote: pull & skip
@@ -151,13 +122,16 @@ def build_image_if_needed(
                     # Re-check, if task now passes then build can be skipped
                     if not recheck or recheck():
                         logger.debug("Check passed, skipping build.")
+                        # TODO: get image and return
                         return
             elif pull:
                 logger.debug("Image does not exist on registry.")
-        except UnknownRegistry:
-            pass
+        except UnknownRegistry as exception:
+            logger.warn(
+                f"Registry '{str(exception)}' is not configured, couldn't check for remote image."
+            )
 
-    build_image(image_and_tag, file=file, context=context, args=args, no_cache=force)
+    return build_image(dockerfile, image_and_tag, context=context, **kwargs)
 
 
 def parse_registry(repository):
