@@ -27,10 +27,22 @@ class DockerVolumeExists(MultiValueChecker):
 class DockerImageExists(MultiValueChecker):
     """Check if a docker volume exists
 
-    keys are image tags.
+    keys are image repositories.
     """
 
+    def check(self):
+        """All images must be present for this checker to pass"""
+        return all((self.state().get(key) for key in self.keys))
+
     def state(self):
+        """
+        State is the current set of image ids.
+
+        Note that while the checker passes if the image exists, the exact state uses the image id.
+        Downstream tasks should rebuild if the state changes. If the downstream image depends on
+        this one, then it should use state to determine it was not built with the same image that
+        is present.
+        """
         client = docker_client()
         image_ids = {}
         for image_tag in self.keys:
