@@ -3,7 +3,7 @@ from docker import errors as docker_errors
 
 from power_shovel.conftest import *
 from power_shovel.conftest import mock_environment as base_mock_power_shovel_environment
-from power_shovel_docker.modules.docker.utils.images import build_image, delete_image
+from power_shovel_docker.modules.docker.utils.images import build_image, delete_image, image_exists
 from power_shovel_docker.tests.mocks.client import *
 
 
@@ -52,6 +52,33 @@ def mock_get_image(mock_docker_environment):
 
     mock_docker_environment.images.get.side_effect = get_image_mock
     yield mock_docker_environment
+
+
+@pytest.fixture
+def mock_image_exists():
+    patcher = mock.patch("power_shovel_docker.modules.docker.utils.images.image_exists")
+    mocked = patcher.start()
+    mocked.return_value = False
+    yield mocked
+    mocked.stop()
+
+
+@pytest.fixture
+def mock_image_exists_in_registry():
+    patcher = mock.patch("power_shovel_docker.modules.docker.utils.images.image_exists_in_registry")
+    mocked = patcher.start()
+    mocked.return_value = False
+    yield mocked
+    mocked.stop()
+
+
+@pytest.fixture
+def mock_pull_image():
+    patcher = mock.patch("power_shovel_docker.modules.docker.utils.images.pull_image")
+    mocked = patcher.start()
+    mocked.return_value = False
+    yield mocked
+    mocked.stop()
 
 
 @pytest.fixture

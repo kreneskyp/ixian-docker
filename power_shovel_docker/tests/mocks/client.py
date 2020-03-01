@@ -1,6 +1,7 @@
 import base64
 import datetime
 import json
+from collections import defaultdict
 
 import docker
 import pytest
@@ -38,38 +39,9 @@ MOCK_REGISTRY_CONFIGS = {
 
 
 @pytest.fixture
-def mock_docker_environment(mock_environment):
-    """
-    Mock the docker environment for tests:
-    - docker client partially mocked:
-        - local methods not mocked
-        - server interactions mocked:
-            - pull
-            - push
-    - containers, images, volumes dropped when fixture exits
-    :return:
-    """
+def mock_docker_registries():
     CONFIG.DOCKER.REGISTRIES = MOCK_REGISTRY_CONFIGS
-
-    # mock docker remote methods
-    mock_client = mock.MagicMock()
-
-    # mock image get
-    mock_client.images.get.return_value = True
-
-    # mock pull/push
-    mock_client.api.pull.return_value = (
-        event for event in event_streams.PULL_SUCCESSFUL
-    )
-    mock_client.api.push.return_value = (
-        event for event in event_streams.PUSH_SUCCESSFUL
-    )
-    mock_client.login = mock.Mock()
-    patcher = mock.patch("power_shovel_docker.modules.docker.utils.client.docker")
-    mock_docker = patcher.start()
-    mock_docker.from_env.return_value = mock_client
-    yield mock_client
-    patcher.stop()
+    yield
 
     # Clean docker registry - This assumes tests are running in a container and that it's safe to
     # remove docker objects after the test is complete.
@@ -88,6 +60,62 @@ def mock_docker_environment(mock_environment):
 
     DOCKER_REGISTRIES.clear()
     CONFIG.DOCKER.REGISTRIES = {}
+
+
+@pytest.fixture
+def mock_docker_environment(mock_environment, mock_docker_registries):
+    """
+    Mock the docker environment for tests:
+    - docker client partially mocked:
+        - local methods not mocked
+        - server interactions mocked:
+            - pull
+            - push
+    - containers, images, volumes dropped when fixture exits
+    :return:
+    """
+    # mock docker remote methods
+    mock_client = mock.MagicMock()
+
+    # mock image get
+    mock_client.images.get.return_value = True
+
+    # mock pull/push
+    mock_client.api.pull.return_value = (
+        event for event in event_streams.PULL_SUCCESSFUL
+    )
+    mock_client.api.push.return_value = (
+        event for event in event_streams.PUSH_SUCCESSFUL
+    )
+
+    # Mock login
+    mock_client.login = mock.Mock()
+
+    # Patch
+    patcher = mock.patch("power_shovel_docker.modules.docker.utils.client.docker")
+    mock_docker = patcher.start()
+    mock_docker.from_env.return_value = mock_client
+    yield mock_client
+    patcher.stop()
+
+
+def mock_build_image_if_needed():
+    """
+    It's difficult to partially mock the docker client so mock build_image_if_needed instead. This
+    method requires build not be mocked, but that get_image methods are mocked. It would be
+    preferable to mock it at a low level, but much much easier to mock build_image_if_needed.
+
+    This mock provides an assertion method for validating calls. This helps ensure that tests using
+    this mock still conform to the signature expected by build_image_if_needed
+    """
+    #TODO, high level mocks instead
+
+    # Patch
+    patcher = mock.patch("power_shovel_docker.modules.docker.utils.client.docker")
+    mock_docker = patcher.start()
+    mock_docker.from_env.return_value = mock_client
+    yield mock_client
+    patcher.stop()
 
 
 # Mock base64 encoded token
