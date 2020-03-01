@@ -1,3 +1,4 @@
+import json
 import shutil
 from urllib.parse import urlparse
 
@@ -63,6 +64,9 @@ def delete_image(name, force=False):
     return True
 
 
+EMPTY_LINE = b'{"stream":"\\n"}'
+
+
 def build_image(dockerfile, tag, context=None, **kwargs):
     """Build a docker image.
 
@@ -76,9 +80,26 @@ def build_image(dockerfile, tag, context=None, **kwargs):
     """
     if not context:
         context = pwd()
+    logger.debug(f"Building image dockerfile={dockerfile} tag={tag} context={context}")
 
     client = docker_client()
-    return client.images.build(path=context, dockerfile=dockerfile, tag=tag, **kwargs)
+
+    stream = client.api.build(path=context, dockerfile=dockerfile, tag=tag, **kwargs)
+
+    # log output from build
+    for lines in stream:
+        for line in lines.split(b"\r\n"):
+            if not line or line == EMPTY_LINE:
+                continue
+
+            message = json.loads(line)
+            if "stream" in message:
+                logger.info(message["stream"].replace("\n",""))
+            elif "errorDetail" in message:
+                logger.error(message["errorDetail"]["message"])
+                # TODO: raise this error somehow, should reach cli
+            else:
+                pass
 
 
 def build_image_if_needed(
