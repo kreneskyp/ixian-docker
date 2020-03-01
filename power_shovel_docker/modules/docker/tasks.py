@@ -1,6 +1,6 @@
 import docker
 from power_shovel import logger
-from power_shovel import Task, VirtualTarget
+from power_shovel.task import Task, VirtualTarget
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
