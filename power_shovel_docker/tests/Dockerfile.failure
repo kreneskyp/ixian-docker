@@ -1,0 +1,3 @@
+# this dockerfile always exits with a build failure.
+FROM alpine
+RUN this_command_will_fail
