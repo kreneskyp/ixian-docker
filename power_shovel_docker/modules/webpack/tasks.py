@@ -14,7 +14,7 @@ class BuildWebpackImage(Task):
     """
 
     name = "build_webpack_image"
-    parent = "build_app_image"
+    parent = "build_image"
     depends = ["build_npm_image"]
     category = "build"
     short_description = "Build Webpack image"
@@ -27,11 +27,11 @@ class BuildWebpackImage(Task):
         build_image_if_needed(
             repository=CONFIG.WEBPACK.REPOSITORY,
             tag=CONFIG.WEBPACK.IMAGE_TAG,
-            file=CONFIG.WEBPACK.DOCKERFILE,
+            dockerfile=CONFIG.WEBPACK.DOCKERFILE,
             force=self.__task__.force,
             pull=pull,
             # recheck=self.check.check,
-            args={
+            buildargs={
                 "FROM_REPOSITORY": CONFIG.DOCKER.APP_IMAGE,
                 "FROM_TAG": CONFIG.NPM.IMAGE_TAG,
             },

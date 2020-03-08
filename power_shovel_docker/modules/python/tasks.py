@@ -21,7 +21,7 @@ def python_local_package_mount_flags():
 class BuildPythonImage(Task):
 
     name = "build_python_image"
-    parent = "build_app_image"
+    parent = "build_image"
     depends = ["build_base_image"]
     category = "build"
     short_description = "Build Python image"
@@ -34,11 +34,11 @@ class BuildPythonImage(Task):
         build_image_if_needed(
             repository=CONFIG.PYTHON.REPOSITORY,
             tag=CONFIG.PYTHON.IMAGE_TAG,
-            file=CONFIG.PYTHON.DOCKERFILE,
+            dockerfile=CONFIG.PYTHON.DOCKERFILE,
             force=self.__task__.force,
             pull=pull,
             # recheck=self.check.check,
-            args={
+            buildargs={
                 "FROM_REPOSITORY": CONFIG.DOCKER.APP_IMAGE,
                 "FROM_TAG": CONFIG.DOCKER.BASE_IMAGE_TAG,
             },

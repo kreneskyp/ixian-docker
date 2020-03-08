@@ -31,9 +31,7 @@ class NPMModuleConfig(object):
     def dev_volumes(self):
         from power_shovel_docker.modules.npm.utils import npm_local_package_mount_flags
 
-        return [
-            "{NPM.NODE_MODULES_VOLUME}:{NPM.NODE_MODULES_DIR}"
-        ] + npm_local_package_mount_flags()
+        return npm_local_package_mount_flags()
 
 
 OPTIONS = NPMModuleConfig()

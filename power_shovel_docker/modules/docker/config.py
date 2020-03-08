@@ -144,9 +144,6 @@ class DockerConfig(Config):
     IMAGE_FILES = []
     BASE_IMAGE_FILES = []
 
-    # Template is used for compiling the Dockerfile.
-    DOCKERFILE_TEMPLATE = "{DOCKER.MODULE_DIR}/Dockerfile.template"
-
     # Module files added to docker build context.
     MODULE_CONTEXT = "{BUILDER_DIR}/module_context"
 

@@ -43,11 +43,11 @@ class BuildNPMImage(Task):
         build_image_if_needed(
             repository=CONFIG.NPM.REPOSITORY,
             tag=CONFIG.NPM.IMAGE_TAG,
-            file=CONFIG.NPM.DOCKERFILE,
+            dockerfile=CONFIG.NPM.DOCKERFILE,
             force=self.__task__.force,
             pull=pull,
             # recheck=self.check.check,
-            args={
+            buildargs={
                 "FROM_REPOSITORY": CONFIG.DOCKER.REPOSITORY,
                 "FROM_TAG": CONFIG.DOCKER.BASE_IMAGE_TAG,
             },
@@ -88,7 +88,6 @@ class BuildNPM(Task):
     category = "build"
     check = [
         FileHash("{NPM.PACKAGE_JSON}"),
-        DockerVolumeExists("{NPM.NODE_MODULES_VOLUME}"),
     ]
     clean = clean_npm
     depends = NPM_DEPENDS

@@ -110,6 +110,7 @@ class BuildBaseImage(Task):
 
     name = "build_base_image"
     category = "build"
+    parent = "build_image"
     check = [
         FileHash(
             "{DOCKER.DOCKERFILE_BASE}",
@@ -131,30 +132,28 @@ class BuildBaseImage(Task):
             recheck=self.check.check)
 
 
-class PullAppImage(Task):
+class PullImage(Task):
     """
-    Pull the App Image as specified by {DOCKER.APP_IMAGE}
+    Pull the Image as specified by {DOCKER.IMAGE}
     """
 
     name = "pull"
-    short_description = "Pull the app image"
+    short_description = "Pull the image"
 
     def execute(self):
-        name = "docker-registry.counsyl.com/counsyl/wetlab-base"
-        pull_image(name)
+        pull_image(CONFIG.DOCKER.IMAGE)
 
 
-class PushAppImage(Task):
+class PushImage(Task):
     """
-    Push the App Image as specified by {DOCKER.APP_IMAGE}
+    Push the Image as specified by {DOCKER.IMAGE}
     """
 
     name = "push"
-    short_description = "Push the app image"
+    short_description = "Push the image"
 
     def execute(self):
-        name = "docker-registry.counsyl.com/counsyl/test"
-        push_image(name)
+        push_image(CONFIG.DOCKER.IMAGE)
 
 
 # TODO: TaskRunner/Shim doesn't support multiple args or kwargs. fix that.
