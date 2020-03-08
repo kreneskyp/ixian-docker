@@ -70,7 +70,8 @@ class DockerClient:
 class ECRDockerClient(DockerClient):
     @cached_property
     def ecr_client(self):
-        kwargs = dict(region_name="us-west-2", **self.options)
+        kwargs = dict(region_name="us-west-2")
+        kwargs.update(self.options)
         return boto3.client("ecr", **kwargs)
 
     def login(self):
