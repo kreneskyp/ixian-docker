@@ -92,7 +92,12 @@ def build_image(dockerfile, tag, context=None, **kwargs):
             if not line or line == EMPTY_LINE:
                 continue
 
-            message = json.loads(line)
+            try:
+                message = json.loads(line)
+            except json.decoder.JSONDecodeError:
+                logger.error("COULDN'T DECODE STREAM")
+                logger.error(f"line={line}")
+
             if "stream" in message:
                 logger.info(message["stream"].replace("\n",""))
             elif "errorDetail" in message:
