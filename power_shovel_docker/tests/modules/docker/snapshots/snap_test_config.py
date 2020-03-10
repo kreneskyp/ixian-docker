@@ -11,10 +11,6 @@ snapshots['TestDockerConfig.test_read[APP_BIN] 1'] = '/srv/unittests/bin'
 
 snapshots['TestDockerConfig.test_read[APP_DIR] 1'] = '/srv/unittests'
 
-snapshots['TestDockerConfig.test_read[APP_IMAGE] 1'] = 'docker.io/library/unittests'
-
-snapshots['TestDockerConfig.test_read[APP_IMAGE_FULL] 1'] = 'docker.io/library/unittests:runtime-f6872898d76287a682ed1db15cd0c3344202935a88d858ef51f54aca0ed8e8b2'
-
 snapshots['TestDockerConfig.test_read[BASE_IMAGE] 1'] = 'docker.io/library/unittests:base-44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
 
 snapshots['TestDockerConfig.test_read[BASE_IMAGE_FILES] 1'] = [

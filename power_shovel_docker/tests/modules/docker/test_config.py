@@ -6,8 +6,6 @@ from power_shovel.config import CONFIG
 EXPECTED_FIELDS = [
     "APP_BIN",
     "APP_DIR",
-    "APP_IMAGE",
-    "APP_IMAGE_FULL",
     "BASE_IMAGE",
     "BASE_IMAGE_FILES",
     "BASE_IMAGE_HASH",
@@ -22,6 +20,7 @@ EXPECTED_FIELDS = [
     "ENV",
     "ENV_DIR",
     "HOME_DIR",
+    "IMAGE",
     "IMAGE_HASH",
     "IMAGE_TAG",
     "MODULE_CONTEXT",

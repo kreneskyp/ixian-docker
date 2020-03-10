@@ -39,7 +39,7 @@ class BuildPythonImage(Task):
             pull=pull,
             # recheck=self.check.check,
             buildargs={
-                "FROM_REPOSITORY": CONFIG.DOCKER.APP_IMAGE,
+                "FROM_REPOSITORY": CONFIG.DOCKER.REPOSITORY,
                 "FROM_TAG": CONFIG.DOCKER.BASE_IMAGE_TAG,
             },
         )

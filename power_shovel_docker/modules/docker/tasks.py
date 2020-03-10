@@ -59,9 +59,9 @@ class BuildDockerfile(Task):
             dockerfile.write(text)
 
 
-def remove_app_image():
+def remove_image():
     try:
-        image = docker_client().images.get(CONFIG.DOCKER.APP_IMAGE)
+        image = docker_client().images.get(CONFIG.DOCKER.IMAGE)
     except docker.errors.NotFound:
         pass
     else:
