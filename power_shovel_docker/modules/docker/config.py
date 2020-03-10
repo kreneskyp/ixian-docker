@@ -149,3 +149,10 @@ class DockerConfig(Config):
 
     # Default flags passed to Compose
     COMPOSE_FLAGS = ["--rm", "-u root"]
+
+    @classproperty
+    def COMPOSE_ENV(self):
+        """Environment variables set when running compose."""
+        return {
+            "DOCKER_IMAGE": CONFIG.DOCKER.IMAGE
+        }

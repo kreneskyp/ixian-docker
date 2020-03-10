@@ -1,6 +1,6 @@
 import docker
 import logging
-from power_shovel.task import Task, VirtualTarget
+from power_shovel.task import Task
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
@@ -71,41 +71,37 @@ def remove_image():
         image.remove(True)
 
 
-class BuildApp(VirtualTarget):
-    """
-    Runs all build steps for the app. Other modules should target this task as
-    their parent.
-    """
+class BuildImage(Task):
+    """Builds a docker image using CONFIG.DOCKER_FILE"""
 
-    name = "build_app"
+    name = "build_image"
     category = "build"
-    short_description = "Virtual target for building app"
-
-
-class BuildAppImage(Task):
-    """Builds the docker app image using CONFIG.DOCKER_FILE"""
-
-    name = "build_app_image"
-    depends = ["build_base_image"]
-    category = "build"
-    check = [FileHash("Dockerfile",), DockerImageExists("{DOCKER.APP_IMAGE_FULL}")]
-    clean = remove_app_image
+    check = [
+        FileHash(
+            "{DOCKER.DOCKERFILE}",
+            # TODO: FileHash should recursively expand and format list values
+            # *CONFIG.format('{DOCKER.BASE_IMAGE_FILES}')
+        ),
+        DockerImageExists("{DOCKER.IMAGE}"),
+    ]
+    clean = remove_image
     short_description = "Build app image"
 
     def execute(self, pull=True):
         build_image_if_needed(
             repository=CONFIG.DOCKER.REPOSITORY,
             tag=CONFIG.DOCKER.IMAGE_TAG,
-            file=CONFIG.DOCKER.DOCKERFILE,
+            dockerfile=CONFIG.DOCKER.DOCKERFILE,
             force=self.__task__.force,
             pull=pull,
-            recheck=self.check.check,
-            args={
+            buildargs={
                 "PYTHON_IMAGE": CONFIG.PYTHON.IMAGE,
                 "COMPILED_STATIC_IMAGE": CONFIG.WEBPACK.IMAGE,
                 "BOWER_IMAGE": CONFIG.BOWER.IMAGE,
             },
         )
+        # TODO: this is why All is needed, to encapsulate running a list of checkers
+        # recheck=self.check.check)
 
 
 class BuildBaseImage(Task):
@@ -122,17 +118,19 @@ class BuildBaseImage(Task):
         ),
         DockerImageExists("{DOCKER.BASE_IMAGE}"),
     ]
-    clean = remove_app_image
+    clean = remove_image
     short_description = "Build app image"
 
     def execute(self, pull=True):
         build_image_if_needed(
             repository=CONFIG.DOCKER.REPOSITORY,
             tag=CONFIG.DOCKER.BASE_IMAGE_TAG,
-            file=CONFIG.DOCKER.DOCKERFILE_BASE,
+            dockerfile=CONFIG.DOCKER.DOCKERFILE_BASE,
             force=self.__task__.force,
             pull=pull,
-            recheck=self.check.check)
+        )
+        # TODO: this is why All is needed, to encapsulate running a list of checkers
+        # recheck=self.check.check)
 
 
 class PullImage(Task):
