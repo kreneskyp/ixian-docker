@@ -175,59 +175,66 @@ class Compose(Task):
     short_description = "Docker compose command"
 
     def execute(self, command=None, *args, **kwargs):
-        app = kwargs.get("app", CONFIG.DOCKER.DEFAULT_APP)
-        # volumes = convert_volume_flags(
-        #    CONFIG.DOCKER.DEV_VOLUMES +
-        #    CONFIG.DOCKER.VOLUMES +
-        #    kwargs.get('volumes', [])
-        # )
-        env = {
-            "APP_DIR": CONFIG.DOCKER.APP_DIR,
-            "ROOT_MODULE_PATH": CONFIG.PYTHON.ROOT_MODULE_PATH,
-        }
-        env.update(kwargs.get("env", {}))
-        formatted_env = [
-            "-e {key}={value}".format(key=k, value=v) for k, v in env.items()
-        ]
-        flags = CONFIG.DOCKER.COMPOSE_FLAGS + kwargs.get("flags", [])
-        formatted_args = [CONFIG.format(arg) for arg in args or []]
+        compose(command, *args, **kwargs)
 
-        template = (
-            "docker-compose run{CR} {flags} {volumes} {env} {app} {command} {args}"
+
+def compose(
+    command=None,
+    volumes=None,
+    *args,
+    **kwargs
+):
+
+    app = kwargs.get("app", CONFIG.DOCKER.DEFAULT_APP)
+    #volumes = convert_volume_flags(
+    #    kwargs.get('volumes', [])
+    #)
+    volumes = []
+    env = {
+        "APP_DIR": CONFIG.DOCKER.APP_DIR,
+        "ROOT_MODULE_PATH": CONFIG.PYTHON.ROOT_MODULE_PATH,
+    }
+    env.update(CONFIG.DOCKER.COMPOSE_ENV)
+    env.update(kwargs.get("env", {}))
+    logger.warning(env)
+    formatted_env = [
+        "-e {key}={value}".format(key=k, value=v) for k, v in env.items()
+    ]
+    flags = CONFIG.DOCKER.COMPOSE_FLAGS + kwargs.get("flags", [])
+    formatted_args = [CONFIG.format(arg) for arg in args or []]
+
+    template = (
+        "docker-compose run{CR} {flags} {env} {volumes} {app} {command} {args}"
+    )
+
+    def render_command():
+        with_cr = "{} \\\n"
+        formatted = template.format(
+            CR=" \\\n",
+            app=app,
+            args=" ".join(formatted_args),
+            command=CONFIG.format(command or ""),
+            env=" ".join((with_cr.format(line) for line in formatted_env)),
+            flags=" ".join((with_cr.format(line) for line in flags)),
+            volumes=" ".join((with_cr.format(line) for line in volumes)),
+            image=CONFIG.DOCKER.IMAGE,
         )
+        logger.info(CONFIG.format(formatted))
 
-        def render_command():
-            with_cr = "{} \\\n"
-            formatted = template.format(
-                CR=" \\\n",
-                app=app,
-                args=" ".join(formatted_args),
-                command=CONFIG.format(command or ""),
-                env=" ".join((with_cr.format(line) for line in formatted_env)),
-                flags=" ".join((with_cr.format(line) for line in flags)),
-                volumes=" ".join((with_cr.format(line) for line in volumes)),
-                image=CONFIG.DOCKER.APP_IMAGE,
-            )
-            logger.info(CONFIG.format(formatted))
-
-        render_command()
-        return execute(
-            template.format(
-                CR="",
-                app=app,
-                args=" ".join(formatted_args),
-                command=command or "",
-                env=" ".join(formatted_env),
-                flags=" ".join(flags),
-                volumes=" ".join(volumes),
-            ),
-            silent=True,
-        )
-
-
-def compose(*args, **kwargs):
-    return Compose()(*args, **kwargs)
-
+    render_command()
+    return execute(
+        template.format(
+            CR="",
+            app=app,
+            args=" ".join(formatted_args),
+            command=command or "",
+            env=" ".join(formatted_env),
+            flags=" ".join(flags),
+            volumes=" ".join(volumes),
+        ),
+        env=CONFIG.DOCKER.COMPOSE_ENV,
+        silent=True,
+    )
 
 # =============================================================================
 #  Container modules
