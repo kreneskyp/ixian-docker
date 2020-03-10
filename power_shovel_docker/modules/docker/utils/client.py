@@ -1,11 +1,14 @@
 import base64
+import logging
 
 import boto3
 import docker
 
-from power_shovel import logger
 from power_shovel.config import CONFIG
 from power_shovel.utils.decorators import cached_property
+
+
+logger = logging.getLogger(__name__)
 
 
 # Global cache of registries that are created.

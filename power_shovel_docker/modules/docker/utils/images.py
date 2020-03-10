@@ -1,12 +1,9 @@
 import json
-import shutil
-from urllib.parse import urlparse
+import logging
 
-import os
 from docker.errors import NotFound as DockerNotFound
 from docker.errors import ImageNotFound as ImageNotFound
 
-from power_shovel import logger
 from power_shovel.module import MODULES
 from power_shovel.utils.filesystem import pwd
 from power_shovel.utils.process import execute
@@ -18,6 +15,9 @@ from power_shovel_docker.modules.docker.utils.client import (
 )
 from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events
 from power_shovel_docker.utils.net import is_valid_hostname
+
+
+logger = logging.getLogger(__name__)
 
 
 def image_exists(name):

@@ -1,6 +1,6 @@
 import docker
+import logging
 
-from power_shovel import logger
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import Task
@@ -12,6 +12,8 @@ from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
 
+
+logger = logging.getLogger(__name__)
 NPM_DEPENDS = ["build_app_image"]
 
 
