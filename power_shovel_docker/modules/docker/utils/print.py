@@ -17,7 +17,7 @@ def print_docker_transfer_events(events):
                 printer.add_line(file_id)
             printer.print(
                 file_id,
-                "{}: {} {}".format(file_id, event["status"], event.get("progress", "")),
+                f"{file_id}: {event['status']} {event.get('progress', '')}",
             )
 
         else:
@@ -28,6 +28,8 @@ def print_docker_transfer_events(events):
 
             if "status" in event:
                 print(event["status"])
+            elif "errorDetail" in event:
+                print(event["error"])
             else:
                 # some events like push digest happen twice, they can be ignored.
                 pass
