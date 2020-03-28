@@ -25,15 +25,6 @@ class NPMConfig(Config):
     DOCKERFILE_TEMPLATE = "{NPM.MODULE_DIR}/Dockerfile.template"
     DOCKERFILE = "Dockerfile.npm"
 
-    @classproperty
-    def IMAGE_HASH(cls):
-        return hash_object(
-            [
-                CONFIG.DOCKER.BASE_IMAGE_HASH,
-                FileHash("{NPM.DOCKERFILE}", "{NPM.PACKAGE_JSON}").state(),
-            ]
-        )
-
     REPOSITORY = "{DOCKER.REPOSITORY}"
-    IMAGE_TAG = "npm-{NPM.IMAGE_HASH}"
+    IMAGE_TAG = "npm-{TASKS.BUILD_NPM_IMAGE.HASH}"
     IMAGE = "{NPM.REPOSITORY}:{NPM.IMAGE_TAG}"

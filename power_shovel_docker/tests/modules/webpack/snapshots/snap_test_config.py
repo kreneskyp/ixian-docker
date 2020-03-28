@@ -24,8 +24,6 @@ snapshots['TestConfig.test_read[DOCKERFILE] 1'] = 'Dockerfile.webpack'
 
 snapshots['TestConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:webpack-a48d3cf9e533b626854b657b88eaf0cdb2ff01e78947640e68f3558d4037c7d7'
 
-snapshots['TestConfig.test_read[IMAGE_HASH] 1'] = 'a48d3cf9e533b626854b657b88eaf0cdb2ff01e78947640e68f3558d4037c7d7'
-
 snapshots['TestConfig.test_read[IMAGE_TAG] 1'] = 'webpack-a48d3cf9e533b626854b657b88eaf0cdb2ff01e78947640e68f3558d4037c7d7'
 
 snapshots['TestConfig.test_read[MODULE_DIR] 1'] = '/opt/power_shovel_docker/power_shovel_docker/modules/webpack'

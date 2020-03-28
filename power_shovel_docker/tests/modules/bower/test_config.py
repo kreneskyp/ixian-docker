@@ -11,7 +11,6 @@ EXPECTED_FIELDS = [
     "CONFIG_FILE_PATH",
     "DOCKERFILE",
     "IMAGE",
-    "IMAGE_HASH",
     "IMAGE_TAG",
     "MODULE_DIR",
     "REPOSITORY",
@@ -25,3 +24,6 @@ class TestBowerConfig:
         Test reading default config values and testing property getter functions.
         """
         snapshot.assert_match(getattr(CONFIG.BOWER, field))
+
+    def test_task_hash(self, mock_environment, snapshot):
+        snapshot.assert_match(CONFIG.TASKS.BUILD_BOWER_IMAGE)

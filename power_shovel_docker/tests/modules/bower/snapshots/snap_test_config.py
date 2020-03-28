@@ -24,8 +24,6 @@ snapshots['TestBowerConfig.test_read[DOCKERFILE] 1'] = 'Dockerfile.bower'
 
 snapshots['TestBowerConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:bower-27a022922e73344c316d657ad99710548617005cf8886fb16139237a21bf4d4f'
 
-snapshots['TestBowerConfig.test_read[IMAGE_HASH] 1'] = '27a022922e73344c316d657ad99710548617005cf8886fb16139237a21bf4d4f'
-
 snapshots['TestBowerConfig.test_read[IMAGE_TAG] 1'] = 'bower-27a022922e73344c316d657ad99710548617005cf8886fb16139237a21bf4d4f'
 
 snapshots['TestBowerConfig.test_read[MODULE_DIR] 1'] = '/opt/power_shovel_docker/power_shovel_docker/modules/bower'

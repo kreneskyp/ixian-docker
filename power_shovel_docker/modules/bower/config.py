@@ -32,15 +32,6 @@ class BowerConfig(Config):
     DOCKERFILE_TEMPLATE = "{BOWER.MODULE_DIR}/Dockerfile.template"
     DOCKERFILE = "Dockerfile.bower"
 
-    @classproperty
-    def IMAGE_HASH(cls):
-        return hash_object(
-            [
-                CONFIG.DOCKER.BASE_IMAGE_HASH,
-                FileHash("{BOWER.DOCKERFILE}", "{BOWER.CONFIG_FILE}").state(),
-            ]
-        )
-
     REPOSITORY = "{DOCKER.REPOSITORY}"
-    IMAGE_TAG = "bower-{BOWER.IMAGE_HASH}"
+    IMAGE_TAG = "bower-{TASKS.BUILD_BOWER_IMAGE.HASH}"
     IMAGE = "{BOWER.REPOSITORY}:{BOWER.IMAGE_TAG}"

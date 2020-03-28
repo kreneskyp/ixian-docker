@@ -26,15 +26,6 @@ class PythonConfig(Config):
     DOCKERFILE = "Dockerfile.python"
     REQUIREMENTS = "requirements*.txt"
 
-    @classproperty
-    def IMAGE_HASH(cls):
-        return hash_object(
-            [
-                CONFIG.DOCKER.BASE_IMAGE_HASH,
-                FileHash("{PYTHON.DOCKERFILE}", "{PYTHON.REQUIREMENTS}").state(),
-            ]
-        )
-
     REPOSITORY = "{DOCKER.REPOSITORY}"
-    IMAGE_TAG = "python-{PYTHON.IMAGE_HASH}"
+    IMAGE_TAG = "python-{TASKS.BUILD_PYTHON_IMAGE.HASH}"
     IMAGE = "{PYTHON.REPOSITORY}:{PYTHON.IMAGE_TAG}"

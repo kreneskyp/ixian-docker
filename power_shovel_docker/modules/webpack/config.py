@@ -34,17 +34,8 @@ class WebpackConfig(Config):
 
     DOCKERFILE = "Dockerfile.webpack"
 
-    @classproperty
-    def IMAGE_HASH(cls):
-        return hash_object(
-            [
-                CONFIG.NPM.IMAGE_HASH,
-                FileHash("{WEBPACK.DOCKERFILE}", "{WEBPACK.CONFIG_FILE}").state(),
-            ]
-        )
-
     REPOSITORY = "{DOCKER.REPOSITORY}"
-    IMAGE_TAG = "webpack-{WEBPACK.IMAGE_HASH}"
+    IMAGE_TAG = "webpack-{TASKS.BUILD_WEBPACK_IMAGE.HASH}"
     IMAGE = "{WEBPACK.REPOSITORY}:{WEBPACK.IMAGE_TAG}"
 
 

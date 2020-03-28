@@ -50,8 +50,6 @@ snapshots['TestDockerConfig.test_read[ENV_DIR] 1'] = '/srv'
 
 snapshots['TestDockerConfig.test_read[HOME_DIR] 1'] = '/root'
 
-snapshots['TestDockerConfig.test_read[IMAGE_HASH] 1'] = 'f6872898d76287a682ed1db15cd0c3344202935a88d858ef51f54aca0ed8e8b2'
-
 snapshots['TestDockerConfig.test_read[IMAGE_TAG] 1'] = 'runtime-f6872898d76287a682ed1db15cd0c3344202935a88d858ef51f54aca0ed8e8b2'
 
 snapshots['TestDockerConfig.test_read[MODULE_CONTEXT] 1'] = '.builder/module_context'

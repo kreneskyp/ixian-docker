@@ -24,34 +24,8 @@ class DockerConfig(Config):
 
         return os.path.dirname(os.path.realpath(docker.__file__))
 
-    @classproperty
-    def IMAGE_HASH(cls):
-        """
-        Hash calculated from the current state of inputs to the Dockerfile.
-        """
-        return hash_object(
-            [
-                CONFIG.BOWER.IMAGE_HASH,
-                CONFIG.PYTHON.IMAGE_HASH,
-                CONFIG.WEBPACK.IMAGE_HASH,
-                FileHash("Dockerfile", *CONFIG.DOCKER.IMAGE_FILES).state(),
-            ]
-        )
-
-    @classproperty
-    def BASE_IMAGE_HASH(cls):
-        """
-        Hash calculated from current state of inputs to the Dockerfile.
-        :return:
-        """
-        return hash_object(
-            FileHash(
-                "{DOCKER.DOCKERFILE_BASE}", *CONFIG.DOCKER.BASE_IMAGE_FILES
-            ).state()
-        )
-
-    IMAGE_TAG = "runtime-{DOCKER.IMAGE_HASH}"
-    BASE_IMAGE_TAG = "base-{DOCKER.BASE_IMAGE_HASH}"
+    IMAGE_TAG = "runtime-{TASKS.BUILD_IMAGE.HASH}"
+    BASE_IMAGE_TAG = "base-{TASKS.BUILD_BASE_IMAGE.HASH}"
 
     # TODO: is this still needed since we're moving away from volumes
     @classproperty

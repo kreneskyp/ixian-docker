@@ -8,7 +8,6 @@ EXPECTED_FIELDS = [
     "APP_DIR",
     "BASE_IMAGE",
     "BASE_IMAGE_FILES",
-    "BASE_IMAGE_HASH",
     "BASE_IMAGE_TAG",
     "COMPOSE_FLAGS",
     "DEFAULT_APP",
@@ -21,7 +20,6 @@ EXPECTED_FIELDS = [
     "ENV_DIR",
     "HOME_DIR",
     "IMAGE",
-    "IMAGE_HASH",
     "IMAGE_TAG",
     "MODULE_CONTEXT",
     "MODULE_DIR",
@@ -41,3 +39,7 @@ class TestDockerConfig:
         Test reading default config values and testing property getter functions.
         """
         snapshot.assert_match(getattr(CONFIG.DOCKER, field))
+
+    def test_task_hash(self, mock_environment, snapshot):
+        snapshot.assert_match(CONFIG.TASKS.BUILD_BASE_IMAGE)
+        snapshot.assert_match(CONFIG.TASKS.BUILD_IMAGE)

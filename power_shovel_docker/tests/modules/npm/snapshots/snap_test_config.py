@@ -13,8 +13,6 @@ snapshots['TestNPMConfig.test_read[DOCKERFILE_TEMPLATE] 1'] = '/opt/power_shovel
 
 snapshots['TestNPMConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:npm-27a022922e73344c316d657ad99710548617005cf8886fb16139237a21bf4d4f'
 
-snapshots['TestNPMConfig.test_read[IMAGE_HASH] 1'] = '27a022922e73344c316d657ad99710548617005cf8886fb16139237a21bf4d4f'
-
 snapshots['TestNPMConfig.test_read[IMAGE_TAG] 1'] = 'npm-27a022922e73344c316d657ad99710548617005cf8886fb16139237a21bf4d4f'
 
 snapshots['TestNPMConfig.test_read[MODULE_DIR] 1'] = '/opt/power_shovel_docker/power_shovel_docker/modules/npm'

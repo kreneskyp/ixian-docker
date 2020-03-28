@@ -7,7 +7,6 @@ EXPECTED_FIELDS = [
     "DOCKERFILE",
     "DOCKERFILE_TEMPLATE",
     "IMAGE",
-    "IMAGE_HASH",
     "IMAGE_TAG",
     "MODULE_DIR",
     "NODE_MODULES_DIR",
@@ -23,3 +22,6 @@ class TestNPMConfig:
         Test reading default config values and testing property getter functions.
         """
         snapshot.assert_match(getattr(CONFIG.NPM, field))
+
+    def test_task_hash(self, mock_environment, snapshot):
+        snapshot.assert_match(CONFIG.TASKS.BUILD_NPM_IMAGE)

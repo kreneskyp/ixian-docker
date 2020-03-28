@@ -15,8 +15,6 @@ snapshots['TestPythonConfig.test_read[HOST_ROOT_MODULE_PATH] 1'] = '/opt/power_s
 
 snapshots['TestPythonConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:python-bce5ccc9ee5195735bc4ed1308361650fd3d7e44cf931ac9860b5a73bfc11735'
 
-snapshots['TestPythonConfig.test_read[IMAGE_HASH] 1'] = 'bce5ccc9ee5195735bc4ed1308361650fd3d7e44cf931ac9860b5a73bfc11735'
-
 snapshots['TestPythonConfig.test_read[IMAGE_TAG] 1'] = 'python-bce5ccc9ee5195735bc4ed1308361650fd3d7e44cf931ac9860b5a73bfc11735'
 
 snapshots['TestPythonConfig.test_read[REPOSITORY] 1'] = 'docker.io/library/unittests'
