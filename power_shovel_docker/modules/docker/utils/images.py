@@ -1,5 +1,6 @@
 import json
 import logging
+from collections import defaultdict
 
 from docker.errors import NotFound as DockerNotFound
 from docker.errors import ImageNotFound as ImageNotFound
@@ -13,7 +14,8 @@ from power_shovel_docker.modules.docker.utils.client import (
     UnknownRegistry,
     docker_client,
 )
-from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events
+from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events, \
+    format_pull_status_minimal
 from power_shovel_docker.utils.net import is_valid_hostname
 
 
@@ -85,26 +87,52 @@ def build_image(dockerfile, tag, context=None, **kwargs):
     client = docker_client()
 
     stream = client.api.build(path=context, dockerfile=dockerfile, tag=tag, **kwargs)
+    seen_layers = defaultdict(set)
 
     # log output from build
-    for lines in stream:
-        for line in lines.split(b"\r\n"):
+    buffer = bytearray()
+    for message in stream:
+
+        # Add message to buffer and then split it on CRs to find individual lines. Messages may not
+        # include a complete line (often because they are too large). Consume only the complete
+        # lines.
+        buffer.extend(message)
+        split_lines = buffer.split(b"\r\n")
+        if buffer.endswith(b"\r\n"):
+            # ends in complete line, consume all lines
+            buffer.clear()
+            last_line = len(split_lines)
+        else:
+            # ends in partial line, only consume complete lines
+            buffer = split_lines[-1]
+            last_line = len(split_lines) - 1
+
+        for line in split_lines[:last_line]:
+
             if not line or line == EMPTY_LINE:
                 continue
 
             try:
-                message = json.loads(line)
-            except json.decoder.JSONDecodeError:
+                decoded_line = json.loads(line)
+            except json.decoder.JSONDecodeError as e:
                 logger.error("COULDN'T DECODE STREAM")
+                logger.error(f"Error: {e}")
                 logger.error(f"line={line}")
+                decoded_line = {}
 
-            if "stream" in message:
-                logger.info(message["stream"].replace("\n",""))
-            elif "errorDetail" in message:
-                logger.error(message["errorDetail"]["message"])
+            # build steps
+            if "stream" in decoded_line:
+                logger.info(decoded_line["stream"].rstrip("\\n").rstrip("\n"))
+
+            # errors
+            elif "errorDetail" in decoded_line:
+                logger.error(decoded_line["errorDetail"]["message"])
                 # TODO: raise this error somehow, should reach cli
-            else:
-                pass
+
+            # base image pull status
+            elif "status" in decoded_line:
+                status = decoded_line["status"]
+                logger.info(format_pull_status_minimal(status, seen_layers))
 
 
 def build_image_if_needed(
