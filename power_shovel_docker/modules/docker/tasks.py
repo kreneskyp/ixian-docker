@@ -113,8 +113,7 @@ class BuildBaseImage(Task):
     check = [
         FileHash(
             "{DOCKER.DOCKERFILE_BASE}",
-            # TODO: FileHash should recursively expand and format list values
-            # *CONFIG.format('{DOCKER.BASE_IMAGE_FILES}')
+            *CONFIG.resolve('DOCKER.BASE_IMAGE_FILES')
         ),
         DockerImageExists("{DOCKER.BASE_IMAGE}"),
     ]

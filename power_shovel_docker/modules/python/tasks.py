@@ -26,7 +26,10 @@ class BuildPythonImage(Task):
     category = "build"
     short_description = "Build Python image"
     check = [
-        FileHash("{PYTHON.DOCKERFILE}", "{PYTHON.REQUIREMENTS}"),
+        FileHash(
+            "{PYTHON.DOCKERFILE}",
+            *CONFIG.resolve('PYTHON.IMAGE_FILES')
+        ),
         DockerImageExists("{PYTHON.IMAGE}"),
     ]
 

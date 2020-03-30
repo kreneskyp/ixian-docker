@@ -32,7 +32,10 @@ class BuildBowerImage(Task):
     category = "build"
     short_description = "Build bower image"
     check = [
-        FileHash("{BOWER.DOCKERFILE}", "{BOWER.CONFIG_FILE}"),
+        FileHash(
+            "{BOWER.DOCKERFILE}",
+            *CONFIG.resolve('BOWER.IMAGE_FILES')
+        ),
         DockerImageExists("{BOWER.IMAGE}"),
     ]
 

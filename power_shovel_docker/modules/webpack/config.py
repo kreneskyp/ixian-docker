@@ -33,6 +33,9 @@ class WebpackConfig(Config):
     ]
 
     DOCKERFILE = "Dockerfile.webpack"
+    IMAGE_FILES = [
+        "{PWD}/root/srv/etc/webpack/"
+    ]
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
     IMAGE_TAG = "webpack-{TASKS.BUILD_WEBPACK_IMAGE.HASH}"

@@ -19,7 +19,10 @@ class BuildWebpackImage(Task):
     category = "build"
     short_description = "Build Webpack image"
     check = [
-        FileHash("{WEBPACK.DOCKERFILE}", "{WEBPACK.CONFIG_FILE}"),
+        FileHash(
+            "{WEBPACK.DOCKERFILE}",
+            *CONFIG.resolve('WEBPACK.IMAGE_FILES')
+        ),
         DockerImageExists("{WEBPACK.IMAGE}"),
     ]
 

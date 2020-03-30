@@ -1,9 +1,0 @@
-RUN ln -s $PROJECT_DIR/.babelrc $APP_DIR
-RUN ln -s {{ CONFIG.NPM.NODE_MODULES_DIR }}/.bin/webpack /usr/local/bin/webpack
-
-{% if CONFIG.ENV == 'PRODUCTION' %}
-# TODO: formatted args from config
-RUN webpack \
-    --config {{ CONFIG.WEBPACK.CONFIG_FILE_PATH }} \
-    --output-path {{ CONFIG.WEBPACK.COMPILED_STATIC_DIR }}
-{% endif %}

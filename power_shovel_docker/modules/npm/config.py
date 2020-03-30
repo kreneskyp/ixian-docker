@@ -20,10 +20,10 @@ class NPMConfig(Config):
     # Directory in container where node_modules is located.
     NODE_MODULES_DIR = "{DOCKER.APP_DIR}/node_modules"
 
-    # Dockerfile template for NPM support. This snippet is rendered with the
-    # base dockerfile template to create a single combined docker image.
-    DOCKERFILE_TEMPLATE = "{NPM.MODULE_DIR}/Dockerfile.template"
     DOCKERFILE = "Dockerfile.npm"
+    IMAGE_FILES = [
+        "{PWD}/root/srv/etc/npm/"
+    ]
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
     IMAGE_TAG = "npm-{TASKS.BUILD_NPM_IMAGE.HASH}"

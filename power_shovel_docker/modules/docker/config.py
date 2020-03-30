@@ -116,7 +116,10 @@ class DockerConfig(Config):
 
     # Files needed for build
     IMAGE_FILES = []
-    BASE_IMAGE_FILES = []
+    BASE_IMAGE_FILES = [
+        '{PWD}/root/{PROJECT_NAME}/bin/'
+        '{PWD}/root/{PROJECT_NAME}/etc/base'
+    ]
 
     # Module files added to docker build context.
     MODULE_CONTEXT = "{BUILDER_DIR}/module_context"

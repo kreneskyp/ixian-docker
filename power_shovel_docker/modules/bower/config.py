@@ -28,10 +28,12 @@ class BowerConfig(Config):
     # Default args included in every call to bower
     ARGS = ["--config.interactive=false", "--allow-root"]
 
-    # Path to Dockerfile template snippet.
-    DOCKERFILE_TEMPLATE = "{BOWER.MODULE_DIR}/Dockerfile.template"
     DOCKERFILE = "Dockerfile.bower"
+    IMAGE_FILES = [
+        "{PWD}/root/srv/etc/bower/"
+    ]
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
     IMAGE_TAG = "bower-{TASKS.BUILD_BOWER_IMAGE.HASH}"
     IMAGE = "{BOWER.REPOSITORY}:{BOWER.IMAGE_TAG}"
+
