@@ -153,7 +153,27 @@ class PushImage(Task):
     short_description = "Push the image"
 
     def execute(self):
-        push_image(CONFIG.DOCKER.IMAGE)
+        logger.info(f"pushing docker image {CONFIG.DOCKER.IMAGE}")
+        push_image(CONFIG.DOCKER.REPOSITORY, CONFIG.DOCKER.IMAGE_TAG)
+
+
+class PushBaseImage(Task):
+    """
+    Push the Image as specified by {DOCKER.IMAGE}
+    """
+
+    name = "push_base_image"
+    short_description = "Push the base image"
+
+    def execute(self):
+        logger.info(f"pushing docker image {CONFIG.DOCKER.BASE_IMAGE}")
+        push_image(CONFIG.DOCKER.REPOSITORY, CONFIG.DOCKER.BASE_IMAGE_TAG)
+
+
+class ComposeRuntime(VirtualTarget):
+    name = "compose_runtime"
+    category = "docker"
+    short_description = "Build development image & volumes for docker-compose "
 
 
 # TODO: TaskRunner/Shim doesn't support multiple args or kwargs. fix that.
@@ -172,6 +192,7 @@ class Compose(Task):
     name = "compose"
     category = "docker"
     short_description = "Docker compose command"
+    depends = ["compose_runtime"]
 
     def execute(self, command=None, *args, **kwargs):
         compose(command, *args, **kwargs)
@@ -246,6 +267,7 @@ class Bash(Task):
     name = "bash"
     category = "Docker"
     short_description = "Bash shell in docker container"
+    depends = ["compose_runtime"]
 
     def execute(self, *args):
         return compose("/bin/bash", *args)
@@ -257,6 +279,7 @@ class Up(Task):
     name = "up"
     category = "Docker"
     short_description = "Start docker container"
+    depends = ["compose_runtime"]
 
     def execute(self):
         return compose("up -d app")
@@ -268,6 +291,7 @@ class Down(Task):
     name = "task"
     category = "Docker"
     short_description = "Stop docker container"
+    depends = ["compose_runtime"]
 
     def execute(self):
         return compose("down")

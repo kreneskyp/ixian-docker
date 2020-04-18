@@ -1,9 +1,9 @@
 from power_shovel.config import CONFIG
-from power_shovel import Task, VirtualTarget
+from power_shovel.task import Task, VirtualTarget
 from power_shovel_docker.modules.docker.tasks import compose
 
 
-JEST_DEPENDS = ["build_npm"]
+JEST_DEPENDS = ["compose_runtime"]
 
 
 class TestJS(VirtualTarget):

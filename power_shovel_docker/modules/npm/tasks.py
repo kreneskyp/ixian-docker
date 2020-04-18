@@ -10,28 +10,22 @@ from power_shovel_docker.modules.docker.checker import (
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
-
+from power_shovel_docker.modules.docker.utils.volumes import delete_volume
 
 logger = logging.getLogger(__name__)
 NPM_DEPENDS = ["build_app_image"]
 
 
-def clean_npm():
+def remove_npm_volume():
     """
     Remove node_modules volume
     """
-    try:
-        volume = docker_client().volumes.get(CONFIG.PYTHON.VIRTUAL_ENV_VOLUME)
-    except docker.errors.NotFound:
-        pass
-    else:
-        volume.remove(True)
-        logger.debug("Deleted docker image: %s" % CONFIG.PYTHON.VIRTUAL_ENV_VOLUME)
+    delete_volume(CONFIG.NPM.NODE_MODULES_VOLUME)
 
 
 class BuildNPMImage(Task):
     name = "build_npm_image"
-    parent = "build_app_image"
+    parent = ["build_image", "compose_runtime"]
     depends = ["build_base_image"]
     category = "build"
     short_description = "Build NPM image"
@@ -58,48 +52,18 @@ class BuildNPMImage(Task):
         )
 
 
-class NPMUpdate(Task):
-    """
-    Update package.json with Node Check Update (ncu)
-    """
-
-    name = "npm_update"
-    category = "Libraries"
-    depends = NPM_DEPENDS
-    short_description = "Update npm libraries in package.json"
-
-    def execute(self, *args):
-        args = args or ["-u"]
-        return compose("ncu", *args)
-
-
 class NCU(Task):
-    """Run NPM Check Updates (NCU)"""
+    """Update package.json with Node Check Update (ncu)"""
 
     name = "ncu"
     category = "Libraries"
-    depends = NPM_DEPENDS
-    short_description = "NPM package updater"
+    # TODO: depends without injecting it into parent task
+    depends = ["compose_runtime"]
+    short_description = "Update npm libraries in package.json"
+    clean = remove_npm_volume
 
     def execute(self, *args):
-        return compose("ncu", *args)
-
-
-class BuildNPM(Task):
-    """Run 'npm install' within the context of the app container."""
-
-    name = "build_npm"
-    category = "build"
-    check = [
-        FileHash("{NPM.PACKAGE_JSON}"),
-    ]
-    clean = clean_npm
-    depends = NPM_DEPENDS
-    parent = "build_app"
-    short_description = "Install NPM packages."
-
-    def execute(self, *args):
-        return compose("npm install", *args)
+        return compose("ncu", args)
 
 
 class NPM(Task):
@@ -107,8 +71,10 @@ class NPM(Task):
 
     name = "npm"
     category = "Libraries"
-    depends = NPM_DEPENDS
+    depends = ["compose_runtime"]
     short_description = "NPM package manager."
+    clean = remove_npm_volume
 
     def execute(self, *args):
-        return compose("npm", *args)
+        args = args or ["install"]
+        return compose("npm", args)

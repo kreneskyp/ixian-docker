@@ -11,7 +11,7 @@ from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
 from power_shovel.runner import ExitCodes
 
-PYTHON_DEPENDS = ["build_app_image"]
+PYTHON_DEPENDS = ["build_base_image"]
 
 
 def python_local_package_mount_flags():
@@ -21,7 +21,7 @@ def python_local_package_mount_flags():
 class BuildPythonImage(Task):
 
     name = "build_python_image"
-    parent = "build_image"
+    parent = ["build_image", "compose_runtime"]
     depends = ["build_base_image"]
     category = "build"
     short_description = "Build Python image"
@@ -51,7 +51,7 @@ class BuildPythonImage(Task):
 class TestPython(VirtualTarget):
     """Virtual target for python tests"""
 
-    name = "test_python"
+    name = "test_py"
     category = "testing"
     short_description = "Run all python test tasks"
 
@@ -67,6 +67,20 @@ def clean_pipenv():
     else:
         volume.remove(True)
     return ExitCodes.SUCCESS
+
+
+class Pip(Task):
+    """
+    Pip package manager
+    """
+    name = "pip"
+    category = "libraries"
+    depends = PYTHON_DEPENDS
+    short_description = "Pip python package manager"
+    clean = clean_pipenv
+
+    def execute(self, *args):
+        return compose("pip", *args)
 
 
 class Pipenv(Task):

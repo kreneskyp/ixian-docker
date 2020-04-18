@@ -131,5 +131,7 @@ class DockerConfig(Config):
     def COMPOSE_ENV(self):
         """Environment variables set when running compose."""
         return {
-            "DOCKER_IMAGE": CONFIG.DOCKER.IMAGE
+            "DOCKER_IMAGE": CONFIG.DOCKER.COMPOSE_IMAGE,
+            "DOCKER_NPM_IMAGE": CONFIG.NPM.IMAGE,
+            "DOCKER_NPM_VOLUME": CONFIG.NPM.VOLUME
         }

@@ -17,12 +17,17 @@ class WebpackConfig(Config):
     # Directory in container where compiled files are written.
     COMPILED_STATIC_DIR = "{DOCKER.APP_DIR}/compiled_static"
 
+    # Volumes used in development
+    COMPILED_STATIC_VOLUME = "{PROJECT_NAME}.compiled_static"
+    CACHE_LOADER_VOLUME = "{PROJECT_NAME}.cache_loader"
+
     # Webpack config file and path within the container.
     CONFIG_FILE = "webpack.config.js"
-    CONFIG_FILE_PATH = "{DOCKER.PROJECT_DIR}/{WEBPACK.CONFIG_FILE}"
+    CONFIG_DIR = "{DOCKER.APP_DIR}/etc/webpack"
+    CONFIG_FILE_PATH = "{WEBPACK.CONFIG_DIR}/{WEBPACK.CONFIG_FILE}"
 
     # Directories with sources to compile.
-    SOURCE_DIRS = ["static"]
+    SOURCE_DIRS = ["src/static"]
 
     # Base arguments added to all calls to `webpack`
     ARGS = [

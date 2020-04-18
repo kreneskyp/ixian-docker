@@ -20,7 +20,7 @@ class Manage(Task):
     name = "manage"
     category = "django"
     short_description = "Django manage.py script."
-    depends = ["build_pipenv"]
+    depends = ["compose_runtime"]
 
     def execute(self, *args):
         manage(*args)
@@ -43,6 +43,7 @@ class Shell(Task):
     name = "shell"
     category = "django"
     short_description = "open django python shell"
+    depends = ["compose_runtime"]
 
     def execute(self, *args):
         return manage("shell_plus", *args)
@@ -60,6 +61,7 @@ class ShellPlus(Task):
     name = "shell_plus"
     category = "django"
     short_description = "open django shell_plus"
+    depends = ["compose_runtime"]
 
     def execute(self, *args):
         return manage("shell_plus", *args)
@@ -83,6 +85,7 @@ class DjangoTest(Task):
     name = "django_test"
     category = "testing"
     parent = ["test", "test_python"]
+    depends = ["compose_runtime"]
     short_description = "django test runner"
 
     def execute(self, *args):
@@ -102,6 +105,7 @@ class Migrate(Task):
     name = "migrate"
     category = "django"
     short_description = "run database migrations"
+    depends = ["compose_runtime"]
 
     def execute(self, *args):
         return manage("migrate", *args)
@@ -119,6 +123,7 @@ class MakeMigrations(Task):
     name = "makemigrations"
     category = "django"
     short_description = "generate missing database migrations"
+    depends = ["compose_runtime"]
 
     def execute(self, *args):
         return manage("makemigrations %s" % " ".join(args or [CONFIG.PROJECT_NAME]))
@@ -132,6 +137,7 @@ class DBShell(Task):
     name = "dbshell"
     category = "django"
     short_description = "open a database shell"
+    depends = ["compose_runtime"]
 
     def execute(self, *args):
         return manage("dbshell", *args)
@@ -149,7 +155,7 @@ class Runserver(Task):
     name = "runserver"
     category = "django"
     short_description = "start django test server"
-    depends = ["build_pipenv"]
+    depends = ["compose_runtime"]
 
     def execute(self, *args):
         return Compose().execute(

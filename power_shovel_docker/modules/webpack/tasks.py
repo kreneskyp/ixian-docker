@@ -4,8 +4,7 @@ from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel_docker.modules.docker.checker import DockerImageExists
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
-
-WEBPACK_DEPENDS = ["build_npm"]
+from power_shovel_docker.modules.docker.utils.volumes import delete_volume
 
 
 class BuildWebpackImage(Task):
