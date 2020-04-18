@@ -1,6 +1,8 @@
+from copy import deepcopy
+
 import docker
 import logging
-from power_shovel.task import Task
+from power_shovel.task import Task, VirtualTarget
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
@@ -200,12 +202,17 @@ class Compose(Task):
 
 def compose(
     command=None,
-    volumes=None,
-    *args,
-    **kwargs
+    args=None,
+    **options
 ):
+    options = deepcopy(getattr(CONFIG.DOCKER, "COMPOSE_OPTIONS", {}))
+    if "args" in options:
+        options["args"].extend(args)
+    else:
+        options["args"] = args
 
-    app = kwargs.get("app", CONFIG.DOCKER.DEFAULT_APP)
+    app = options.get("app", CONFIG.DOCKER.DEFAULT_APP)
+
     #volumes = convert_volume_flags(
     #    kwargs.get('volumes', [])
     #)
@@ -214,13 +221,13 @@ def compose(
         "APP_DIR": CONFIG.DOCKER.APP_DIR,
         "ROOT_MODULE_PATH": CONFIG.PYTHON.ROOT_MODULE_PATH,
     }
-    env.update(CONFIG.DOCKER.COMPOSE_ENV)
-    env.update(kwargs.get("env", {}))
+    #env.update(CONFIG.DOCKER.COMPOSE_ENV)
+    #env.update(kwargs.get("env", {}))
     logger.warning(env)
     formatted_env = [
         "-e {key}={value}".format(key=k, value=v) for k, v in env.items()
     ]
-    flags = CONFIG.DOCKER.COMPOSE_FLAGS + kwargs.get("flags", [])
+    flags = CONFIG.DOCKER.COMPOSE_FLAGS + options.get("flags", [])
     formatted_args = [CONFIG.format(arg) for arg in args or []]
 
     template = (
