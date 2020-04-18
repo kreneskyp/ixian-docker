@@ -23,12 +23,12 @@ class Manage(Task):
     depends = ["build_pipenv"]
 
     def execute(self, *args):
-        return compose("{PYTHON.BIN} manage.py", *args)
+        manage(*args)
 
 
 def manage(*args):
     """Shim around `Manage`"""
-    return Manage()(*args)
+    return compose("{PYTHON.BIN} manage.py", args)
 
 
 class Shell(Task):
