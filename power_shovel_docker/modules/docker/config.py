@@ -95,6 +95,7 @@ class DockerConfig(Config):
     ENV_DIR = "/srv"
     APP_DIR = "{DOCKER.ENV_DIR}/{PROJECT_NAME}"
     APP_BIN = "{DOCKER.APP_DIR}/bin"
+    APP_ETC = "{DOCKER.APP_DIR}/etc"
     PROJECT_DIR = "{DOCKER.APP_DIR}/project"
 
     # Registry settings
@@ -123,6 +124,9 @@ class DockerConfig(Config):
 
     # Module files added to docker build context.
     MODULE_CONTEXT = "{BUILDER_DIR}/module_context"
+
+    COMPOSE_IMAGE = "{PYTHON.IMAGE}"
+    COMPOSE_IMAGE_TASK = "build_python_image"
 
     # Default flags passed to Compose
     COMPOSE_FLAGS = ["--rm", "-u root"]
