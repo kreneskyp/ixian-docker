@@ -7,8 +7,8 @@ from power_shovel_docker.modules.docker.checker import (
     DockerImageExists,
 )
 from power_shovel_docker.modules.docker.tasks import compose
-from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
+from power_shovel_docker.modules.docker.utils.volumes import delete_volume
 
 BOWER_DEPENDS = ["build_app_image"]
 
@@ -17,12 +17,7 @@ def clean_bower():
     """
     Remove bower volume
     """
-    try:
-        volume = docker_client().volumes.get(CONFIG.BOWER.COMPONENTS_VOLUME)
-    except docker.errors.NotFound:
-        pass
-    else:
-        volume.remove(True)
+    delete_volume(CONFIG.BOWER.COMPONENTS_VOLUME)
 
 
 class BuildBowerImage(Task):
@@ -71,7 +66,7 @@ class BuildBower(Task):
     def execute(self, *args):
         compose(
             "{BOWER.BIN} install {BOWER.CONFIG_FILE_PATH}",
-            *(CONFIG.BOWER.ARGS + list(args))
+            CONFIG.BOWER.ARGS + list(args)
         )
 
 
@@ -93,4 +88,4 @@ class Bower(Task):
     clean = clean_bower
 
     def execute(self, *args):
-        compose("{BOWER.BIN}", *(CONFIG.BOWER.ARGS + list(args)))
+        compose("{BOWER.BIN}", CONFIG.BOWER.ARGS + list(args))
