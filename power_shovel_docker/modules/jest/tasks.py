@@ -37,4 +37,4 @@ class Jest(Task):
 
     def execute(self, *args):
         command = CONFIG.format("{JEST.BIN} --config={JEST.CONFIG_FILE_PATH}")
-        return compose(command, *args)
+        return compose(command, args)
