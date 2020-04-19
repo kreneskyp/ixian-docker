@@ -26,9 +26,12 @@ class Manage(Task):
         manage(*args)
 
 
+MANAGE_CMD = "{PYTHON.BIN} manage.py"
+
+
 def manage(*args):
-    """Shim around `Manage`"""
-    return compose("{PYTHON.BIN} manage.py", args)
+    """Shim around `manage.py`"""
+    return compose(MANAGE_CMD, args)
 
 
 class Shell(Task):
@@ -89,12 +92,14 @@ class DjangoTest(Task):
     short_description = "django test runner"
 
     def execute(self, *args):
-        command = (
-            """test """
-            """--settings={DJANGO.SETTINGS_TEST} """
-            """--exclude-dir={DJANGO.SETTINGS_MODULE} """
-        )
-        return manage(command, *(args or [CONFIG.PYTHON.ROOT_MODULE]))
+        required_args = [
+            "--settings={DJANGO.SETTINGS_TEST}",
+            "--exclude-dir={DJANGO.SETTINGS_MODULE}",
+        ]
+        args = args or [
+            CONFIG.PYTHON.ROOT_MODULE
+        ]
+        return manage("test", *required_args, *args)
 
 
 class Migrate(Task):
@@ -126,7 +131,7 @@ class MakeMigrations(Task):
     depends = ["compose_runtime"]
 
     def execute(self, *args):
-        return manage("makemigrations %s" % " ".join(args or [CONFIG.PROJECT_NAME]))
+        return manage("makemigrations", *args)
 
 
 class DBShell(Task):
@@ -158,8 +163,8 @@ class Runserver(Task):
     depends = ["compose_runtime"]
 
     def execute(self, *args):
-        return Compose().execute(
-            CONFIG.format("{PYTHON.BIN} manage.py runserver"),
-            *(args or ["0.0.0.0:8000"]),
-            flags=["-p 8000:8000"],
+        return compose(
+            f"{MANAGE_CMD} runserver",
+            (args or ["0.0.0.0:8000"]),
+            flags=["--service-ports"],
         )
