@@ -24,9 +24,7 @@ class PythonConfig(Config):
     BIN = "python3"
 
     DOCKERFILE = "Dockerfile.python"
-    IMAGE_FILES = [
-        "{PWD}/root/srv/etc/python/"
-    ]
+    IMAGE_FILES = ["{PWD}/root/srv/etc/python/"]
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
     IMAGE_TAG = "python-{TASKS.BUILD_PYTHON_IMAGE.HASH}"

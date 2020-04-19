@@ -137,5 +137,5 @@ class DockerConfig(Config):
         return {
             "DOCKER_IMAGE": CONFIG.DOCKER.COMPOSE_IMAGE,
             "DOCKER_NPM_IMAGE": CONFIG.NPM.IMAGE,
-            "DOCKER_NPM_VOLUME": CONFIG.NPM.VOLUME
+            "DOCKER_NPM_VOLUME": CONFIG.NPM.VOLUME,
         }

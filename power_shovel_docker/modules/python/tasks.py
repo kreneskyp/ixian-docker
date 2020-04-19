@@ -26,10 +26,7 @@ class BuildPythonImage(Task):
     category = "build"
     short_description = "Build Python image"
     check = [
-        FileHash(
-            "{PYTHON.DOCKERFILE}",
-            *CONFIG.resolve('PYTHON.IMAGE_FILES')
-        ),
+        FileHash("{PYTHON.DOCKERFILE}", *CONFIG.resolve("PYTHON.IMAGE_FILES")),
         DockerImageExists("{PYTHON.IMAGE}"),
     ]
 
@@ -73,6 +70,7 @@ class Pip(Task):
     """
     Pip package manager
     """
+
     name = "pip"
     category = "libraries"
     depends = PYTHON_DEPENDS

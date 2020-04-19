@@ -96,9 +96,7 @@ class DjangoTest(Task):
             "--settings={DJANGO.SETTINGS_TEST}",
             "--exclude-dir={DJANGO.SETTINGS_MODULE}",
         ]
-        args = args or [
-            CONFIG.PYTHON.ROOT_MODULE
-        ]
+        args = args or [CONFIG.PYTHON.ROOT_MODULE]
         return manage("test", *required_args, *args)
 
 

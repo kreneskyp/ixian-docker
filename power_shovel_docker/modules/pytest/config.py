@@ -9,7 +9,7 @@ class PytestConfig(Config):
         "-c {PYTEST.INI_FILE}",
         "-o cache_dir={PYTEST.CACHE_DIR}",
     ]
-    SPLIT=3
+    SPLIT = 3
 
 
 PYTEST_CONFIG = PytestConfig()

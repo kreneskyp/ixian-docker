@@ -114,8 +114,7 @@ class BuildBaseImage(Task):
     parent = "build_image"
     check = [
         FileHash(
-            "{DOCKER.DOCKERFILE_BASE}",
-            *CONFIG.resolve('DOCKER.BASE_IMAGE_FILES')
+            "{DOCKER.DOCKERFILE_BASE}", *CONFIG.resolve("DOCKER.BASE_IMAGE_FILES")
         ),
         DockerImageExists("{DOCKER.BASE_IMAGE}"),
     ]
@@ -262,6 +261,7 @@ def compose(
         env=CONFIG.DOCKER.COMPOSE_ENV,
         silent=True,
     )
+
 
 # =============================================================================
 #  Container modules

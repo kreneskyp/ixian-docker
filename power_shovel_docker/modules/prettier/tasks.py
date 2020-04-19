@@ -46,6 +46,7 @@ class PrettierCheck(Task):
     """
     Verify javascript code has been formatted with Prettier
     """
+
     name = "prettier_check"
     category = "testing"
     parent = ["lint", "lint_js"]

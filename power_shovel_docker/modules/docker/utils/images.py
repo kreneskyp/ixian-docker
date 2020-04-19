@@ -14,8 +14,10 @@ from power_shovel_docker.modules.docker.utils.client import (
     UnknownRegistry,
     docker_client,
 )
-from power_shovel_docker.modules.docker.utils.print import print_docker_transfer_events, \
-    format_pull_status_minimal
+from power_shovel_docker.modules.docker.utils.print import (
+    print_docker_transfer_events,
+    format_pull_status_minimal,
+)
 from power_shovel_docker.utils.net import is_valid_hostname
 
 

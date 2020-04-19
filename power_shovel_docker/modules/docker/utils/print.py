@@ -16,8 +16,7 @@ def print_docker_transfer_events(events):
             if file_id not in printer.line_numbers:
                 printer.add_line(file_id)
             printer.print(
-                file_id,
-                f"{file_id}: {event['status']} {event.get('progress', '')}",
+                file_id, f"{file_id}: {event['status']} {event.get('progress', '')}",
             )
 
         else:
@@ -49,7 +48,7 @@ def format_pull_status_minimal(status, seen_layers=None):
     if "id" not in status:
         return status
 
-    layer_id = status['id']
+    layer_id = status["id"]
     if status.startswith("Pulling from"):
         return f"{status}:{layer_id}"
 
@@ -60,10 +59,7 @@ def format_pull_status_minimal(status, seen_layers=None):
         "Extracting",
         "Download complete",
     ]:
-        if status in [
-            "Downloading",
-            "Extracting"
-        ]:
+        if status in ["Downloading", "Extracting"]:
             seen = seen_layers[status]
             if layer_id in seen:
                 return None
@@ -81,9 +77,9 @@ def format_bytes(size):
     :param size: integer
     :return: string
     """
-    power = 2**10
+    power = 2 ** 10
     n = 0
-    power_labels = {0 : 'B', 1: 'kB', 2: 'MB', 3: 'GB', 4: 'TB'}
+    power_labels = {0: "B", 1: "kB", 2: "MB", 3: "GB", 4: "TB"}
     while size > power:
         size /= power
         n += 1

@@ -29,6 +29,7 @@ class DockerImageExists(MultiValueChecker):
 
     keys are image repositories.
     """
+
     contribute_to_task_state = False
 
     def check(self):

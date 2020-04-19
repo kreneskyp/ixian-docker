@@ -41,6 +41,7 @@ class BlackCheck(Task):
     """
     Verify python code has been formatted with Black
     """
+
     name = "black_check"
     category = "testing"
     parent = ["lint", "lint_py"]

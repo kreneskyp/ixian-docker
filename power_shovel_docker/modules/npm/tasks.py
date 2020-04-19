@@ -4,9 +4,7 @@ import logging
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import Task
-from power_shovel_docker.modules.docker.checker import (
-    DockerImageExists,
-)
+from power_shovel_docker.modules.docker.checker import DockerImageExists
 from power_shovel_docker.modules.docker.tasks import compose
 from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
@@ -30,11 +28,8 @@ class BuildNPMImage(Task):
     category = "build"
     short_description = "Build NPM image"
     check = [
-        FileHash(
-            "{NPM.DOCKERFILE}",
-            *CONFIG.resolve('NPM.IMAGE_FILES')
-        ),
-        DockerImageExists("{NPM.IMAGE}")
+        FileHash("{NPM.DOCKERFILE}", *CONFIG.resolve("NPM.IMAGE_FILES")),
+        DockerImageExists("{NPM.IMAGE}"),
     ]
 
     def execute(self, pull=True):

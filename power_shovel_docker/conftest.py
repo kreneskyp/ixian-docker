@@ -3,7 +3,11 @@ from docker import errors as docker_errors
 
 from power_shovel.conftest import *
 from power_shovel.conftest import mock_environment as base_mock_power_shovel_environment
-from power_shovel_docker.modules.docker.utils.images import build_image, delete_image, image_exists
+from power_shovel_docker.modules.docker.utils.images import (
+    build_image,
+    delete_image,
+    image_exists,
+)
 from power_shovel_docker.tests.mocks.client import *
 
 
@@ -65,7 +69,9 @@ def mock_image_exists():
 
 @pytest.fixture
 def mock_image_exists_in_registry():
-    patcher = mock.patch("power_shovel_docker.modules.docker.utils.images.image_exists_in_registry")
+    patcher = mock.patch(
+        "power_shovel_docker.modules.docker.utils.images.image_exists_in_registry"
+    )
     mocked = patcher.start()
     mocked.return_value = False
     yield mocked

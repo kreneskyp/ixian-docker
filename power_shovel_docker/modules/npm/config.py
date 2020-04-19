@@ -21,10 +21,10 @@ class NPMConfig(Config):
     NODE_MODULES_DIR = "{DOCKER.APP_DIR}/node_modules"
 
     DOCKERFILE = "Dockerfile.npm"
-    IMAGE_FILES = [
-        "{PWD}/root/srv/etc/npm/"
-    ]
+    IMAGE_FILES = ["{PWD}/root/srv/etc/npm/"]
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
     IMAGE_TAG = "npm-{TASKS.BUILD_NPM_IMAGE.HASH}"
     IMAGE = "{NPM.REPOSITORY}:{NPM.IMAGE_TAG}"
+
+    VOLUME = "{NPM.IMAGE_TAG}"
