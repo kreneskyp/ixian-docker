@@ -241,19 +241,4 @@ class Down(Task):
     depends = ["compose_runtime"]
 
     def execute(self):
-        return compose("down")
-
-
-# =============================================================================
-#  Cleanup
-# =============================================================================
-
-
-def docker_full_teardown():
-    # TODO this doesn't work yet because can't pipe commands
-    # TODO split these into individual tasks kill_containers|clean_containers|clean_images
-    # TODO add clean_volumes
-    # TODO --force should be passed to docker commands where appropriate.
-    execute("docker ps -q | xargs docker kill")
-    execute("docker ps -q -a | xargs docker rm -v")
-    execute("docker images -q | xargs docker rmi")
+        return run("down")
