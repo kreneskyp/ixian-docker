@@ -87,7 +87,7 @@ class DjangoTest(Task):
 
     name = "django_test"
     category = "testing"
-    parent = ["test", "test_python"]
+    parent = ["test", "test_py"]
     depends = ["compose_runtime"]
     short_description = "django test runner"
 

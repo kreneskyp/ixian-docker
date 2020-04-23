@@ -141,6 +141,7 @@ class PullImage(Task):
 
     name = "pull"
     short_description = "Pull the image"
+    category = "Docker"
 
     def execute(self):
         pull_image(CONFIG.DOCKER.IMAGE)
@@ -153,6 +154,7 @@ class PushImage(Task):
 
     name = "push"
     short_description = "Push the image"
+    category = "Docker"
 
     def execute(self):
         logger.info(f"pushing docker image {CONFIG.DOCKER.IMAGE}")
@@ -166,6 +168,7 @@ class PushBaseImage(Task):
 
     name = "push_base_image"
     short_description = "Push the base image"
+    category = "Docker"
 
     def execute(self):
         logger.info(f"pushing docker image {CONFIG.DOCKER.BASE_IMAGE}")
@@ -174,7 +177,7 @@ class PushBaseImage(Task):
 
 class ComposeRuntime(VirtualTarget):
     name = "compose_runtime"
-    category = "docker"
+    category = "Docker"
     short_description = "Build development image & volumes for docker-compose "
 
 
@@ -192,7 +195,7 @@ class Compose(Task):
     """
 
     name = "compose"
-    category = "docker"
+    category = "Docker"
     short_description = "Docker compose command"
     depends = ["compose_runtime"]
 

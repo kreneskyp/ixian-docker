@@ -14,7 +14,7 @@ PYTHON_DEPENDS = ["build_app_image"]
 class TestPython(VirtualTarget):
     """Virtual target for python tests"""
 
-    name = "test_python"
+    name = "test_py"
     category = "testing"
     short_description = "Run all python test tasks"
 
