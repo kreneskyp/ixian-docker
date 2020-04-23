@@ -4,7 +4,7 @@ from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.task import Task, VirtualTarget
 from power_shovel_docker.modules.docker.checker import DockerVolumeExists
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import run
 from power_shovel_docker.modules.docker.utils import docker_client
 from power_shovel.runner import ERROR_TASK
 
@@ -45,7 +45,7 @@ class Pipenv(Task):
     clean = clean_pipenv
 
     def execute(self, *args):
-        return compose("pipenv", *args)
+        return run("pipenv", *args)
 
 
 class BuildPipenv(Task):

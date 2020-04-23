@@ -6,7 +6,7 @@ from power_shovel_docker.modules.docker.checker import (
     DockerVolumeExists,
     DockerImageExists,
 )
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import run
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
 from power_shovel_docker.modules.docker.utils.volumes import delete_volume
 
@@ -64,7 +64,7 @@ class BuildBower(Task):
     ]
 
     def execute(self, *args):
-        compose(
+        run(
             "{BOWER.BIN} install {BOWER.CONFIG_FILE_PATH}",
             CONFIG.BOWER.ARGS + list(args)
         )
@@ -88,4 +88,4 @@ class Bower(Task):
     clean = clean_bower
 
     def execute(self, *args):
-        compose("{BOWER.BIN}", CONFIG.BOWER.ARGS + list(args))
+        run("{BOWER.BIN}", CONFIG.BOWER.ARGS + list(args))

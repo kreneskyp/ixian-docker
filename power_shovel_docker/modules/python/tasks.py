@@ -6,7 +6,7 @@ from power_shovel_docker.modules.docker.checker import (
     DockerVolumeExists,
     DockerImageExists,
 )
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import run
 from power_shovel_docker.modules.docker.utils.client import docker_client
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
 from power_shovel.runner import ExitCodes
@@ -78,7 +78,7 @@ class Pip(Task):
     clean = clean_pipenv
 
     def execute(self, *args):
-        return compose("pip", *args)
+        return run("pip", *args)
 
 
 class Pipenv(Task):
@@ -95,7 +95,7 @@ class Pipenv(Task):
     clean = clean_pipenv
 
     def execute(self, *args):
-        return compose("pipenv", *args)
+        return run("pipenv", *args)
 
 
 class BuildPipenv(Task):

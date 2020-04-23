@@ -1,6 +1,6 @@
 from power_shovel.config import CONFIG
 from power_shovel import Task, VirtualTarget
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import run
 
 
 ESLINT_DEPENDS = ["build_npm"]
@@ -43,4 +43,4 @@ class ESLint(Task):
         command = CONFIG.format(
             "{ESLINT.BIN} {args} {DOCKER.PROJECT_DIR}", args=formatted_args
         )
-        return compose(command)
+        return run(command)

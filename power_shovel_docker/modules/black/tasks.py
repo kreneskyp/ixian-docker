@@ -1,6 +1,6 @@
 from power_shovel.config import CONFIG
 from power_shovel.task import Task, VirtualTarget
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import run
 
 
 BLACK_DEPENDS = ["compose_runtime"]
@@ -34,7 +34,7 @@ class Black(Task):
 
     def execute(self, *args):
         args = args or CONFIG.BLACK.ARGS
-        return compose("black", args)
+        return run("black", args)
 
 
 class BlackCheck(Task):
@@ -50,4 +50,4 @@ class BlackCheck(Task):
 
     def execute(self, *args):
         args = args or CONFIG.BLACK.ARGS
-        return compose("black", ["--check", *args])
+        return run("black", ["--check", *args])

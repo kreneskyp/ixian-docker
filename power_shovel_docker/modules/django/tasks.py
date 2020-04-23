@@ -1,6 +1,6 @@
 from power_shovel.task import Task
 from power_shovel.config import CONFIG
-from power_shovel_docker.modules.docker.tasks import compose, Compose
+from power_shovel_docker.modules.docker.tasks import run, Compose
 
 
 class Manage(Task):
@@ -31,7 +31,7 @@ MANAGE_CMD = "{PYTHON.BIN} manage.py"
 
 def manage(*args):
     """Shim around `manage.py`"""
-    return compose(MANAGE_CMD, args)
+    return run(MANAGE_CMD, *args)
 
 
 class Shell(Task):
@@ -161,7 +161,7 @@ class Runserver(Task):
     depends = ["compose_runtime"]
 
     def execute(self, *args):
-        return compose(
+        return run(
             f"{MANAGE_CMD} runserver",
             (args or ["0.0.0.0:8000"]),
             flags=["--service-ports"],

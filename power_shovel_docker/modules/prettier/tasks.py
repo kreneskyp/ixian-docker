@@ -1,6 +1,6 @@
 from power_shovel.config import CONFIG
 from power_shovel.task import Task, VirtualTarget
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import run
 
 
 PRETTIER_DEPENDS = ["compose_runtime"]
@@ -39,7 +39,7 @@ class Prettier(Task):
             "--color",
             "{PRETTIER.SRC}/**/*.js",
         ]
-        return compose("{PRETTIER.BIN}", args)
+        return run("{PRETTIER.BIN}", args)
 
 
 class PrettierCheck(Task):
@@ -59,4 +59,4 @@ class PrettierCheck(Task):
             "--color",
             "{PRETTIER.SRC}/**/*.js",
         ]
-        return compose("{PRETTIER.BIN}", args)
+        return run("{PRETTIER.BIN}", args)

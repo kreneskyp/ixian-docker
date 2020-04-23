@@ -7,6 +7,7 @@ from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel.utils.process import execute
 from power_shovel_docker.modules.docker.checker import DockerImageExists
+from power_shovel_docker.modules.docker.utils.compose import run
 from power_shovel_docker.modules.docker.utils.images import (
     build_image_if_needed,
     pull_image,
@@ -196,71 +197,7 @@ class Compose(Task):
     depends = ["compose_runtime"]
 
     def execute(self, command=None, *args, **kwargs):
-        compose(command, *args, **kwargs)
-
-
-def compose(
-    command=None,
-    args=None,
-    **options
-):
-    options = deepcopy(getattr(CONFIG.DOCKER, "COMPOSE_OPTIONS", {}))
-    if "args" in options:
-        options["args"].extend(args)
-    else:
-        options["args"] = args
-
-    app = options.get("app", CONFIG.DOCKER.DEFAULT_APP)
-
-    #volumes = convert_volume_flags(
-    #    kwargs.get('volumes', [])
-    #)
-    volumes = []
-    env = {
-        "APP_DIR": CONFIG.DOCKER.APP_DIR,
-        "ROOT_MODULE_PATH": CONFIG.PYTHON.ROOT_MODULE_PATH,
-    }
-    #env.update(CONFIG.DOCKER.COMPOSE_ENV)
-    #env.update(kwargs.get("env", {}))
-    logger.warning(env)
-    formatted_env = [
-        "-e {key}={value}".format(key=k, value=v) for k, v in env.items()
-    ]
-    flags = CONFIG.DOCKER.COMPOSE_FLAGS + options.get("flags", [])
-    formatted_args = [CONFIG.format(arg) for arg in args or []]
-
-    template = (
-        "docker-compose run{CR} {flags} {env} {volumes} {app} {command} {args}"
-    )
-
-    def render_command():
-        with_cr = "{} \\\n"
-        formatted = template.format(
-            CR=" \\\n",
-            app=app,
-            args=" ".join(formatted_args),
-            command=CONFIG.format(command or ""),
-            env=" ".join((with_cr.format(line) for line in formatted_env)),
-            flags=" ".join((with_cr.format(line) for line in flags)),
-            volumes=" ".join((with_cr.format(line) for line in volumes)),
-            image=CONFIG.DOCKER.IMAGE,
-        )
-        logger.info(CONFIG.format(formatted))
-
-    render_command()
-    return execute(
-        template.format(
-            CR="",
-            app=app,
-            args=" ".join(formatted_args),
-            command=command or "",
-            env=" ".join(formatted_env),
-            flags=" ".join(flags),
-            volumes=" ".join(volumes),
-        ),
-        env=CONFIG.DOCKER.COMPOSE_ENV,
-        silent=True,
-    )
+        run(command, *args, **kwargs)
 
 
 # =============================================================================
@@ -277,7 +214,7 @@ class Bash(Task):
     depends = ["compose_runtime"]
 
     def execute(self, *args):
-        return compose("/bin/bash", *args)
+        return run("/bin/bash", *args)
 
 
 class Up(Task):
@@ -289,7 +226,7 @@ class Up(Task):
     depends = ["compose_runtime"]
 
     def execute(self):
-        return compose("up -d app")
+        return run("up -d app")
 
 
 class Down(Task):

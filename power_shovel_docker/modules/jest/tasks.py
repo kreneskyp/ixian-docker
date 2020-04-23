@@ -1,6 +1,6 @@
 from power_shovel.config import CONFIG
 from power_shovel.task import Task, VirtualTarget
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import run
 
 
 JEST_DEPENDS = ["compose_runtime"]
@@ -37,4 +37,4 @@ class Jest(Task):
 
     def execute(self, *args):
         command = CONFIG.format("{JEST.BIN} --config={JEST.CONFIG_FILE_PATH}")
-        return compose(command, args)
+        return run(command, args)

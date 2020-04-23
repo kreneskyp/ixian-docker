@@ -2,7 +2,7 @@ from power_shovel.task import Task
 from power_shovel.config import CONFIG
 from power_shovel.modules.filesystem.file_hash import FileHash
 from power_shovel_docker.modules.docker.checker import DockerImageExists
-from power_shovel_docker.modules.docker.tasks import compose
+from power_shovel_docker.modules.docker.tasks import run
 from power_shovel_docker.modules.docker.utils.images import build_image_if_needed
 from power_shovel_docker.modules.docker.utils.volumes import delete_volume
 
