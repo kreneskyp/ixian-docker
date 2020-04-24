@@ -91,12 +91,13 @@ def parse_compose_args(command, *args: str, **defaults):
 
     # parse args as given
     run_parser = get_run_parser()
-    _, command_args = run_parser.parse_known_args(args)
+    _, unknown_args = run_parser.parse_known_args(args)
 
     # find the first arg that isn't a known arg, anything before it is an option for compose
     # Anything after is for the command. Reparse args just in case there were any ambiguous flags.
-    index_of_first_unknown = args.index(command_args[0]) if command_args else None
+    index_of_first_unknown = args.index(unknown_args[0]) if unknown_args else None
     compose_args = args[:index_of_first_unknown]
+    command_args = args[index_of_first_unknown:]
 
     # get run args
     # mix base_args and args - both should only be for compose or run
@@ -128,6 +129,7 @@ def run(command, *args, **options):
 
 
 def compose(compose_command, command, *args, **options):
+    logger.debug(f'compose {compose_command} command="{command}" args={args} options={options}')
     # Add default ENV and configured ENVs
     env = {
         "APP_DIR": CONFIG.DOCKER.APP_DIR,
