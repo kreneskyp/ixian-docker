@@ -141,7 +141,7 @@ class PullImage(Task):
 
     name = "pull"
     short_description = "Pull the image"
-    category = "Docker"
+    category = "Dev"
 
     def execute(self):
         pull_image(CONFIG.DOCKER.IMAGE)
@@ -154,7 +154,7 @@ class PushImage(Task):
 
     name = "push"
     short_description = "Push the image"
-    category = "Docker"
+    category = "Dev"
 
     def execute(self):
         logger.info(f"pushing docker image {CONFIG.DOCKER.IMAGE}")
