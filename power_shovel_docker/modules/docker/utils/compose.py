@@ -17,23 +17,23 @@ def get_run_parser(include_compose_parser=True) -> argparse.ArgumentParser:
     if include_compose_parser:
         parser = get_compose_parser()
     else:
-        parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser(add_help=False)
         parser.arguments = []
 
     new_args = [
-        dict(args=['-d', '--detach'], action="store", type=bool),
+        dict(args=['-d', '--detach'], action="store_true"),
         dict(args=['--name'], action="store"),
         dict(args=['--entrypoint'], action="store"),
         dict(args=['-e'], action="append"),
         dict(args=['-l', '--label'], action="append", nargs=1),
         dict(args=['-u', '--user'], action="store"),
-        dict(args=['--no-deps'], action="store", type=bool),
-        dict(args=['--rm'], action="store", type=bool),
+        dict(args=['--no-deps'], action="store_true"),
+        dict(args=['--rm'], action="store_true"),
         dict(args=['--publish'], action="store"),
-        dict(args=['--service-ports'], action="store", type=bool),
-        dict(args=['--use-aliases'], action='store', type=bool),
+        dict(args=['--service-ports'], action="store_true"),
+        dict(args=['--use-aliases'], action="store_true"),
         dict(args=['-v', '--volume'], action="append", nargs=1),
-        dict(args=['-T'], action='store', type=bool),
+        dict(args=['-T'], action="store_true"),
         dict(args=['-w', '--workdir'], action="store"),
     ]
     parser.arguments.extend(new_args)
@@ -50,22 +50,22 @@ def get_compose_parser() -> argparse.ArgumentParser:
     get argparse.ArgumentParser for docker-compose.
     :return: parser capable of parsing command line args for docker-compose
     """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(add_help=False)
     parser.arguments = [
         dict(args=['-f', '--file'], action="store"),
         dict(args=['-p', '--project-name'], action="store"),
-        dict(args=['--verbose'], action="store", const=True, nargs="?"), # TODO: check nargs is correct, works from cli but doesnt sesem right
+        dict(args=['--verbose'], action="store_true"),
         dict(args=['--log-level'], action="store"),
-        dict(args=['--no-ansi'], action="store", type=bool),
-        dict(args=['--version'], action="store", type=bool),
-        dict(args=['--tls'], action="store", type=bool),
+        dict(args=['--no-ansi'], action="store_true"),
+        dict(args=['--version'], action="store_true"),
+        dict(args=['--tls'], action="store_true"),
         dict(args=['--tlscacert'], action="store"),
         dict(args=['--tlscert'], action="store"),
         dict(args=['--tlskey'], action="store"),
-        dict(args=['--tlsverify'], action="store", type=bool),
-        dict(args=['--skip-hostname-check'], action="store", type=bool),
+        dict(args=['--tlsverify'], action="store_true"),
+        dict(args=['--skip-hostname-check'], action="store_true"),
         dict(args=['--project-directory'], action="store"),
-        dict(args=['--compatibility'], action="store", type=bool),
+        dict(args=['--compatibility'], action="store_true"),
         dict(args=['--env-file'], action="store"),
     ]
 
