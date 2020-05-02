@@ -242,7 +242,7 @@ class Down(Task):
     category = "Docker"
     short_description = "Stop docker container"
     depends = ["compose_runtime"]
-    environments = ['cli']
+    environments = ["cli"]
 
     def execute(self):
         return run("down")

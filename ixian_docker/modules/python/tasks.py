@@ -79,9 +79,7 @@ class CreatePyEnv(Task):
         for command in commands:
             execute(command)
 
-        pyenv_shell(
-            "pyenv install {PYTHON.VERSION}"
-        )
+        pyenv_shell("pyenv install {PYTHON.VERSION}")
 
 
 def pyenv_shell(command):

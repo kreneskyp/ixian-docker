@@ -176,8 +176,5 @@ class Runserver(Task):
 
     def execute(self, *args):
         return run(
-            MANAGE_CMD,
-            "--service-ports",
-            "runserver",
-            *(args or ["0.0.0.0:8000"]),
+            MANAGE_CMD, "--service-ports", "runserver", *(args or ["0.0.0.0:8000"]),
         )

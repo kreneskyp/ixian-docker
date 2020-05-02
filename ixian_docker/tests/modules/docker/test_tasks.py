@@ -78,9 +78,7 @@ class ___TestBuildApp(TaskTests):
 
 @pytest.fixture
 def mock_build_task(
-    base_mock_ixian_environment,
-    mock_docker_registries,
-    mock_build_image_if_needed,
+    base_mock_ixian_environment, mock_docker_registries, mock_build_image_if_needed,
 ):
     # mock build_image_if_needed to always build
     (

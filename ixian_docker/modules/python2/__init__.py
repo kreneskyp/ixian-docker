@@ -44,9 +44,7 @@ class PythonModuleConfig(object):
 
     @property
     def dev_volumes(self):
-        from ixian_docker.modules.python2.utils import (
-            pipenv_local_package_mount_flags,
-        )
+        from ixian_docker.modules.python2.utils import pipenv_local_package_mount_flags
 
         return [
             # Pipenv

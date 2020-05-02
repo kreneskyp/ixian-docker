@@ -57,7 +57,7 @@ class WebpackConfig(Config):
     BUILD_ARGS = {
         "ETC": "{WEBPACK.ETC}",
         "HOST_ETC": "{WEBPACK.HOST_ETC}",
-        "SRC": "{WEBPACK.SOURCE_DIRS}"
+        "SRC": "{WEBPACK.SOURCE_DIRS}",
     }
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
@@ -72,5 +72,6 @@ class WebpackConfig(Config):
     def RUN_CMD(self):
         args = " \ \n  ".join(CONFIG.WEBPACK.ARGS)
         return f"{CONFIG.WEBPACK.BIN} {args}"
+
 
 WEBPACK_CONFIG = WebpackConfig()

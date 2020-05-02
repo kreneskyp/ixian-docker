@@ -55,10 +55,7 @@ class BuildWebpackImage(Task):
         if CONFIG.WEBPACK.DOCKERFILE.endswith(".jinja"):
             print("writing dockerfile?: ", CONFIG.WEBPACK.RENDERED_DOCKERFILE)
             dockerfile = CONFIG.WEBPACK.RENDERED_DOCKERFILE
-            write_file(
-                dockerfile,
-                build_dockerfile(CONFIG.WEBPACK.DOCKERFILE)
-            )
+            write_file(dockerfile, build_dockerfile(CONFIG.WEBPACK.DOCKERFILE))
 
         else:
             dockerfile = CONFIG.WEBPACK.DOCKERFILE

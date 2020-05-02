@@ -35,20 +35,20 @@ def get_run_parser(include_compose_parser=True) -> argparse.ArgumentParser:
         parser.arguments = []
 
     new_args = [
-        dict(args=['-d', '--detach'], action="store_true"),
-        dict(args=['--name'], action="store"),
-        dict(args=['--entrypoint'], action="store"),
-        dict(args=['-e'], action="append"),
-        dict(args=['-l', '--label'], action="append", nargs=1),
-        dict(args=['-u', '--user'], action="store"),
-        dict(args=['--no-deps'], action="store_true"),
-        dict(args=['--rm'], action="store_true"),
-        dict(args=['--publish'], action="store"),
-        dict(args=['--service-ports'], action="store_true"),
-        dict(args=['--use-aliases'], action="store_true"),
-        dict(args=['-v', '--volume'], action="append", nargs=1),
-        dict(args=['-T'], action="store_true"),
-        dict(args=['-w', '--workdir'], action="store"),
+        dict(args=["-d", "--detach"], action="store_true"),
+        dict(args=["--name"], action="store"),
+        dict(args=["--entrypoint"], action="store"),
+        dict(args=["-e"], action="append"),
+        dict(args=["-l", "--label"], action="append", nargs=1),
+        dict(args=["-u", "--user"], action="store"),
+        dict(args=["--no-deps"], action="store_true"),
+        dict(args=["--rm"], action="store_true"),
+        dict(args=["--publish"], action="store"),
+        dict(args=["--service-ports"], action="store_true"),
+        dict(args=["--use-aliases"], action="store_true"),
+        dict(args=["-v", "--volume"], action="append", nargs=1),
+        dict(args=["-T"], action="store_true"),
+        dict(args=["-w", "--workdir"], action="store"),
     ]
     parser.arguments.extend(new_args)
     for datum in new_args:
@@ -66,21 +66,21 @@ def get_compose_parser() -> argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser(add_help=False)
     parser.arguments = [
-        dict(args=['-f', '--file'], action="store"),
-        dict(args=['-p', '--project-name'], action="store"),
-        dict(args=['--verbose'], action="store_true"),
-        dict(args=['--log-level'], action="store"),
-        dict(args=['--no-ansi'], action="store_true"),
-        dict(args=['--version'], action="store_true"),
-        dict(args=['--tls'], action="store_true"),
-        dict(args=['--tlscacert'], action="store"),
-        dict(args=['--tlscert'], action="store"),
-        dict(args=['--tlskey'], action="store"),
-        dict(args=['--tlsverify'], action="store_true"),
-        dict(args=['--skip-hostname-check'], action="store_true"),
-        dict(args=['--project-directory'], action="store"),
-        dict(args=['--compatibility'], action="store_true"),
-        dict(args=['--env-file'], action="store"),
+        dict(args=["-f", "--file"], action="store"),
+        dict(args=["-p", "--project-name"], action="store"),
+        dict(args=["--verbose"], action="store_true"),
+        dict(args=["--log-level"], action="store"),
+        dict(args=["--no-ansi"], action="store_true"),
+        dict(args=["--version"], action="store_true"),
+        dict(args=["--tls"], action="store_true"),
+        dict(args=["--tlscacert"], action="store"),
+        dict(args=["--tlscert"], action="store"),
+        dict(args=["--tlskey"], action="store"),
+        dict(args=["--tlsverify"], action="store_true"),
+        dict(args=["--skip-hostname-check"], action="store_true"),
+        dict(args=["--project-directory"], action="store"),
+        dict(args=["--compatibility"], action="store_true"),
+        dict(args=["--env-file"], action="store"),
     ]
 
     for datum in parser.arguments:
@@ -122,13 +122,17 @@ def parse_compose_args(command, *args: str, **defaults):
     # get compose_options and remove from run_options
     # use the copy from run_options
     compose_parser = get_compose_parser()
-    compose_options = merge_parser_args(compose_parser, base_args, default_args, compose_args)
+    compose_options = merge_parser_args(
+        compose_parser, base_args, default_args, compose_args
+    )
     for key in compose_options.keys():
         compose_options[key] = run_options.pop(key)
 
-    return argunparse(compose_options, compose_parser), \
-           argunparse(run_options, run_parser), \
-           command_args
+    return (
+        argunparse(compose_options, compose_parser),
+        argunparse(run_options, run_parser),
+        command_args,
+    )
 
 
 def run(command, *args, **options):
@@ -143,7 +147,9 @@ def run(command, *args, **options):
 
 
 def compose(compose_command, command, *args, **options):
-    logger.debug(f'compose {compose_command} command="{command}" args={args} options={options}')
+    logger.debug(
+        f'compose {compose_command} command="{command}" args={args} options={options}'
+    )
     # Add default ENV and configured ENVs
     env = {
         "APP_DIR": CONFIG.DOCKER.APP_DIR,
@@ -154,7 +160,9 @@ def compose(compose_command, command, *args, **options):
 
     # parse and normalize args
     app = options.pop("app", None) or CONFIG.DOCKER.DEFAULT_APP
-    compose_args, run_args, command_args = parse_compose_args(compose_command, env=env, *args, **options)
+    compose_args, run_args, command_args = parse_compose_args(
+        compose_command, env=env, *args, **options
+    )
     template = "docker-compose{CR} {compose_args} {compose_command}{CR} {run_args} {app} {command} {command_args}"
 
     print("compose_args: ", compose_args)
