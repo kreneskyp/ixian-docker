@@ -2,5 +2,5 @@ argcomplete==1.9.4
 argparse==1.4.0
 docker==4.1.0
 jinja2==2.10.3
--e file:///opt/power_shovel_docker/lib/power_shovel#egg=power_shovel
+-e file:///opt/ixian_docker/lib/ixian#egg=ixian
 boto3

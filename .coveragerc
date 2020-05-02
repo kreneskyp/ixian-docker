@@ -1,5 +1,5 @@
 [run]
-omit = power_shovel_docker/tests/*, .tox/*, power_shovel_docker/conftest.py
+omit = ixian_docker/tests/*, .tox/*, ixian_docker/conftest.py
 
 [report]
 show_missing = True

@@ -1,5 +1,5 @@
 # Webpack
-##### power_shovel_docker.modules.webpack
+##### ixian_docker.modules.webpack
 
 Provides a builder that builds with webpack. Requires packages are installed by
 [npm module](npm.md)

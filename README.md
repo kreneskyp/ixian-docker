@@ -1,6 +1,6 @@
-# Power_shovel.docker
+# Ixian.docker
 
-Power_shovel.docker is a [power_shovel]() based utility for implementing docker 
+Ixian.docker is a [ixian]() based utility for implementing docker 
 build processes. It includes an implementation of a [multi-stage builder 
 pattern](docker.md#pattern). It has builders and tasks for some common build steps.
 
@@ -13,15 +13,14 @@ For more information tasks provided by these modules:
 
 ## Installation
 
-TODO: Not in pypi yet but eventually...
 
 ``` 
-pip install power_shovel.docker
+pip install ixian.docker
 ```
 
 ## Setup
 
-#### Add modules in shovel.py
+#### Add modules in ixian.py
 
 Add modules for the desired build steps. This will enable their configuration
 and tasks.
@@ -31,36 +30,36 @@ The [Docker module](docs/docker.md) provides the base
 enabled for the others to function. 
 
 ```python
-from power_shovel.config import CONFIG
-from power_shovel.module import load_modules
+from ixian.config import CONFIG
+from ixian.module import load_modules
 
 CONFIG.PROJECT_NAME = 'my_project'
 load_modules(
-    'power_shovel.modules.docker',
-    'power_shovel.modules.python',
-    'power_shovel.modules.django',
-    'power_shovel.modules.npm',
-    'power_shovel.modules.webpack',
-    'power_shovel.modules.bower',
+    'ixian.modules.docker',
+    'ixian.modules.python',
+    'ixian.modules.django',
+    'ixian.modules.npm',
+    'ixian.modules.webpack',
+    'ixian.modules.bower',
 )
 ```
 
 #### Use Tasks
 
-Tasks can be run using `shovel`. Use `--help` to list tasks.  
+Tasks can be run using `ixian`. Use `--help` to list tasks.
 
 ```
-shovel --help 
+ix --help
 ```
 
 Show help for a task.
 
 ```
-shovel compose --help 
+ix compose --help
 ```
 
 Show build tree for a task.
 
 ```
-shovel compose --show 
+ix compose --show
 ```

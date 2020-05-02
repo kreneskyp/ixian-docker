@@ -1,0 +1,19 @@
+# ==================================================
+#  Webpack
+# ==================================================
+ARG FROM_REPOSITORY
+ARG FROM_TAG
+ARG ETC
+ARG SRC
+ARG HOST_ETC
+FROM ${FROM_REPOSITORY}:${FROM_TAG}
+
+# Copy config
+COPY {{ CONFIG.WEBPACK.HOST_ETC }} {{ CONFIG.WEBPACK.ETC }}
+
+# Copy source directories
+{% for dir in CONFIG.WEBPACK.SOURCE_DIRS %}
+COPY {{ dir }} {{CONFIG.DOCKER.APP_DIR}}/{{ dir }}
+{% endfor %}
+
+RUN {{ CONFIG.WEBPACK.RUN_CMD }}

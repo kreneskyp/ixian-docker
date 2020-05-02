@@ -1,6 +1,6 @@
 #!/bin/sh
 
 # pushd $PROJECT_DIR
-pushd /srv/power_shovel_tests/project
+pushd /srv/ixian_tests/project
 nosetests $@
 popd
