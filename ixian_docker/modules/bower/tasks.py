@@ -67,7 +67,6 @@ class BuildBower(Task):
     depends = BOWER_DEPENDS
     category = "build"
     short_description = "Install bower packages"
-    #parent = "build_app"
     clean = clean_bower
     check = [
         FileHash("{BOWER.CONFIG_FILE}"),

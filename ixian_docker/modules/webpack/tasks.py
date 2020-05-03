@@ -133,5 +133,4 @@ class Webpack(Task):
     ]
 
     def execute(self, *args):
-        #compiled_args = list(CONFIG.WEBPACK.ARGS) + list(args)
         return run("./node_modules/.bin/webpack", *CONFIG.WEBPACK.ARGS, *args)

@@ -69,7 +69,6 @@ class BuildPipenv(Task):
     category = "build"
     clean = clean_pipenv
     short_description = "Install python packages with pipenv"
-    #parent = "build_app"
     depends = PYTHON_DEPENDS
     check = [
         FileHash("Pipfile", "Pipfile.lock",),
