@@ -39,5 +39,4 @@ class Pytest(Task):
 
     def execute(self, *args):
         args = [*CONFIG.PYTEST.ARGS, *args]
-        print("args: ", args)
-        return run("pytest", args)
+        return run("pytest", *args)

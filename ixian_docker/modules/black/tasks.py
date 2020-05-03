@@ -48,7 +48,7 @@ class Black(Task):
 
     def execute(self, *args):
         args = args or CONFIG.BLACK.ARGS
-        return run("black", args)
+        return run("black", *args)
 
 
 class BlackCheck(Task):
@@ -64,4 +64,4 @@ class BlackCheck(Task):
 
     def execute(self, *args):
         args = args or CONFIG.BLACK.ARGS
-        return run("black", ["--check", *args])
+        return run("black", "--check", *args)

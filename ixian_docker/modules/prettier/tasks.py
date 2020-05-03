@@ -53,7 +53,7 @@ class Prettier(Task):
             "--color",
             "{PRETTIER.SRC}/**/*.js",
         ]
-        return run("{PRETTIER.BIN}", args)
+        return run("{PRETTIER.BIN}", *args)
 
 
 class PrettierCheck(Task):
@@ -73,4 +73,4 @@ class PrettierCheck(Task):
             "--color",
             "{PRETTIER.SRC}/**/*.js",
         ]
-        return run("{PRETTIER.BIN}", args)
+        return run("{PRETTIER.BIN}", *args)

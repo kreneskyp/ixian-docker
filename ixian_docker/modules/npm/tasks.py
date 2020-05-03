@@ -70,7 +70,7 @@ class NCU(Task):
     clean = remove_npm_volume
 
     def execute(self, *args):
-        return run("ncu", args)
+        return run("ncu", *args)
 
 
 class NPM(Task):
@@ -84,4 +84,4 @@ class NPM(Task):
 
     def execute(self, *args):
         args = args or ["install"]
-        return run("npm", args)
+        return run("npm", *args)
