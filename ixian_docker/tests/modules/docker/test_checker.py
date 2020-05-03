@@ -11,13 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from unittest import mock
 
 import pytest
 
-from ixian_docker.conftest import TEST_IMAGE_TWO_NAME
+from ixian_docker.tests.conftest import TEST_IMAGE_TWO_NAME
 from ixian_docker.modules.docker.checker import DockerImageExists
-from ixian_docker.modules.docker.utils.images import delete_image, image_exists
+from ixian_docker.modules.docker.utils.images import image_exists
 from ixian_docker.tests.mocks.client import TEST_IMAGE_NAME
 
 

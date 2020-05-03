@@ -14,12 +14,10 @@
 
 from unittest import mock
 
-import pytest
 from docker.errors import NotFound as DockerNotFound
 
 from ixian.utils.filesystem import pwd
-from ixian_docker.conftest import TEST_IMAGE_NAME, build_test_image
-from ixian_docker.modules.docker.utils.client import docker_client
+from ixian_docker.tests.conftest import TEST_IMAGE_NAME, build_test_image
 from ixian_docker.modules.docker.utils.images import (
     image_exists,
     push_image,
