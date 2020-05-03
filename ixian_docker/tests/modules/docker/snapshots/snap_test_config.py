@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from pysnap import Snapshot
+from pysnap import GenericRepr, Snapshot
 
 
 snapshots = Snapshot()
@@ -68,3 +68,9 @@ snapshots['TestDockerConfig.test_read[ROOT_MODULE_DIR] 1'] = '/opt/ixian_docker/
 
 snapshots['TestDockerConfig.test_read[VOLUMES] 1'] = [
 ]
+
+snapshots['TestDockerConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:runtime-8db14905ba6cef58ab7d6732db7f156a540647aba67998a752e17e8b12dbfc7d'
+
+snapshots['TestDockerConfig.test_task_hash 1'] = GenericRepr('<ixian.config.TaskConfig object at 0x100000000>')
+
+snapshots['TestDockerConfig.test_task_hash 2'] = GenericRepr('<ixian.config.TaskConfig object at 0x100000000>')
