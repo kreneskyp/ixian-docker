@@ -15,7 +15,23 @@
 import jinja2
 import os
 
+from ixian.build import write_file
 from ixian.config import CONFIG
+
+
+def get_dockerfile(path:str, render_to: str=None):
+    """
+    Get the dockerfile for `path`. If the path ends in .jinja it will be rendered to `render_to`.
+    :param path: original path of dockerfile
+    :param render_to: render to this file if
+    :return: path to dockerfile
+    """
+    if path.endswith(".jinja"):
+        dockerfile = render_to
+        write_file(dockerfile, build_dockerfile(path))
+    else:
+        dockerfile = path
+    return dockerfile
 
 
 def build_dockerfile(template_path=None, context=None):

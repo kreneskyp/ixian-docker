@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ixian.build import write_file
 from ixian.task import Task
 from ixian.config import CONFIG
 from ixian.modules.filesystem.file_hash import FileHash
 from ixian_docker.modules.docker.checker import DockerImageExists
 from ixian_docker.modules.docker.tasks import run
-from ixian_docker.modules.docker.utils.dockerfile import build_dockerfile
+from ixian_docker.modules.docker.utils.dockerfile import get_dockerfile
 from ixian_docker.modules.docker.utils.images import build_image_if_needed
 from ixian_docker.modules.docker.utils.volumes import delete_volume
 
@@ -51,15 +50,7 @@ class BuildWebpackImage(Task):
         return checks
 
     def execute(self, pull=True):
-        print("CONFIG.WEBPACK.DOCKERFILE: ", CONFIG.WEBPACK.DOCKERFILE)
-        if CONFIG.WEBPACK.DOCKERFILE.endswith(".jinja"):
-            print("writing dockerfile?: ", CONFIG.WEBPACK.RENDERED_DOCKERFILE)
-            dockerfile = CONFIG.WEBPACK.RENDERED_DOCKERFILE
-            write_file(dockerfile, build_dockerfile(CONFIG.WEBPACK.DOCKERFILE))
-
-        else:
-            dockerfile = CONFIG.WEBPACK.DOCKERFILE
-        print("dockerfile: ", dockerfile)
+        dockerfile = get_dockerfile(CONFIG.WEBPACK.DOCKERFILE, CONFIG.WEBPACK.RENDERED_DOCKERFILE)
         build_image_if_needed(
             repository=CONFIG.WEBPACK.REPOSITORY,
             tag=CONFIG.WEBPACK.IMAGE_TAG,

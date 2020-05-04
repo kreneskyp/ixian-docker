@@ -19,10 +19,7 @@ from collections import defaultdict
 from docker.errors import NotFound as DockerNotFound
 from docker.errors import ImageNotFound as ImageNotFound
 
-from ixian.module import MODULES
 from ixian.utils.filesystem import pwd
-from ixian.utils.process import execute
-from ixian.config import CONFIG
 from ixian_docker.modules.docker.utils.client import (
     DockerClient,
     UnknownRegistry,
