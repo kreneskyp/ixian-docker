@@ -28,6 +28,8 @@ class PythonConfig(Config):
 
         return os.path.dirname(os.path.realpath(python.__file__))
 
+    HOST_ETC = "root{PYTHON.ETC}"
+
     # Runtime
     VERSION = "3.8.0"
     VIRTUAL_ENV = ".venv"
@@ -36,10 +38,12 @@ class PythonConfig(Config):
     ROOT_MODULE = "{PROJECT_NAME}"
     ROOT_MODULE_PATH = "{DOCKER.APP_DIR}/src/{PYTHON.ROOT_MODULE}"
     HOST_ROOT_MODULE_PATH = "{PWD}/{PYTHON.ROOT_MODULE}"
-    BIN = "python3"
+    BIN = "python"
+    PIP = "pip"
     ETC = "{DOCKER.APP_ETC}/python"
 
-    DOCKERFILE = "Dockerfile.python"
+    DOCKERFILE = "{PYTHON.MODULE_DIR}/Dockerfile.lib.jinja"
+    RENDERED_DOCKERFILE = "{BUILDER}/Dockerfile.python"
     IMAGE_FILES = ["{PYTHON.ETC}/"]
     REQUIREMENTS_FILES = ["{PYTHON.ETC}/requirements.txt"]
 

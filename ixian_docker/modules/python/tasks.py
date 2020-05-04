@@ -21,9 +21,8 @@ from ixian_docker.modules.docker.checker import (
     DockerImageExists,
 )
 from ixian_docker.modules.docker.tasks import run
-from ixian_docker.modules.docker.utils.client import docker_client
+from ixian_docker.modules.docker.utils.dockerfile import get_dockerfile
 from ixian_docker.modules.docker.utils.images import build_image_if_needed
-from ixian.runner import ExitCodes
 
 PYTHON_DEPENDS = ["build_base_image"]
 
@@ -45,10 +44,11 @@ class BuildPythonImage(Task):
     ]
 
     def execute(self, pull=True):
+        dockerfile = get_dockerfile(CONFIG.PYTHON.DOCKERFILE, CONFIG.PYTHON.RENDERED_DOCKERFILE)
         build_image_if_needed(
             repository=CONFIG.PYTHON.REPOSITORY,
             tag=CONFIG.PYTHON.IMAGE_TAG,
-            dockerfile=CONFIG.PYTHON.DOCKERFILE,
+            dockerfile=dockerfile,
             force=self.__task__.force,
             pull=pull,
             # recheck=self.check.check,

@@ -13,24 +13,14 @@
 # limitations under the License.
 
 # ==================================================
-#  Webpack
+#  NPM
 # ==================================================
 ARG FROM_REPOSITORY
 ARG FROM_TAG
-ARG ETC
-ARG SRC
-ARG HOST_ETC
 FROM ${FROM_REPOSITORY}:${FROM_TAG}
 
-# Copy config
-COPY {{ CONFIG.WEBPACK.HOST_ETC }} {{ CONFIG.WEBPACK.ETC }}
+COPY root/$APP_ENV_DIR/etc/npm $APP_ENV_DIR/etc/npm
 
-ENV STATIC_DIR {{CONFIG.DOCKER.APP_DIR}}/src/static
-RUN mkdir -p ${STATIC_DIR}
-
-# Copy source directories
-{% for dir in CONFIG.WEBPACK.SOURCE_DIRS %}
-COPY {{ dir }} ${STATIC_DIR}
-{% endfor %}
-
-RUN {{ CONFIG.WEBPACK.RUN_CMD }}
+WORKDIR $APP_ENV_DIR
+RUN npm install
+CMD ["/bin/bash"]

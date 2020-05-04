@@ -13,24 +13,17 @@
 # limitations under the License.
 
 # ==================================================
-#  Webpack
+#  Python
 # ==================================================
 ARG FROM_REPOSITORY
 ARG FROM_TAG
-ARG ETC
-ARG SRC
-ARG HOST_ETC
 FROM ${FROM_REPOSITORY}:${FROM_TAG}
 
-# Copy config
-COPY {{ CONFIG.WEBPACK.HOST_ETC }} {{ CONFIG.WEBPACK.ETC }}
+COPY {{ CONFIG.PYTHON.HOST_ETC }} {{ CONFIG.PYTHON.ETC }}
+# TODO: determine how to enable venv when needed
+#ENV VENV_ACTIVATE=". $APP_ENV_DIR/venv/bin/activate;"
+#ENV VENV_ACTIVATE=""
 
-ENV STATIC_DIR {{CONFIG.DOCKER.APP_DIR}}/src/static
-RUN mkdir -p ${STATIC_DIR}
-
-# Copy source directories
-{% for dir in CONFIG.WEBPACK.SOURCE_DIRS %}
-COPY {{ dir }} ${STATIC_DIR}
+{% for file in CONFIG.PYTHON.REQUIREMENTS_FILES %}
+RUN ${VENV_ACTIVATE} {{ CONFIG.PYTHON.PIP }} install -r {{ CONFIG.format(file) }}
 {% endfor %}
-
-RUN {{ CONFIG.WEBPACK.RUN_CMD }}

@@ -35,7 +35,7 @@ class NPMConfig(Config):
     NODE_MODULES_DIR = "{DOCKER.APP_DIR}/node_modules"
     BIN = "{NPM.NODE_MODULES_DIR}/.bin"
 
-    DOCKERFILE = "Dockerfile.npm"
+    DOCKERFILE = "{NPM.MODULE_DIR}/Dockerfile"
     IMAGE_FILES = ["{PWD}/root/srv/etc/npm/"]
 
     REPOSITORY = "{DOCKER.REPOSITORY}"
