@@ -165,10 +165,6 @@ def compose(compose_command, command, *args, **options):
     )
     template = "docker-compose{CR} {compose_args} {compose_command}{CR} {run_args} {app} {command} {command_args}"
 
-    print("compose_args: ", compose_args)
-    print("run_args: ", run_args)
-    print("command_args: ", command_args)
-
     def render_command():
         with_cr = "{} \\\n"
         formatted = template.format(

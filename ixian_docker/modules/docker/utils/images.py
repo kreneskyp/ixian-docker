@@ -166,7 +166,7 @@ def build_image_if_needed(
     # else: build
     image_and_tag = "{}:{}".format(repository, tag or "latest")
 
-    logger.debug(f"Attempting to build {image_and_tag}")
+    logger.debug(f"Attempting to build image={image_and_tag} dockerfile={dockerfile}")
 
     if not force:
         if image_exists(image_and_tag):

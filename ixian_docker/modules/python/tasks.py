@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import docker
-import pip
-
 from ixian.config import CONFIG
 from ixian.modules.filesystem.file_hash import FileHash
 from ixian.task import Task, VirtualTarget

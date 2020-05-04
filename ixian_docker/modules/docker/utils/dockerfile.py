@@ -35,4 +35,4 @@ def build_dockerfile(template_path=None, context=None):
     # render template
     environment = jinja2.Environment(loader=loader)
     template = environment.get_template("base/%s" % filename)
-    return template.render({"CONFIG": CONFIG, "FOO": "123123"})
+    return template.render({"CONFIG": CONFIG})
