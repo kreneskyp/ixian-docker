@@ -71,7 +71,7 @@ class WebpackConfig(Config):
     @classproperty
     def RUN_CMD(self):
         args = " \ \n  ".join(CONFIG.WEBPACK.ARGS)
-        return f"{CONFIG.WEBPACK.BIN} {args}"
+        return f"{CONFIG.WEBPACK.BIN} \ \n  {args}"
 
 
 WEBPACK_CONFIG = WebpackConfig()
