@@ -13,12 +13,13 @@ venv
 # Compiled package output
 /build/
 /dist/
-/ixian.egg-info/
+ixian_docker.egg-info/
 .builder
 .image_created
 .tox
 .python-version
 lib
+.eggs
 
 # Emacs
 .\#*
