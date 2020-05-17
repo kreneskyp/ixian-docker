@@ -34,6 +34,19 @@ def remove_npm_volume():
 
 
 class BuildNPMImage(Task):
+    """
+    Build the NPM image.
+
+    This is an intermediate image built using ``DOCKER.BASE_IMAGE`` as it's base. The resulting image
+    will contain all packages as defined by ``NPM.PACKAGE_JSON``.
+
+    This task will reuse existing images if possible. It will only build if there is no image avaialble
+    locally or in the registry. If ``--force`` is received the image will build even if an image
+    already exists.
+
+    ``--force`` implies skip-cache for docker build.
+    """
+
     name = "build_npm_image"
     parent = ["build_image", "compose_runtime"]
     depends = ["build_base_image"]
@@ -60,7 +73,20 @@ class BuildNPMImage(Task):
 
 
 class NCU(Task):
-    """Update package.json with Node Check Update (ncu)"""
+    """
+    Update packages using Node Check Update (ncu).
+
+    This task is used to update package versions defined in ``NPM.PACKAGE_JSON``. By default this will
+    only update the config file without updating the installed versions.
+
+    Other arguments and flags are passed through to ``ncu``.
+
+    For example, this returns ``ncu`` internal help.
+
+    .. code-block:: text
+
+        $ ix ncu --help
+    """
 
     name = "ncu"
     category = "Libraries"
@@ -74,7 +100,19 @@ class NCU(Task):
 
 
 class NPM(Task):
-    """Run npm within the context of the app container"""
+    """
+    The NPM package manager.
+
+    This task is is a wrapper around the ``npm`` command line utility. It runs within the container
+    started by ``compose``. You may use it to manage packages in a development environment.
+
+    Other arguments and flags are passed through to ``npm``. For example, this returns ``npm``
+    internal help.
+
+    .. code-block:: text
+
+        $ ix npm --help
+    """
 
     name = "npm"
     category = "Libraries"

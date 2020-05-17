@@ -16,9 +16,18 @@ from ixian.config import Config
 
 
 class BlackConfig(Config):
-    CONFIG = "{DOCKER.APP_DIR}/etc/runtime/pyproject.toml"
-    SRC = "{PYTHON.ROOT_MODULE_PATH}"
-    ARGS = ["--config {BLACK.CONFIG}", "{BLACK.SRC}"]
+    """Configuration for ``Black`` module."""
+
+    #: Config file used for black.
+    #:
+    #: ``pyproject.toml`` is used by other components besides ``black``
+    CONFIG: str = "{DOCKER.APP_DIR}/etc/runtime/pyproject.toml"
+
+    #: Source root that will be checked with black
+    SRC: str = "{PYTHON.ROOT_MODULE_PATH}"
+
+    #: Global args to passed to all calls to ``black``.
+    ARGS: str = ["--config {BLACK.CONFIG}", "{BLACK.SRC}"]
 
 
 BLACK_CONFIG = BlackConfig()

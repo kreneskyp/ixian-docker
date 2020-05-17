@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+from typing import List
 
 from ixian.check.checker import hash_object
 from ixian.config import Config, CONFIG
@@ -21,25 +22,39 @@ from ixian.utils.decorators import classproperty
 
 
 class NPMConfig(Config):
-    @classproperty
-    def MODULE_DIR(cls):
-        """Directory where ixian_docker.npm is installed"""
+    @property
+    def MODULE_DIR(cls) -> str:
+        """Directory where ``ixian_docker.modules.npm`` is installed"""
         from ixian_docker.modules import npm
 
         return os.path.dirname(os.path.realpath(npm.__file__))
 
-    # file name for NPM config
-    PACKAGE_JSON = "package.json"
+    #: file name for NPM config
+    PACKAGE_JSON: str = "package.json"
 
-    # Directory in container where node_modules is located.
-    NODE_MODULES_DIR = "{DOCKER.APP_DIR}/node_modules"
-    BIN = "{NPM.NODE_MODULES_DIR}/.bin"
+    #: Path to node_modules within image.
+    NODE_MODULES_DIR: str = "{DOCKER.APP_DIR}/node_modules"
 
-    DOCKERFILE = "{NPM.MODULE_DIR}/Dockerfile"
-    IMAGE_FILES = ["{PWD}/root/srv/etc/npm/"]
+    #: Path to binaries installed by npm and npm packages
+    BIN: str = "{NPM.NODE_MODULES_DIR}/.bin"
 
-    REPOSITORY = "{DOCKER.REPOSITORY}"
-    IMAGE_TAG = "npm-{TASKS.BUILD_NPM_IMAGE.HASH}"
-    IMAGE = "{NPM.REPOSITORY}:{NPM.IMAGE_TAG}"
+    #: Dockerfile for building NPM intermediate image
+    DOCKERFILE: str = "{NPM.MODULE_DIR}/Dockerfile"
 
-    VOLUME = "{NPM.IMAGE_TAG}"
+    #: Files that are required to build this image.
+    #:
+    #: These files will be included in the task and image hashes, and are used to detect the need
+    #: for building.
+    IMAGE_FILES: List[str] = ["{PWD}/root/srv/etc/npm/"]
+
+    #: Repository to store docker image in
+    REPOSITORY: str = "{DOCKER.REPOSITORY}"
+
+    #: Tag for npm intermediate image.
+    IMAGE_TAG: str = "npm-{TASKS.BUILD_NPM_IMAGE.HASH}"
+
+    #: Full path to npm intermediate image including repository and tag.
+    IMAGE: str = "{NPM.REPOSITORY}:{NPM.IMAGE_TAG}"
+
+    #: Identifier for NPM Volume used by ``compose``
+    VOLUME: str = "{NPM.IMAGE_TAG}"
