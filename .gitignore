@@ -20,6 +20,7 @@ ixian_docker.egg-info/
 .python-version
 lib
 .eggs
+docs/_build/
 
 # Emacs
 .\#*
