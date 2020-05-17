@@ -1,0 +1,10 @@
+[tool.black]
+line-length = 99
+exclude = '''(
+    /home/runner/work/ixian-docker/ixian-docker/dist/*
+  | /home/runner/work/ixian-docker/ixian-docker/.tox/*
+  | /home/runner/work/ixian-docker/ixian-docker/.eggs/*
+  | /home/runner/work/ixian-docker/ixian-docker/venv/*
+  | snapshots/*
+  )
+'''

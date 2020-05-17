@@ -18,18 +18,53 @@ test: .image_created .python_version
 	${DOCKER_RUN} tox
 
 
-BLACK_EXCLUDE=--exclude=snapshots/*
-
-
+.PHONY: black
 black: .image_created .python_version
-	${DOCKER_RUN} black ${BLACK_EXCLUDE} .
+	${DOCKER_RUN} black .
 
 
+.PHONY: black-check
 black-check: .image_created .python_version
-	${DOCKER_RUN} black ${BLACK_EXCLUDE} --check .
+	${DOCKER_RUN} black --check .
 
 
+.PHONY: bash
 bash: .image_created .python_version
 	${DOCKER_RUN} /bin/bash
 
+.PHONY: version
+version: .image_created .python_version
+	${DOCKER_RUN} python3 setup.py --version
 
+.PHONY: dist
+dist:
+	${DOCKER_RUN} python3 setup.py sdist bdist_wheel
+
+.PHONY: dist-check
+dist-check:
+	${DOCKER_RUN} twine check dist/*
+
+.PHONY: docs
+docs: docs/Makefile
+	${DOCKER_RUN} tox -e docs
+
+.PHONY: publish
+publish:
+	${DOCKER_RUN} twine upload dist/*
+
+.PHONY: publish-test
+publish-test:
+	${DOCKER_RUN} twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+.PHONY: clean
+clean:
+	rm -rf .tox
+	rm -rf .coverage
+	rm -rf .eggs
+	rm -rf dist
+	rm -rf build
+
+.PHONY: teardown
+teardown: clean
+	rm -rf .image_created
+	rm -rf .python-version
