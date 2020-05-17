@@ -9,10 +9,32 @@ Ixian-Docker
 
 .. toctree::
    :maxdepth: 2
-   :caption: Modules:
+   :caption: Core Modules:
    :hidden:
 
    modules/docker
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Python Modules:
+   :hidden:
+
+   modules/python
+   modules/pytest
+   modules/black
+   modules/django
+
+.. toctree::
+   :maxdepth: 4
+   :caption: Javascript Modules:
+   :hidden:
+
+   modules/npm
+   modules/jest
+   modules/prettier
+   modules/webpack
+   modules/eslint
+
 
 
 Indices and tables
