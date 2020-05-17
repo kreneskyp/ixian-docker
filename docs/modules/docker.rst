@@ -11,7 +11,9 @@ running containers are included.
 Config
 ==================
 
-------------------
+.. autoclass:: ixian_docker.modules.docker.config.DockerConfig
+    :members:
+    :undoc-members:
 
 
 
