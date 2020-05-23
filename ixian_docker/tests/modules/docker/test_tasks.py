@@ -106,9 +106,7 @@ class TestBuildBaseImage(TaskTests):
     task = "build_base_image"
 
     def test_execute(self, mock_cli, mock_build_task):
-        CONFIG.DOCKER.DOCKERFILE_BASE = (
-            "/opt/ixian_docker/ixian_docker/tests/Dockerfile.one"
-        )
+        CONFIG.DOCKER.DOCKERFILE_BASE = "/opt/ixian_docker/ixian_docker/tests/Dockerfile.one"
         mock_cli.mock_in("build_base_image")
         assert_build, *_ = mock_build_task
         assert_build(CONFIG.DOCKER.BASE_IMAGE)

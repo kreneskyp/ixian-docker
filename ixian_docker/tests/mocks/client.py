@@ -44,10 +44,7 @@ MOCK_REGISTRY_CONFIGS = {
         "client": DockerClient,
         "options": {"username": "tester", "password": "secret"},
     },
-    "MOCK_DEFAULT_REGISTRY_WITH_OPTIONS": {
-        "client": DockerClient,
-        "options": {"foo": "bar"},
-    },
+    "MOCK_DEFAULT_REGISTRY_WITH_OPTIONS": {"client": DockerClient, "options": {"foo": "bar"},},
     "MOCK_ECR_REGISTRY": {"client": ECRDockerClient,},
 }
 
@@ -95,12 +92,8 @@ def mock_docker_environment(mock_environment, mock_docker_registries):
     mock_client.images.get.return_value = True
 
     # mock pull/push
-    mock_client.api.pull.return_value = (
-        event for event in event_streams.PULL_SUCCESSFUL
-    )
-    mock_client.api.push.return_value = (
-        event for event in event_streams.PUSH_SUCCESSFUL
-    )
+    mock_client.api.pull.return_value = (event for event in event_streams.PULL_SUCCESSFUL)
+    mock_client.api.push.return_value = (event for event in event_streams.PUSH_SUCCESSFUL)
 
     # Mock login
     mock_client.login = mock.Mock()
@@ -137,9 +130,7 @@ MOCK_ECR_AUTHENTICATION_TOKEN = {
     "authorizationData": [
         {
             "authorizationToken": base64.b64encode(b"AWS:FAKE_AUTH_TOKEN"),
-            "expiresAt": datetime.datetime(
-                2019, 12, 1, 3, 32, 33, 000000, tzinfo=tzlocal()
-            ),
+            "expiresAt": datetime.datetime(2019, 12, 1, 3, 32, 33, 000000, tzinfo=tzlocal()),
             "proxyEndpoint": "https://FAKE_REGISTRY.dkr.ecr.us-west-2.amazonaws.com",
         }
     ],
@@ -160,8 +151,6 @@ MOCK_ECR_AUTHENTICATION_TOKEN = {
 def mock_ecr():
     patcher = mock.patch("ixian_docker.modules.docker.utils.client.boto3")
     mock_boto = patcher.start()
-    mock_boto.client().get_authorization_token.return_value = (
-        MOCK_ECR_AUTHENTICATION_TOKEN
-    )
+    mock_boto.client().get_authorization_token.return_value = MOCK_ECR_AUTHENTICATION_TOKEN
     yield mock_boto
     patcher.stop()

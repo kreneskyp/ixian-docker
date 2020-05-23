@@ -73,13 +73,9 @@ class DockerClient:
         username = self.options.get("username", None)
         password = self.options.get("password", None)
         if not username:
-            raise KeyError(
-                f"Cannot login to {self.registry}, username not found in options."
-            )
+            raise KeyError(f"Cannot login to {self.registry}, username not found in options.")
         if not password:
-            raise KeyError(
-                f"Cannot login to {self.registry}, password not found in options."
-            )
+            raise KeyError(f"Cannot login to {self.registry}, password not found in options.")
 
         self.client.login(username, password, "", registry=self.registry)
 
@@ -94,9 +90,7 @@ class ECRDockerClient(DockerClient):
     def login(self):
         # fetch credentials from ECR
         logger.debug(
-            "Authenticating with ECR: {}".format(
-                self.options.get("region_name", "us-west-2")
-            )
+            "Authenticating with ECR: {}".format(self.options.get("region_name", "us-west-2"))
         )
         token = self.ecr_client.get_authorization_token()
         username, password = (

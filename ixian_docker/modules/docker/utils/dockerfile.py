@@ -19,7 +19,7 @@ from ixian.build import write_file
 from ixian.config import CONFIG
 
 
-def get_dockerfile(path:str, render_to: str=None):
+def get_dockerfile(path: str, render_to: str = None):
     """
     Get the dockerfile for `path`. If the path ends in .jinja it will be rendered to `render_to`.
     :param path: original path of dockerfile

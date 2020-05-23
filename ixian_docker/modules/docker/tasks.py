@@ -125,9 +125,7 @@ class BuildBaseImage(Task):
     category = "build"
     parent = "build_image"
     check = [
-        FileHash(
-            "{DOCKER.DOCKERFILE_BASE}", *CONFIG.resolve("DOCKER.BASE_IMAGE_FILES")
-        ),
+        FileHash("{DOCKER.DOCKERFILE_BASE}", *CONFIG.resolve("DOCKER.BASE_IMAGE_FILES")),
         DockerImageExists("{DOCKER.BASE_IMAGE}"),
     ]
     clean = remove_image

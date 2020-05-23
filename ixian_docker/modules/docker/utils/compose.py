@@ -90,7 +90,7 @@ def get_compose_parser() -> argparse.ArgumentParser:
     return parser
 
 
-#TODO: typehint
+# TODO: typehint
 def parse_compose_args(command, *args: str, **defaults):
     """
     Parse docker compose args and merge with `COMPOSE_BASE_ARGS`.
@@ -122,9 +122,7 @@ def parse_compose_args(command, *args: str, **defaults):
     # get compose_options and remove from run_options
     # use the copy from run_options
     compose_parser = get_compose_parser()
-    compose_options = merge_parser_args(
-        compose_parser, base_args, default_args, compose_args
-    )
+    compose_options = merge_parser_args(compose_parser, base_args, default_args, compose_args)
     for key in compose_options.keys():
         compose_options[key] = run_options.pop(key)
 
@@ -147,9 +145,7 @@ def run(command, *args, **options):
 
 
 def compose(compose_command, command, *args, **options):
-    logger.debug(
-        f'compose {compose_command} command="{command}" args={args} options={options}'
-    )
+    logger.debug(f'compose {compose_command} command="{command}" args={args} options={options}')
     # Add default ENV and configured ENVs
     env = {
         "APP_DIR": CONFIG.DOCKER.APP_DIR,

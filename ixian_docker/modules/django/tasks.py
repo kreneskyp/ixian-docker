@@ -175,6 +175,4 @@ class Runserver(Task):
     depends = ["compose_runtime"]
 
     def execute(self, *args):
-        return run(
-            MANAGE_CMD, "--service-ports", "runserver", *(args or ["0.0.0.0:8000"]),
-        )
+        return run(MANAGE_CMD, "--service-ports", "runserver", *(args or ["0.0.0.0:8000"]),)

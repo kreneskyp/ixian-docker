@@ -17,9 +17,7 @@ from ixian.config import CONFIG
 from ixian_docker.modules.docker.utils.volumes import convert_volume_flags
 
 
-def run_builder(
-    image, outputs=None, command="build", flags=None, env=None, volumes=None
-):
+def run_builder(image, outputs=None, command="build", flags=None, env=None, volumes=None):
     """Run a docker builder container.
 
     This function is a helper for using the docker builder pattern.
@@ -53,9 +51,7 @@ def run_builder(
     output_volume_flags = " ".join(
         [
             CONFIG.format(
-                "-v {PROJECT_NAME}.{output}:{DOCKER.APP_DIR}/{output}",
-                image=image,
-                output=output,
+                "-v {PROJECT_NAME}.{output}:{DOCKER.APP_DIR}/{output}", image=image, output=output,
             )
             for output in outputs or []
         ]
@@ -98,17 +94,11 @@ def build_library_image(tag, image, env=None, volumes=None):
     # commit the builder first to create a blank container for the new image.
     # This ensures that this command doesn't update the builder container and
     # taint it for other builds.
-    execute(
-        "docker commit {image} {library_image}".format(image=image, library_image=tag)
-    )
+    execute("docker commit {image} {library_image}".format(image=image, library_image=tag))
 
     # run the builder and commit the changes
     run_builder(tag, env=env, volumes=volumes)
-    execute(
-        "docker commit {library_image} {library_image}".format(
-            image=image, library_image=tag
-        )
-    )
+    execute("docker commit {library_image} {library_image}".format(image=image, library_image=tag))
 
 
 def build_library_volumes(image, outputs, env=None, volumes=None):

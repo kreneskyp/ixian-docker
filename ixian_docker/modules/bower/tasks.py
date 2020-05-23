@@ -75,8 +75,7 @@ class BuildBower(Task):
 
     def execute(self, *args):
         run(
-            "{BOWER.BIN} install {BOWER.CONFIG_FILE_PATH}",
-            CONFIG.BOWER.ARGS + list(args),
+            "{BOWER.BIN} install {BOWER.CONFIG_FILE_PATH}", CONFIG.BOWER.ARGS + list(args),
         )
 
 

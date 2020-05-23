@@ -40,16 +40,12 @@ PULL_SUCCESSFUL = [
         "id": "89d9c30c1d48",
     },
     {"status": "Pull complete", "progressDetail": {}, "id": "89d9c30c1d48"},
-    {
-        "status": "Digest: sha256:c19173c5ada610a5989151111163d28a67368362762534d8a8121ce95cf2bd5a"
-    },
+    {"status": "Digest: sha256:c19173c5ada610a5989151111163d28a67368362762534d8a8121ce95cf2bd5a"},
     {"status": "Status: Downloaded newer image for alpine:latest"},
 ]
 PULL_ALREADY_PRESENT = [
     {"status": "Pulling from library/alpine", "id": "latest"},
-    {
-        "status": "Digest: sha256:c19173c5ada610a5989151111163d28a67368362762534d8a8121ce95cf2bd5a"
-    },
+    {"status": "Digest: sha256:c19173c5ada610a5989151111163d28a67368362762534d8a8121ce95cf2bd5a"},
     {"status": "Status: Image is up to date for alpine:latest"},
 ]
 
@@ -140,9 +136,7 @@ PUSH_ALREADY_PRESENT = [
 ]
 
 ECR_PUSH_AUTH_FAILURE = [
-    {
-        "status": "The push refers to repository [FAKE.dkr.ecr.us-west-2.amazonaws.com/testing]"
-    },
+    {"status": "The push refers to repository [FAKE.dkr.ecr.us-west-2.amazonaws.com/testing]"},
     {"status": "Preparing", "progressDetail": {}, "id": "77cae8ab23bf"},
     {
         "errorDetail": {

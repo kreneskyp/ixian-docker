@@ -54,7 +54,5 @@ class ESLint(Task):
 
     def execute(self, *args):
         formatted_args = " ".join(args)
-        command = CONFIG.format(
-            "{ESLINT.BIN} {args} {DOCKER.PROJECT_DIR}", args=formatted_args
-        )
+        command = CONFIG.format("{ESLINT.BIN} {args} {DOCKER.PROJECT_DIR}", args=formatted_args)
         return run(command)
