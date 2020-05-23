@@ -21,8 +21,8 @@ from ixian.utils.decorators import classproperty
 
 
 class PythonConfig(Config):
-    @classproperty
-    def MODULE_DIR(cls):
+    @property
+    def MODULE_DIR(cls) -> str:
         """Directory where ixian_docker.python is installed"""
         from ixian_docker.modules import python
 

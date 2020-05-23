@@ -13,52 +13,70 @@
 # limitations under the License.
 
 import os
+from typing import List, Dict
 
-from ixian.check.checker import hash_object
 from ixian.config import Config, CONFIG
 from ixian.module import MODULES
-from ixian.modules.filesystem.file_hash import FileHash
-from ixian.utils.decorators import classproperty
 
 
 class DockerConfig(Config):
-    """Configuration for Docker module."""
+    """Configuration for Docker module.
 
-    @classproperty
-    def ROOT_MODULE_DIR(cls):
-        """Directory where ixian.docker is installed"""
+    This config class contains the building blocks for building docker images and running
+    containers. This class is normally accessible from :code:`CONFIG.DOCKER`
+    """
+
+    @property
+    def ROOT_MODULE_DIR(cls) -> str:
+        """
+        Directory where ixian.docker is installed. Use this to reference files within the python
+        package when installed within your environment.
+        """
         import ixian_docker
 
         return os.path.dirname(os.path.realpath(ixian_docker.__file__))
 
-    @classproperty
-    def MODULE_DIR(cls):
-        """Directory where modules.docker is installed"""
+    @property
+    def MODULE_DIR(cls) -> str:
+        """
+        Directory where modules.docker is installed. Use this to reference files within the docker
+        module when isntalled within your environment. (e.g. to reference templates)
+        """
         from ixian_docker.modules import docker
 
         return os.path.dirname(os.path.realpath(docker.__file__))
 
+    #: The docker image will be tagged with this tag when built.
+    #:
+    #: By default, this tag uses the hash from :code:`build_image`. The hash should represent the
+    #: current state and identify the image that would be built.
     IMAGE_TAG = "runtime-{TASKS.BUILD_IMAGE.HASH}"
+
+    #: The base docker image will be tagged with this tag when built.
+    #:
+    #: By default, this tag uses the hash from :code:`build_base_image`. The hash should represent
+    #: the current state and identify the image that would be built.
     BASE_IMAGE_TAG = "base-{TASKS.BUILD_BASE_IMAGE.HASH}"
 
-    # TODO: is this still needed since we're moving away from volumes
-    @classproperty
-    def VOLUMES(self):
-        """Volumes included in every environment.
+    @property
+    def VOLUMES(self) -> List[str]:
+        """
+        Volumes included in every environment.
 
         This property contains a list of docker volume mapping (host:client).
         Volumes are mounted by compose in all environments.
 
-        This property aggregates volumes from all configured modules.
+        This property aggregates :code:`volumes` from all modules that configure it.
         """
         volumes = []
         for module_configs in MODULES.values():
             volumes.extend(module_configs.get("volumes", []))
         return volumes
 
-    @classproperty
-    def DEV_VOLUMES(self):
-        """Volumes included in local development environment.
+    @property
+    def DEV_VOLUMES(self) -> List[str]:
+        """
+        Volumes included in local development environment.
 
         This property contains a list of docker volume mapping (host:client).
         Dev volumes are mounted by compose when doing local development. They
@@ -72,27 +90,31 @@ class DockerConfig(Config):
             volumes.extend(module_configs.get("dev_volumes", []))
         return volumes
 
-    @classproperty
+    @property
     def ENV(self):
-        """ENV settings included in all environments.
+        """
+        ENV settings included in all environments.
 
         This property returns a dict of ENV variables passed to compose.
 
-        This property aggregates `env` from all configured modules.
+        This property aggregates :code:`env` from modules that define it.
         """
         env = {}
         for module_configs in MODULES.values():
             env.update(module_configs.get("dev_environment", {}))
         return env
 
-    @classproperty
+    @property
     def DEV_ENV(self):
-        """ENV settings included in local development environment.
+        """
+        ENV settings included in local development environment.
 
         This property returns a dict of ENV settings that are passed to compose
-        when ENV == DEV.
+        when :code:`ENV == DEV`.
 
         This property aggregates dev_environment from all configured modules.
+        This property aggregates :code:`dev_environment` from modules that define it.
+        :code:`dev_environment` must be a dict.
         """
         env = {}
         for module_configs in MODULES.values():
@@ -100,54 +122,77 @@ class DockerConfig(Config):
         return env
 
     # App file structure:
-    #  - HOME_DIR: home directory for root user
-    #  - ENV_DIR: root directory for apps
-    #  - APP_DIR: root directory for the app
-    #  - APP_BIN: run scripts and other utilities for managing app.
-    #  - PROJECT_DIR: root dir for project.
-    HOME_DIR = "/root"
-    ENV_DIR = "/srv"
-    APP_DIR = "{DOCKER.ENV_DIR}/{PROJECT_NAME}"
-    APP_BIN = "{DOCKER.APP_DIR}/bin"
-    APP_ETC = "{DOCKER.APP_DIR}/etc"
-    PROJECT_DIR = "{DOCKER.APP_DIR}/project"
+    #: home directory for root user
+    HOME_DIR: str = "/root"
+
+    #: root directory for apps
+    ENV_DIR: str = "/srv"
+
+    #: root directory for this app
+    APP_DIR: str = "{DOCKER.ENV_DIR}/{PROJECT_NAME}"
+
+    #: run scripts and other utilities for managing app.
+    APP_BIN: str = "{DOCKER.APP_DIR}/bin"
+
+    #: configuration files for app
+    APP_ETC: str = "{DOCKER.APP_DIR}/etc"
 
     # Registry settings
-    REGISTRY = "docker.io"
-    REGISTRY_PATH = "library"
+    #: Registry to push/pull from
+    REGISTRY: str = "docker.io"
+    #: Path to images within registry.
+    REGISTRY_PATH: str = "library"
 
     # Image tags
-    REPOSITORY = "{DOCKER.REGISTRY}/{DOCKER.REGISTRY_PATH}/{PROJECT_NAME}"
-    IMAGE = "{DOCKER.REPOSITORY}:{DOCKER.IMAGE_TAG}"
-    IMAGE_FULL = "{DOCKER.REPOSITORY}:{DOCKER.IMAGE_TAG}"
-    BASE_IMAGE = "{DOCKER.REPOSITORY}:{DOCKER.BASE_IMAGE_TAG}"
+    #: Full URL for docker repository that store images from the build.
+    REPOSITORY: str = "{DOCKER.REGISTRY}/{DOCKER.REGISTRY_PATH}/{PROJECT_NAME}"
+    #: Full url and tag for docker image
+    IMAGE: str = "{DOCKER.REPOSITORY}:{DOCKER.IMAGE_TAG}"
+    #: Full url and tag for base docker image
+    BASE_IMAGE: str = "{DOCKER.REPOSITORY}:{DOCKER.BASE_IMAGE_TAG}"
 
-    # Default app in docker-compose file
-    DEFAULT_APP = "app"
+    #: Default docker-compose app to start if :code:`compose` caller does not specify one. Value
+    #: must exist in the docker-compose file.
+    DEFAULT_APP: str = "app"
 
-    # Name of Dockerfile to build with build_app
-    DOCKERFILE = "Dockerfile"
-    DOCKERFILE_BASE = "Dockerfile.base"
+    #: Path to Dockerfile to build with build_app
+    DOCKERFILE: str = "Dockerfile"
+    #: Path to Dockerfile used to build base image
+    DOCKERFILE_BASE: str = "Dockerfile.base"
 
-    # Files needed for build
+    #: Files needed to build the image. These images will be included in the image hash and will
+    #: trigger rebuilds when changed.
     IMAGE_FILES = []
+    #: Files needed to build the base image. These images will be included in the image hash and
+    #: will trigger rebuilds when changed.
     BASE_IMAGE_FILES = [
         "{PWD}/root/{PROJECT_NAME}/bin/",
         "{PWD}/root/{PROJECT_NAME}/etc/base",
     ]
 
-    # Module files added to docker build context.
-    MODULE_CONTEXT = "{BUILDER_DIR}/module_context"
+    # TODO: is module_context still used?
+    #: Module files added to docker build context.
+    MODULE_CONTEXT: str = "{BUILDER_DIR}/module_context"
 
-    COMPOSE_IMAGE = "{PYTHON.IMAGE}"
-    COMPOSE_IMAGE_TASK = "build_python_image"
+    #: Image to use when running :code:`compose`
+    #:
+    #: This may be an image other than the runtime image. Often you'll want to skip the final build
+    #: step and work with an intermediate image.
+    COMPOSE_IMAGE: str = "{PYTHON.IMAGE}"
 
-    # Default flags passed to Compose
-    COMPOSE_FLAGS = ["--rm", "-u root"]
+    #: Task that build the image needed for running compose
+    COMPOSE_IMAGE_TASK: str = "build_python_image"
 
-    @classproperty
-    def COMPOSE_ENV(self):
-        """Environment variables set when running compose."""
+    #: Default flags passed to Compose. These flags will be passed by default to all calls to
+    #: :code:`compose`. These default args are merged with args passed to the `compose` api by
+    #: tasks or by the user.
+    COMPOSE_FLAGS: List[str] = ["--rm", "-u root"]
+
+    @property
+    def COMPOSE_ENV(self) -> Dict[str, str]:
+        """
+        Environment variables passed to all calls :code:`compose`.
+        """
         return {
             "DOCKER_IMAGE": CONFIG.DOCKER.COMPOSE_IMAGE,
             "DOCKER_NPM_IMAGE": CONFIG.NPM.IMAGE,

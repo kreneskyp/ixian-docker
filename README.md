@@ -1,15 +1,14 @@
+[![Documentation Status](https://readthedocs.org/projects/ixian-docker/badge/?version=latest)](https://ixian-docker.readthedocs.io/en/latest/?badge=latest)
+
 # Ixian.docker
 
 Ixian.docker is an [ixian](https://github.com/kreneskyp/ixian) utility for implementing docker 
 build processes. It includes a non-linear implementation of a [multi-stage builder 
 pattern](docker.md#pattern). It has builders and tasks for some common build steps.
 
-For more information tasks provided by these modules:
-* [Docker](docs/bak/docker.md)
-* [Python + Pipenv](docs/bak/python.md)
-* [Node + NPM](docs/bak/npm.md)
-* [Webpack](docs/bak/webpack.md)
-* [Django](docs/django.md)
+For more main docs:
+https://ixian-docker.readthedocs.io
+
 
 ## Installation
 
@@ -30,17 +29,17 @@ The [Docker module](docs/bak/docker.md) provides the base
 enabled for the others to function. 
 
 ```python
+# ixian.py
 from ixian.config import CONFIG
-from ixian.module import load_modules
+from ixian.module import load_module
 
-CONFIG.PROJECT_NAME = 'my_project'
-load_modules(
-    'ixian.modules.docker',
-    'ixian.modules.python',
-    'ixian.modules.django',
-    'ixian.modules.npm',
-    'ixian.modules.webpack',
-)
+def init():
+    CONFIG.PROJECT_NAME = 'my_project'
+    load_module('ixian.modules.docker')
+    load_module('ixian.modules.python')
+    load_module('ixian.modules.django')
+    load_module('ixian.modules.npm')
+    load_module('ixian.modules.webpack')
 ```
 
 #### Use Tasks
