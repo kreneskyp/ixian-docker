@@ -69,12 +69,12 @@ Tasks
 
 black
 ------------------
-Run the black formatter.
+Run the **black** formatter.
 
-This is a wrapper around ``black`` that runs it within the docker image using ``compose``.
-Args are passed through to ``black``.
+This is a wrapper around **black** that runs it within the docker image using ``compose``.
+Args are passed through to **black**.
 
-For example, this returns ``black`` internal help.
+For example, this returns **black** internal help.
 
 .. code-block:: bash
 

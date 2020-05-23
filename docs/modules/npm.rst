@@ -5,25 +5,26 @@ NPM
 The NPM module provides tasks for installing and managing javascript packages using the NPM package
 manager.
 
-.. code-block:: text
+    .. code-block:: text
 
-    Relied upon by more than 11 million developers worldwide, npm is committed to making JavaScript
-    development elegant, productive, and safe. The free npm Registry has become the center of
-    JavaScript code sharing, and with more than one million packages, the largest software registry
-    in the world. Our other tools and services take the Registry, and the work you do around it, to
-    the next level.
+        Relied upon by more than 11 million developers worldwide, npm is committed to making JavaScript
+        development elegant, productive, and safe. The free npm Registry has become the center of
+        JavaScript code sharing, and with more than one million packages, the largest software registry
+        in the world. Our other tools and services take the Registry, and the work you do around it, to
+        the next level.
 
-https://www.npmjs.com/
+    https://www.npmjs.com/
 
-This module builds an image containing installed NPM packages in ``NPM.NODE_MODULES``. When used as
-an intermediate image ``NPM.NODE_MODULES`` may be copied into the runtime image.
+This module has these features:
 
+    * It builds an image with NPM packages installed.
+    * NPM and NCU tasks for managing packages
 
 .. note::
 
-    This module is requires NodeJS be installed in your image. Ixian does not *yet* provide a
-    NodeJS module but one based on NVM is in the works. Until then it is recommended you install a
-    node version using NVM.
+    This module requires NodeJS be installed in your image. Ixian does not *yet* provide a NodeJS
+    module but one based on NVM is in the works. Until then it is recommended you install a node
+    version using NVM.
 
 Setup
 ==================
@@ -40,7 +41,10 @@ Setup
 
 **2. Configure NPM**
 
-    NPM uses ``package.json`` for configuration which your project must provide
+    NPM uses ``package.json`` for configuration which your project must provide. This is configured
+    with ``NPM.PACKAGE_JSON`` which defaults to ``DOCKER.APP_ENV/package.json``
+
+    NPM requires ``package.json`` be in your working directory.
 
 
 Config
