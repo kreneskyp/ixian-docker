@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/ixian-docker/badge/?version=latest)](https://ixian-docker.readthedocs.io/en/latest/?badge=latest)
+
 # Ixian.docker
 
 Ixian.docker is an [ixian](https://github.com/kreneskyp/ixian) utility for implementing docker 
