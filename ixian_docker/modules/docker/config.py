@@ -126,10 +126,13 @@ class DockerConfig(Config):
     HOME_DIR: str = "/root"
 
     #: root directory for apps
-    ENV_DIR: str = "/srv"
+    ENV_DIR: str = "/opt"
 
     #: root directory for this app
     APP_DIR: str = "{DOCKER.ENV_DIR}/{PROJECT_NAME}"
+
+    #: working directory for running app
+    WORK_DIR: str = "{DOCKER.APP_DIR}"
 
     #: run scripts and other utilities for managing app.
     APP_BIN: str = "{DOCKER.APP_DIR}/bin"
