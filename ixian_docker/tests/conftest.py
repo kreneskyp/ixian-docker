@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 
 import pytest
 from docker import errors as docker_errors
@@ -28,6 +29,14 @@ TEST_IMAGE_NAME = "ixian_docker.tests"
 TEST_IMAGE_TWO_NAME = "ixian_docker.tests.two"
 
 
+def get_tests_dir():
+    """
+    Get the absolute path to the tests directory
+    """
+    import ixian_docker
+    return os.path.dirname(os.path.realpath(ixian_docker.__file__))
+
+
 # =================================================================================================
 # Mock images and Docker api
 # =================================================================================================
@@ -36,18 +45,24 @@ TEST_IMAGE_TWO_NAME = "ixian_docker.tests.two"
 def build_test_image(
     dockerfile="Dockerfile.one",
     tag=TEST_IMAGE_NAME,
-    context="/opt/ixian_docker/ixian_docker/tests/",
+    context=None,
     **kwargs,
 ):
+    if context is None:
+        context = get_tests_dir()
+
     return build_image(tag=tag, context=context, dockerfile=dockerfile, **kwargs)
 
 
 def build_test_image_two(
     dockerfile="Dockerfile.two",
     tag=TEST_IMAGE_TWO_NAME,
-    context="/opt/ixian_docker/ixian_docker/tests/",
+    context=None,
     **kwargs,
 ):
+    if context is None:
+        context = get_tests_dir()
+
     return build_image(tag=tag, context=context, dockerfile=dockerfile, **kwargs)
 
 
