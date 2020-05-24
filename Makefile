@@ -14,8 +14,14 @@ PYENV_DIR=/opt/pyenv
 	${DOCKER_RUN} cp ${PYENV_DIR}/.python-version ${PROJECT_DIR}
 
 
+.PHONY: test
 test: .image_created .python_version
 	${DOCKER_RUN} tox
+
+
+.PHONY: lint
+lint: .image_created .python_version
+	${DOCKER_RUN} tox -e lint
 
 
 .PHONY: black
