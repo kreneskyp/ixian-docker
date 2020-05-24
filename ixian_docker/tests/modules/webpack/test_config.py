@@ -39,5 +39,5 @@ class TestConfig:
         """
         snapshot.assert_match(getattr(CONFIG.WEBPACK, field))
 
-    def test_task_hash(self, mock_environment, snapshot):
+    def test_task_hash(self, mock_webpack_environment, snapshot):
         snapshot.assert_match(CONFIG.TASKS.BUILD_WEBPACK_IMAGE)

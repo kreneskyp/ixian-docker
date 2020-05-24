@@ -18,14 +18,20 @@ from ixian.config import CONFIG
 
 
 EXPECTED_FIELDS = [
+    "APT_PACKAGES",
     "BIN",
     "DOCKERFILE",
+    "ETC",
+    "HOST_ETC",
     "HOST_ROOT_MODULE_PATH",
     "IMAGE",
+    "IMAGE_FILES",
     "IMAGE_TAG",
     "MODULE_DIR",
+    "PIP",
+    "RENDERED_DOCKERFILE",
     "REPOSITORY",
-    "REQUIREMENTS",
+    "REQUIREMENTS_FILES",
     "ROOT_MODULE",
     "ROOT_MODULE_PATH",
     "VIRTUAL_ENV",
@@ -42,5 +48,5 @@ class TestPythonConfig:
         """
         snapshot.assert_match(getattr(CONFIG.PYTHON, field))
 
-    def test_task_hash(self, mock_environment, snapshot):
+    def test_task_hash(self, mock_python_environment, snapshot):
         snapshot.assert_match(CONFIG.TASKS.BUILD_PYTHON_IMAGE)
