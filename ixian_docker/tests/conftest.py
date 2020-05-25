@@ -33,9 +33,9 @@ def get_tests_dir():
     """
     Get the absolute path to the tests directory
     """
-    import ixian_docker
+    from ixian_docker import tests
 
-    return os.path.dirname(os.path.realpath(ixian_docker.__file__))
+    return os.path.dirname(os.path.realpath(tests.__file__))
 
 
 # =================================================================================================
