@@ -66,7 +66,7 @@ class TestBuildImage:
         When context=None then the PWD is used for the context
         """
         build_image("Dockerfile.test", TEST_IMAGE_NAME, context=None)
-        mock_docker_environment.images.build.assert_called_with(
+        mock_docker_environment.api.build.assert_called_with(
             dockerfile="Dockerfile.test", path=pwd(), tag=TEST_IMAGE_NAME
         )
 
@@ -144,7 +144,7 @@ class TestBuildImageIfNeeded:
         If image exists locally, nothing is done.
         """
         build_image_if_needed(TEST_IMAGE_NAME)
-        mock_docker_environment.images.build.assert_not_called()
+        mock_docker_environment.api.build.assert_not_called()
 
     def test_image_exists_registry(self, mock_docker_environment):
         """
@@ -155,7 +155,7 @@ class TestBuildImageIfNeeded:
         mock_docker_environment.api.pull.assert_called_with(
             TEST_IMAGE_NAME, "latest", decode=True, stream=True
         )
-        mock_docker_environment.images.build.assert_not_called()
+        mock_docker_environment.api.build.assert_not_called()
 
     def test_image_exists_registry_pull_not_found(self, mock_docker_environment):
         """
@@ -170,7 +170,7 @@ class TestBuildImageIfNeeded:
         mock_docker_environment.api.pull.assert_called_with(
             TEST_IMAGE_NAME, "latest", decode=True, stream=True
         )
-        mock_docker_environment.images.build.assert_called_with(**self.default_call_kwargs)
+        mock_docker_environment.api.build.assert_called_with(**self.default_call_kwargs)
 
     def test_image_exists_registry_no_pull(self, mock_docker_environment):
         """
@@ -179,14 +179,14 @@ class TestBuildImageIfNeeded:
         """
         mock_docker_environment.images.get.side_effect = DockerNotFound("testing")
         build_image_if_needed(TEST_IMAGE_NAME, pull=False)
-        mock_docker_environment.images.build.assert_called_with(**self.default_call_kwargs)
+        mock_docker_environment.api.build.assert_called_with(**self.default_call_kwargs)
 
     def test_image_exists_local_and_registry(self, mock_docker_environment):
         """
         If image exists locally, nothing is done.
         """
         build_image_if_needed(TEST_IMAGE_NAME)
-        mock_docker_environment.images.build.assert_not_called()
+        mock_docker_environment.api.build.assert_not_called()
 
     def test_image_does_not_exist(self, mock_docker_environment):
         """
@@ -196,17 +196,17 @@ class TestBuildImageIfNeeded:
         mock_docker_environment.images.get.side_effect = DockerNotFound("testing")
         mock_docker_environment.images.get_registry_data.side_effect = DockerNotFound("mocked")
         build_image_if_needed(TEST_IMAGE_NAME)
-        mock_docker_environment.images.build.assert_called_with(**self.default_call_kwargs)
+        mock_docker_environment.api.build.assert_called_with(**self.default_call_kwargs)
 
         build_image_if_needed(TEST_IMAGE_NAME, pull=True)
-        mock_docker_environment.images.build.assert_called_with(**self.default_call_kwargs)
+        mock_docker_environment.api.build.assert_called_with(**self.default_call_kwargs)
 
     def test_force_with_local_image(self, mock_docker_environment):
         """
         if force=True then image will always build
         """
         build_image_if_needed(TEST_IMAGE_NAME, force=True)
-        mock_docker_environment.images.build.assert_called_with(**self.default_call_kwargs)
+        mock_docker_environment.api.build.assert_called_with(**self.default_call_kwargs)
 
     def test_force_with_registry_image(self, mock_docker_environment):
         """
@@ -214,14 +214,14 @@ class TestBuildImageIfNeeded:
         """
         mock_docker_environment.images.get.side_effect = DockerNotFound("testing")
         build_image_if_needed(TEST_IMAGE_NAME, force=True)
-        mock_docker_environment.images.build.assert_called_with(**self.default_call_kwargs)
+        mock_docker_environment.api.build.assert_called_with(**self.default_call_kwargs)
 
     def test_force_with_local_and_registry_image(self, mock_docker_environment):
         """
         if force=True then image will always build
         """
         build_image_if_needed(TEST_IMAGE_NAME, force=True)
-        mock_docker_environment.images.build.assert_called_with(**self.default_call_kwargs)
+        mock_docker_environment.api.build.assert_called_with(**self.default_call_kwargs)
 
     def test_unknown_registry(self, mock_docker_environment):
         """
@@ -229,7 +229,7 @@ class TestBuildImageIfNeeded:
         """
         mock_docker_environment.images.get.side_effect = DockerNotFound("testing")
         build_image_if_needed("unknown.registry.com/foo/bar")
-        mock_docker_environment.images.build.assert_called_with(
+        mock_docker_environment.api.build.assert_called_with(
             dockerfile="Dockerfile",
             tag="unknown.registry.com/foo/bar:latest",
             path="/opt/ixian_docker",
@@ -246,12 +246,12 @@ class TestBuildImageIfNeeded:
         mock_docker_environment.images.get.side_effect = DockerNotFound("testing")
         mock_docker_environment.images.get_registry_data.side_effect = DockerNotFound("mocked")
         build_image_if_needed(TEST_IMAGE_NAME, "custom_tag")
-        mock_docker_environment.images.build.assert_called_with(
+        mock_docker_environment.api.build.assert_called_with(
             dockerfile="Dockerfile", path="/opt/ixian_docker", tag=tag
         )
 
         build_image_if_needed(TEST_IMAGE_NAME, "custom_tag", pull=True)
-        mock_docker_environment.images.build.assert_called_with(
+        mock_docker_environment.api.build.assert_called_with(
             dockerfile="Dockerfile", path="/opt/ixian_docker", tag=tag
         )
 
