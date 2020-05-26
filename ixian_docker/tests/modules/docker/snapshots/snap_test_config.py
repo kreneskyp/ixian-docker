@@ -18,8 +18,6 @@ snapshots['TestDockerConfig.test_read[BASE_IMAGE_FILES] 1'] = [
     '{PWD}/root/{PROJECT_NAME}/etc/base'
 ]
 
-snapshots['TestDockerConfig.test_read[BASE_IMAGE_HASH] 1'] = 'ce1b44591b99c65d60dd3b7f2619794d4134f376a4436c3e05973e3eee4cceb1'
-
 snapshots['TestDockerConfig.test_read[BASE_IMAGE_TAG] 1'] = 'base-ce1b44591b99c65d60dd3b7f2619794d4134f376a4436c3e05973e3eee4cceb1'
 
 snapshots['TestDockerConfig.test_read[COMPOSE_FLAGS] 1'] = [
@@ -43,8 +41,6 @@ snapshots['TestDockerConfig.test_read[DOCKERFILE] 1'] = 'Dockerfile'
 
 snapshots['TestDockerConfig.test_read[DOCKERFILE_BASE] 1'] = 'Dockerfile.base'
 
-snapshots['TestDockerConfig.test_read[DOCKERFILE_TEMPLATE] 1'] = '/opt/ixian_docker/ixian_docker/modules/docker/Dockerfile.template'
-
 snapshots['TestDockerConfig.test_read[ENV] 1'] = {
 }
 
@@ -57,8 +53,6 @@ snapshots['TestDockerConfig.test_read[IMAGE_TAG] 1'] = 'runtime-4ce7d626ea77fdf2
 snapshots['TestDockerConfig.test_read[MODULE_CONTEXT] 1'] = '.builder/module_context'
 
 snapshots['TestDockerConfig.test_read[MODULE_DIR] 1'] = '/opt/ixian_docker/ixian_docker/modules/docker'
-
-snapshots['TestDockerConfig.test_read[PROJECT_DIR] 1'] = '/opt/unittests/project'
 
 snapshots['TestDockerConfig.test_read[REGISTRY] 1'] = 'docker.io'
 

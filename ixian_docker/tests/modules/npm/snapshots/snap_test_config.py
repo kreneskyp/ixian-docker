@@ -9,8 +9,6 @@ snapshots = Snapshot()
 
 snapshots['TestNPMConfig.test_read[DOCKERFILE] 1'] = '/opt/ixian_docker/ixian_docker/modules/npm/Dockerfile'
 
-snapshots['TestNPMConfig.test_read[DOCKERFILE_TEMPLATE] 1'] = '/opt/ixian_docker/ixian_docker/modules/npm/Dockerfile.template'
-
 snapshots['TestNPMConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:npm-40e65884dc28170163c36bc471446ae82977fcd22d8b330d9ab4f6634de1de74'
 
 snapshots['TestNPMConfig.test_read[IMAGE_TAG] 1'] = 'npm-40e65884dc28170163c36bc471446ae82977fcd22d8b330d9ab4f6634de1de74'

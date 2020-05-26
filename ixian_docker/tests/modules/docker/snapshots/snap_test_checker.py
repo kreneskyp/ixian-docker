@@ -16,7 +16,7 @@ snapshots['TestDockerImageExists.test_image_exists 3'] = {
 }
 
 snapshots['TestDockerImageExists.test_image_exists 4'] = {
-    'ixian_docker.test': 'MOCK_ID__ixian_docker.test'
+    'ixian_docker.test': None
 }
 
 snapshots['TestDockerImageExists.test_image_exists 5'] = '/opt/ixian_docker/.builder/checks/5595b7995104ee8881513f69e14d28dc686afc5b43894b07c5b7d1a828f1d621'

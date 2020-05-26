@@ -19,8 +19,6 @@ snapshots['TestPythonConfig.test_read[IMAGE_TAG] 1'] = 'python-3a99b81f43b450b82
 
 snapshots['TestPythonConfig.test_read[REPOSITORY] 1'] = 'docker.io/library/unittests'
 
-snapshots['TestPythonConfig.test_read[REQUIREMENTS] 1'] = 'requirements*.txt'
-
 snapshots['TestPythonConfig.test_read[ROOT_MODULE] 1'] = 'unittests'
 
 snapshots['TestPythonConfig.test_read[ROOT_MODULE_PATH] 1'] = '/opt/unittests/src/unittests'
