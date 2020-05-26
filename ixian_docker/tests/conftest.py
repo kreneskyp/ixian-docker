@@ -87,7 +87,7 @@ def mock_image_exists():
     mocked = patcher.start()
     mocked.return_value = False
     yield mocked
-    mocked.stop()
+    patcher.stop()
 
 
 @pytest.fixture
@@ -96,7 +96,7 @@ def mock_image_exists_in_registry():
     mocked = patcher.start()
     mocked.return_value = False
     yield mocked
-    mocked.stop()
+    patcher.stop()
 
 
 @pytest.fixture
@@ -105,7 +105,7 @@ def mock_pull_image():
     mocked = patcher.start()
     mocked.return_value = False
     yield mocked
-    mocked.stop()
+    patcher.stop()
 
 
 @pytest.fixture
