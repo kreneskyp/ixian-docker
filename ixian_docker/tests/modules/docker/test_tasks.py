@@ -2,8 +2,7 @@ import pytest
 
 from ixian.config import CONFIG
 from ixian.runner import run
-from ixian_docker.modules.docker.utils.images import image_exists, delete_image
-from ixian_docker.tests.mocks.client import MOCK_REGISTRY_CONFIGS
+from ixian_docker.tests.conftest import get_tests_dir
 
 
 class TaskTests:
@@ -106,7 +105,7 @@ class TestBuildBaseImage(TaskTests):
     task = "build_base_image"
 
     def test_execute(self, mock_cli, mock_build_task):
-        CONFIG.DOCKER.DOCKERFILE_BASE = "/opt/ixian_docker/ixian_docker/tests/Dockerfile.one"
+        CONFIG.DOCKER.DOCKERFILE_BASE = f"{get_tests_dir()}/Dockerfile.one"
         mock_cli.mock_in("build_base_image")
         assert_build, *_ = mock_build_task
         assert_build(CONFIG.DOCKER.BASE_IMAGE)
