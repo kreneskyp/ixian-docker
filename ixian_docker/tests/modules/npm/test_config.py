@@ -27,7 +27,7 @@ EXPECTED_FIELDS = [
     "NODE_MODULES_DIR",
     "PACKAGE_JSON",
     "REPOSITORY",
-    "VOLUME"
+    "VOLUME",
 ]
 
 

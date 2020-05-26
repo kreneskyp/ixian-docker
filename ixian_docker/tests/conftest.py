@@ -33,8 +33,9 @@ def get_tests_dir():
     """
     Get the absolute path to the tests directory
     """
-    import ixian_docker
-    return os.path.dirname(os.path.realpath(ixian_docker.__file__))
+    from ixian_docker import tests
+
+    return os.path.dirname(os.path.realpath(tests.__file__))
 
 
 # =================================================================================================
@@ -43,10 +44,7 @@ def get_tests_dir():
 
 
 def build_test_image(
-    dockerfile="Dockerfile.one",
-    tag=TEST_IMAGE_NAME,
-    context=None,
-    **kwargs,
+    dockerfile="Dockerfile.one", tag=TEST_IMAGE_NAME, context=None, **kwargs,
 ):
     if context is None:
         context = get_tests_dir()
@@ -55,10 +53,7 @@ def build_test_image(
 
 
 def build_test_image_two(
-    dockerfile="Dockerfile.two",
-    tag=TEST_IMAGE_TWO_NAME,
-    context=None,
-    **kwargs,
+    dockerfile="Dockerfile.two", tag=TEST_IMAGE_TWO_NAME, context=None, **kwargs,
 ):
     if context is None:
         context = get_tests_dir()
@@ -92,7 +87,7 @@ def mock_image_exists():
     mocked = patcher.start()
     mocked.return_value = False
     yield mocked
-    mocked.stop()
+    patcher.stop()
 
 
 @pytest.fixture
@@ -101,7 +96,7 @@ def mock_image_exists_in_registry():
     mocked = patcher.start()
     mocked.return_value = False
     yield mocked
-    mocked.stop()
+    patcher.stop()
 
 
 @pytest.fixture
@@ -110,7 +105,7 @@ def mock_pull_image():
     mocked = patcher.start()
     mocked.return_value = False
     yield mocked
-    mocked.stop()
+    patcher.stop()
 
 
 @pytest.fixture
