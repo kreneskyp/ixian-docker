@@ -48,11 +48,11 @@ snapshots['TestDockerConfig.test_read[ENV_DIR] 1'] = '/opt'
 
 snapshots['TestDockerConfig.test_read[HOME_DIR] 1'] = '/root'
 
-snapshots['TestDockerConfig.test_read[IMAGE_TAG] 1'] = 'runtime-4ce7d626ea77fdf21b00a7257e1ef91b3b18e824a363943872f135104eb66c0f'
+snapshots['TestDockerConfig.test_read[IMAGE_TAG] 1'] = 'runtime-37d8464859171df98129e3d8ebb031a235bf4692e883af4d94eb7a920fe5febb'
 
 snapshots['TestDockerConfig.test_read[MODULE_CONTEXT] 1'] = '.builder/module_context'
 
-snapshots['TestDockerConfig.test_read[MODULE_DIR] 1'] = '/opt/ixian_docker/ixian_docker/modules/docker'
+snapshots['TestDockerConfig.test_read[MODULE_DIR] 1'] = '/home/runner/work/ixian_docker/ixian_docker/ixian_docker/modules/docker'
 
 snapshots['TestDockerConfig.test_read[REGISTRY] 1'] = 'docker.io'
 
@@ -60,12 +60,12 @@ snapshots['TestDockerConfig.test_read[REGISTRY_PATH] 1'] = 'library'
 
 snapshots['TestDockerConfig.test_read[REPOSITORY] 1'] = 'docker.io/library/unittests'
 
-snapshots['TestDockerConfig.test_read[ROOT_MODULE_DIR] 1'] = '/opt/ixian_docker/ixian_docker'
+snapshots['TestDockerConfig.test_read[ROOT_MODULE_DIR] 1'] = '/home/runner/work/ixian_docker/ixian_docker/ixian_docker'
 
 snapshots['TestDockerConfig.test_read[VOLUMES] 1'] = [
 ]
 
-snapshots['TestDockerConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:runtime-4ce7d626ea77fdf21b00a7257e1ef91b3b18e824a363943872f135104eb66c0f'
+snapshots['TestDockerConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:runtime-37d8464859171df98129e3d8ebb031a235bf4692e883af4d94eb7a920fe5febb'
 
 snapshots['TestDockerConfig.test_task_hash 1'] = GenericRepr('<ixian.config.TaskConfig object at 0x100000000>')
 
