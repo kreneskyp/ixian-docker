@@ -136,13 +136,16 @@ class TestBuildImageIfNeeded:
 
     default_image = f"{TEST_IMAGE_NAME}:latest"
     default_call_kwargs = dict(
-        dockerfile="Dockerfile", path="/opt/ixian_docker", tag=default_image
+        dockerfile="Dockerfile",
+        path="/home/runner/work/ixian_docker/ixian_docker",
+        tag=default_image,
     )
 
     def test_image_exists_local(self, mock_docker_environment):
         """
         If image exists locally, nothing is done.
         """
+        mock_docker_environment.images.get.return_value = True
         build_image_if_needed(TEST_IMAGE_NAME)
         mock_docker_environment.api.build.assert_not_called()
 
@@ -232,7 +235,7 @@ class TestBuildImageIfNeeded:
         mock_docker_environment.api.build.assert_called_with(
             dockerfile="Dockerfile",
             tag="unknown.registry.com/foo/bar:latest",
-            path="/opt/ixian_docker",
+            path="/home/runner/work/ixian_docker/ixian_docker",
         )
 
     def test_recheck_fails(self):
@@ -247,12 +250,12 @@ class TestBuildImageIfNeeded:
         mock_docker_environment.images.get_registry_data.side_effect = DockerNotFound("mocked")
         build_image_if_needed(TEST_IMAGE_NAME, "custom_tag")
         mock_docker_environment.api.build.assert_called_with(
-            dockerfile="Dockerfile", path="/opt/ixian_docker", tag=tag
+            dockerfile="Dockerfile", path="/home/runner/work/ixian_docker/ixian_docker", tag=tag
         )
 
         build_image_if_needed(TEST_IMAGE_NAME, "custom_tag", pull=True)
         mock_docker_environment.api.build.assert_called_with(
-            dockerfile="Dockerfile", path="/opt/ixian_docker", tag=tag
+            dockerfile="Dockerfile", path="/home/runner/work/ixian_docker/ixian_docker", tag=tag
         )
 
 
