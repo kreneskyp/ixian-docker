@@ -52,7 +52,7 @@ ENV PYENV_3_6=3.6.9 \
     PYENV_3_8=3.8.2
 ENV PYENV_VERSIONS "$PYENV_3_6 $PYENV_3_7 $PYENV_3_8"
 ENV PATH "/root/.pyenv/bin:$PATH"
-RUN curl https://pyenv.run | bash
+RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 RUN eval "$(pyenv init -)" \
  && eval "$(pyenv virtualenv-init -)"
 
