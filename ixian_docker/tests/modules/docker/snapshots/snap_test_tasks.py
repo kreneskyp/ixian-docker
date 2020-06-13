@@ -49,7 +49,7 @@ snapshots['TestBuildBaseImage.test_execute[image_exists] 2'] = '''
 snapshots['TestBuildBaseImage.test_execute[image_exists] 3'] = [
     (
         (
-            'docker.io/library/unittests:base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'docker.io/library/unittests:base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -71,7 +71,7 @@ snapshots['TestBuildBaseImage.test_execute[image_exists_local] 2'] = '''
 snapshots['TestBuildBaseImage.test_execute[image_exists_local] 3'] = [
     (
         (
-            'docker.io/library/unittests:base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'docker.io/library/unittests:base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -93,7 +93,7 @@ snapshots['TestBuildBaseImage.test_execute[image_does_not_exist] 2'] = '''
 snapshots['TestBuildBaseImage.test_execute[image_does_not_exist] 3'] = [
     (
         (
-            'docker.io/library/unittests:base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'docker.io/library/unittests:base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -104,7 +104,7 @@ snapshots['TestBuildBaseImage.test_execute[image_does_not_exist] 4'] = [
     (
         (
             'docker.io/library/unittests',
-            'base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -123,7 +123,7 @@ snapshots['TestBuildBaseImage.test_execute[pull_image] 2'] = '''
 snapshots['TestBuildBaseImage.test_execute[pull_image] 3'] = [
     (
         (
-            'docker.io/library/unittests:base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'docker.io/library/unittests:base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -134,7 +134,7 @@ snapshots['TestBuildBaseImage.test_execute[pull_image] 4'] = [
     (
         (
             'docker.io/library/unittests',
-            'base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -145,7 +145,7 @@ snapshots['TestBuildBaseImage.test_execute[pull_image] 5'] = [
     (
         (
             'docker.io/library/unittests',
-            'base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -161,7 +161,7 @@ snapshots['TestBuildBaseImage.test_execute[pull_image_not_found] 2'] = '''
 snapshots['TestBuildBaseImage.test_execute[pull_image_not_found] 3'] = [
     (
         (
-            'docker.io/library/unittests:base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'docker.io/library/unittests:base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -172,7 +172,7 @@ snapshots['TestBuildBaseImage.test_execute[pull_image_not_found] 4'] = [
     (
         (
             'docker.io/library/unittests',
-            'base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }
@@ -183,7 +183,7 @@ snapshots['TestBuildBaseImage.test_execute[pull_image_not_found] 5'] = [
     (
         (
             'docker.io/library/unittests',
-            'base-b89734da412e04041f9b7ccb619844ccd6f8fa9a10bf5d70b6294b9b15d84c5e'
+            'base-cb2b61a3ab3b91b612b16472e48791c117955b65912ac88efeed75fe478b8742'
         ,),
         {
         }

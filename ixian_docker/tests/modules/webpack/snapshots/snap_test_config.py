@@ -19,13 +19,13 @@ snapshots['TestConfig.test_read[CONFIG_FILE] 1'] = 'webpack.config.js'
 
 snapshots['TestConfig.test_read[CONFIG_FILE_PATH] 1'] = '/opt/unittests/etc/webpack/webpack.config.js'
 
-snapshots['TestConfig.test_read[DOCKERFILE] 1'] = '/home/runner/work/ixian_docker/ixian_docker/ixian_docker/modules/webpack/Dockerfile.jinja'
+snapshots['TestConfig.test_read[DOCKERFILE] 1'] = '/home/runner/work/ixian-docker/ixian-docker/ixian_docker/modules/webpack/Dockerfile.jinja'
 
-snapshots['TestConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:webpack-5f2a7eddb2aa00f890ca308cb2dc0139bfc3b7037233ba53159efd9967dac4e9'
+snapshots['TestConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:webpack-330bc158ae458a8144b3358230856a20005eba7a52789da67f990b5678752a28'
 
-snapshots['TestConfig.test_read[IMAGE_TAG] 1'] = 'webpack-5f2a7eddb2aa00f890ca308cb2dc0139bfc3b7037233ba53159efd9967dac4e9'
+snapshots['TestConfig.test_read[IMAGE_TAG] 1'] = 'webpack-330bc158ae458a8144b3358230856a20005eba7a52789da67f990b5678752a28'
 
-snapshots['TestConfig.test_read[MODULE_DIR] 1'] = '/home/runner/work/ixian_docker/ixian_docker/ixian_docker/modules/webpack'
+snapshots['TestConfig.test_read[MODULE_DIR] 1'] = '/home/runner/work/ixian-docker/ixian-docker/ixian_docker/modules/webpack'
 
 snapshots['TestConfig.test_read[REPOSITORY] 1'] = 'docker.io/library/unittests'
 

@@ -137,7 +137,7 @@ class TestBuildImageIfNeeded:
     default_image = f"{TEST_IMAGE_NAME}:latest"
     default_call_kwargs = dict(
         dockerfile="Dockerfile",
-        path="/home/runner/work/ixian_docker/ixian_docker",
+        path="/home/runner/work/ixian-docker/ixian-docker",
         tag=default_image,
     )
 
@@ -235,7 +235,7 @@ class TestBuildImageIfNeeded:
         mock_docker_environment.api.build.assert_called_with(
             dockerfile="Dockerfile",
             tag="unknown.registry.com/foo/bar:latest",
-            path="/home/runner/work/ixian_docker/ixian_docker",
+            path="/home/runner/work/ixian-docker/ixian-docker",
         )
 
     def test_recheck_fails(self):
@@ -250,12 +250,12 @@ class TestBuildImageIfNeeded:
         mock_docker_environment.images.get_registry_data.side_effect = DockerNotFound("mocked")
         build_image_if_needed(TEST_IMAGE_NAME, "custom_tag")
         mock_docker_environment.api.build.assert_called_with(
-            dockerfile="Dockerfile", path="/home/runner/work/ixian_docker/ixian_docker", tag=tag
+            dockerfile="Dockerfile", path="/home/runner/work/ixian-docker/ixian-docker", tag=tag
         )
 
         build_image_if_needed(TEST_IMAGE_NAME, "custom_tag", pull=True)
         mock_docker_environment.api.build.assert_called_with(
-            dockerfile="Dockerfile", path="/home/runner/work/ixian_docker/ixian_docker", tag=tag
+            dockerfile="Dockerfile", path="/home/runner/work/ixian-docker/ixian-docker", tag=tag
         )
 
 

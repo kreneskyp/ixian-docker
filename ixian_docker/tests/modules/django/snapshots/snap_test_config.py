@@ -12,7 +12,7 @@ snapshots['TestDjangoConfig.test_read[HOST] 1'] = {
 }
 
 snapshots['TestDjangoConfig.test_read[MODULE_DIR] 1'] = {
-    'field': '/home/runner/work/ixian_docker/ixian_docker/ixian_docker/modules/django'
+    'field': '/home/runner/work/ixian-docker/ixian-docker/ixian_docker/modules/django'
 }
 
 snapshots['TestDjangoConfig.test_read[PORT] 1'] = {

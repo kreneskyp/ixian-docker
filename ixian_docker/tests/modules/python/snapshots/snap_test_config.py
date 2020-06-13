@@ -9,13 +9,13 @@ snapshots = Snapshot()
 
 snapshots['TestPythonConfig.test_read[BIN] 1'] = 'python'
 
-snapshots['TestPythonConfig.test_read[DOCKERFILE] 1'] = '/home/runner/work/ixian_docker/ixian_docker/ixian_docker/modules/python/Dockerfile.lib.jinja'
+snapshots['TestPythonConfig.test_read[DOCKERFILE] 1'] = '/home/runner/work/ixian-docker/ixian-docker/ixian_docker/modules/python/Dockerfile.lib.jinja'
 
-snapshots['TestPythonConfig.test_read[HOST_ROOT_MODULE_PATH] 1'] = '/home/runner/work/ixian_docker/ixian_docker/unittests'
+snapshots['TestPythonConfig.test_read[HOST_ROOT_MODULE_PATH] 1'] = '/home/runner/work/ixian-docker/ixian-docker/unittests'
 
-snapshots['TestPythonConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:python-5457d416acb9072bd60eb19a1a85669d5f7798a146796c9dec8538fb906235fd'
+snapshots['TestPythonConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:python-fafedf5f121f5d67ba65a6f871a7a7e4c2aa3ad55ffe4b0e36a5c34c799d6904'
 
-snapshots['TestPythonConfig.test_read[IMAGE_TAG] 1'] = 'python-5457d416acb9072bd60eb19a1a85669d5f7798a146796c9dec8538fb906235fd'
+snapshots['TestPythonConfig.test_read[IMAGE_TAG] 1'] = 'python-fafedf5f121f5d67ba65a6f871a7a7e4c2aa3ad55ffe4b0e36a5c34c799d6904'
 
 snapshots['TestPythonConfig.test_read[REPOSITORY] 1'] = 'docker.io/library/unittests'
 
@@ -29,7 +29,7 @@ snapshots['TestPythonConfig.test_read[VIRTUAL_ENV_DIR] 1'] = '/opt/unittests/.ve
 
 snapshots['TestPythonConfig.test_read[VIRTUAL_ENV_RUN] 1'] = 'python'
 
-snapshots['TestPythonConfig.test_read[MODULE_DIR] 1'] = '/home/runner/work/ixian_docker/ixian_docker/ixian_docker/modules/python'
+snapshots['TestPythonConfig.test_read[MODULE_DIR] 1'] = '/home/runner/work/ixian-docker/ixian-docker/ixian_docker/modules/python'
 
 snapshots['TestPythonConfig.test_read[APT_PACKAGES] 1'] = [
     'make',
@@ -60,7 +60,7 @@ snapshots['TestPythonConfig.test_read[IMAGE_FILES] 1'] = [
 
 snapshots['TestPythonConfig.test_read[PIP] 1'] = 'pip'
 
-snapshots['TestPythonConfig.test_read[RENDERED_DOCKERFILE] 1'] = '/home/runner/work/ixian_docker/ixian_docker/.builder/Dockerfile.python'
+snapshots['TestPythonConfig.test_read[RENDERED_DOCKERFILE] 1'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/Dockerfile.python'
 
 snapshots['TestPythonConfig.test_read[REQUIREMENTS_FILES] 1'] = [
     '{PYTHON.ETC}/requirements.txt'

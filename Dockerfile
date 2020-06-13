@@ -28,7 +28,7 @@ RUN apt-get update --fix-missing && \
 
 
 # Project directories
-ENV PROJECT_DIR /home/runner/work/$PROJECT_NAME/$PROJECT_NAME
+ENV PROJECT_DIR /home/runner/work/ixian-docker/ixian-docker
 ENV SRC_ROOT $PROJECT_DIR/$PROJECT_NAME
 ENV ROOT_MODULE $PROJECT_NAME
 
