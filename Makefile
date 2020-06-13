@@ -1,7 +1,11 @@
 PROJECT_NAME=ixian_docker
 IMAGE=ixian_docker_tests
-PROJECT_DIR=/opt/${PROJECT_NAME}
-DOCKER_RUN=docker run -it -v `pwd`:${PROJECT_DIR} -v /var/run/docker.sock:/var/run/docker.sock ${IMAGE}
+PROJECT_DIR=/home/runner/work/ixian-docker/ixian-docker
+DOCKER_RUN=docker run -it \
+    -v `pwd`:${PROJECT_DIR} \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v ~/.bash_history:/root/.bash_history \
+    ${IMAGE}
 PYENV_DIR=/opt/pyenv
 
 
