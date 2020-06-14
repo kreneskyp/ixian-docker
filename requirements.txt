@@ -2,5 +2,5 @@ argcomplete==1.9.4
 argparse==1.4.0
 docker==4.1.0
 jinja2==2.10.3
-ixian==0.0.1.dev194
+ixian==0.2.4
 boto3
