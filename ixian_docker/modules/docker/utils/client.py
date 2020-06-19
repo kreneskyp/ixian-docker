@@ -55,8 +55,12 @@ class DockerClient:
         try:
             config = CONFIG.DOCKER.REGISTRIES[registry]
         except KeyError:
-            logger.warn(f"Registry missing from DOCKER.REGISTRIES: {registry}")
-            raise UnknownRegistry(registry)
+            if registry == 'docker.io':
+                logger.debug(f"Using default registry: docker.io")
+                config = {"client": DockerClient}
+            else:
+                logger.warn(f"Registry missing from DOCKER.REGISTRIES: {registry}")
+                raise UnknownRegistry(registry)
 
         Client = config["client"]
         instance = Client(registry, **config.get("options", {}))
