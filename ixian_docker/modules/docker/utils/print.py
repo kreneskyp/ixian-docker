@@ -11,8 +11,35 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+from ixian_docker.exceptions import DockerTransferError
 from ixian_docker.utils.print import ProgressPrinter
+
+
+class DockerProgressPrinter(ProgressPrinter):
+
+    def print_event(self, event):
+        if "id" in event:
+            # layer events all have an id
+            file_id = event["id"]
+            if file_id not in self.line_numbers:
+                self.add_line(file_id)
+            self.print(
+                file_id, f"{file_id}: {event['status']} {event.get('progress', '')}",
+            )
+
+        else:
+            # non-layer events occur after all layers are complete.
+            # move cursor to the end (complete) and then print the status
+            if not self.is_complete:
+                self.complete()
+
+            if "status" in event:
+                print(event["status"])
+            elif "errorDetail" in event or "error" in event:
+                print(event["error"])
+            else:
+                # some events like push digest happen twice, they can be ignored.
+                pass
 
 
 def print_docker_transfer_events(events):
@@ -22,30 +49,9 @@ def print_docker_transfer_events(events):
     :param events:
     :return:
     """
-    printer = ProgressPrinter()
+    printer = DockerProgressPrinter()
     for event in events:
-        if "id" in event:
-            # layer events all have an id
-            file_id = event["id"]
-            if file_id not in printer.line_numbers:
-                printer.add_line(file_id)
-            printer.print(
-                file_id, f"{file_id}: {event['status']} {event.get('progress', '')}",
-            )
-
-        else:
-            # non-layer events occur after all layers are complete.
-            # move cursor to the end (complete) and then print the status
-            if not printer.is_complete:
-                printer.complete()
-
-            if "status" in event:
-                print(event["status"])
-            elif "errorDetail" in event:
-                print(event["error"])
-            else:
-                # some events like push digest happen twice, they can be ignored.
-                pass
+        printer.print_event(event)
 
 
 def format_pull_status_minimal(status, seen_layers=None):

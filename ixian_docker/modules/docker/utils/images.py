@@ -20,6 +20,7 @@ from docker.errors import NotFound as DockerNotFound
 from docker.errors import ImageNotFound as ImageNotFound
 
 from ixian.utils.filesystem import pwd
+from ixian_docker.exceptions import DockerTransferError, DockerAuthenticationError
 from ixian_docker.modules.docker.utils.client import (
     DockerClient,
     UnknownRegistry,
@@ -27,7 +28,7 @@ from ixian_docker.modules.docker.utils.client import (
 )
 from ixian_docker.modules.docker.utils.print import (
     print_docker_transfer_events,
-    format_pull_status_minimal,
+    format_pull_status_minimal, DockerProgressPrinter,
 )
 from ixian_docker.utils.net import is_valid_hostname
 
@@ -179,7 +180,10 @@ def build_image_if_needed(
                     pull_image(repository, tag)
                 except DockerNotFound:
                     logger.debug("Image could not be pulled: NotFound")
-                    pass
+                except DockerTransferError as error:
+                    logger.debug(f"Image could not be pulled [error]: {error}")
+                except DockerAuthenticationError as error:
+                    logger.debug(f"Image could not be pulled [auth]: {error}")
                 else:
                     logger.debug("Image pulled.")
                     # Re-check, if task now passes then build can be skipped
@@ -197,7 +201,7 @@ def build_image_if_needed(
     return build_image(dockerfile, image_and_tag, context=context, **kwargs)
 
 
-def parse_registry(repository):
+def parse_registry(repository: str) -> str:
     """
     Parse hostname from repository (image name)
     :param repository: image name, which may or may not include hostname
@@ -215,7 +219,16 @@ def parse_registry(repository):
         return "docker.io"
 
 
-def pull_image(repository, tag=None, silent=False):
+def transfer_event_error_check(event: dict):
+    """
+    Check a transfer event message for an error. If an error is detected a DockerTransferError will
+    be raised.
+    """
+    if "errorDetail" in event or "error" in event:
+        raise DockerTransferError(f"Error transferring image: {event['error']}")
+
+
+def pull_image(repository:str, tag: str = None, silent: bool = False):
     """
     Pull an image from a repository.
 
@@ -237,15 +250,15 @@ def pull_image(repository, tag=None, silent=False):
     event_stream = client.client.api.pull(
         repository, resolved_tag or "latest", stream=not silent, decode=not silent
     )
-    if not silent:
-        print_docker_transfer_events(event_stream)
+
+    handle_event_stream(event_stream, silent)
 
     # Print pulled image
     # TODO: logger
     print("{}:{}".format(repository, resolved_tag))
 
 
-def push_image(repository, tag=None, silent=False):
+def push_image(repository:str, tag: str = None, silent: bool = False):
     """
     Push an image to a registry.
 
@@ -265,5 +278,22 @@ def push_image(repository, tag=None, silent=False):
     event_stream = client.client.api.push(
         repository, resolved_tag or "latest", stream=not silent, decode=not silent
     )
+
+    handle_event_stream(event_stream, silent)
+
+def handle_event_stream(stream, silent: bool = False):
+    """
+    Handles an event stream from a push or pull. This method will check the stream for errors and
+    raise a ``DockerTransferError`` if one is detected. Output will be printed if ``silent=False``
+    """
+    handlers = [
+        transfer_event_error_check
+    ]
+
     if not silent:
-        print_docker_transfer_events(event_stream)
+        printer = DockerProgressPrinter()
+        handlers.append(printer.print_event)
+
+    for event in stream:
+        for handler in handlers:
+            handler(event)

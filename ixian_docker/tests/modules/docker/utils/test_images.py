@@ -14,9 +14,11 @@
 
 from unittest import mock
 
+import pytest
 from docker.errors import NotFound as DockerNotFound
 
 from ixian.utils.filesystem import pwd
+from ixian_docker.exceptions import DockerTransferError
 from ixian_docker.tests.conftest import TEST_IMAGE_NAME, build_test_image
 from ixian_docker.modules.docker.utils.images import (
     image_exists,
@@ -401,14 +403,32 @@ class TestPull:
         out, err = capsys.readouterr()
         snapshot.assert_match(out)
 
-    def test_pull_error(self):
+    def test_pull_error(self, mock_docker_environment, snapshot, capsys):
         """
         Test a push with an error
         """
-        raise NotImplementedError
+        mock_client = mock_docker_environment
+        mock_client.api.pull.return_value = iter(event_streams.PULL_FAILURE)
+        with pytest.raises(DockerTransferError) as exc_inf:
+            pull_image(TEST_IMAGE_NAME, "latest")
+        snapshot.assert_match(str(exc_inf))
+        mock_client.api.pull.assert_called_with(
+            TEST_IMAGE_NAME, "latest", stream=True, decode=True
+        )
+        out, err = capsys.readouterr()
+        snapshot.assert_match(out)
 
     def test_pull_error_and_silent(self, mock_docker_environment, snapshot, capsys):
         """
         Test a push with an error while silent=True
         """
-        raise NotImplementedError
+        mock_client = mock_docker_environment
+        mock_client.api.pull.return_value = iter(event_streams.PULL_FAILURE)
+        with pytest.raises(DockerTransferError) as exc_inf:
+            pull_image(TEST_IMAGE_NAME, "latest", silent=True)
+        snapshot.assert_match(str(exc_inf))
+        mock_client.api.pull.assert_called_with(
+            TEST_IMAGE_NAME, "latest", stream=False, decode=False
+        )
+        out, err = capsys.readouterr()
+        snapshot.assert_match(out)

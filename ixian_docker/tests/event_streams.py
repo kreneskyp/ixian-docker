@@ -48,6 +48,20 @@ PULL_ALREADY_PRESENT = [
     {"status": "Digest: sha256:c19173c5ada610a5989151111163d28a67368362762534d8a8121ce95cf2bd5a"},
     {"status": "Status: Image is up to date for alpine:latest"},
 ]
+PULL_FAILURE = [
+    {'status': 'Pulling from library/ubuntu', 'id': 'latest'},
+    {'status': 'Pulling fs layer', 'progressDetail': {}, 'id': 'd51af753c3d3'},
+    {'status': 'Pulling fs layer', 'progressDetail': {}, 'id': 'fc878cd0a91c'},
+    {'status': 'Pulling fs layer', 'progressDetail': {}, 'id': '6154df8ff988'},
+    {'status': 'Pulling fs layer', 'progressDetail': {}, 'id': 'fee5db0ff82f'},
+    {'status': 'Waiting', 'progressDetail': {}, 'id': 'fee5db0ff82f'},
+    {
+        'errorDetail': {
+             'message': 'error pulling image configuration: Get https://registry-1.docker.io/v2/library/ubuntu/blobs/sha256:1d622ef86b138c7e96d4f797bf5e4baca3249f030c575b9337638594f2b63f01: Service Unavailable'
+        },
+        'error': 'error pulling image configuration: Get https://registry-1.docker.io/v2/library/ubuntu/blobs/sha256:1d622ef86b138c7e96d4f797bf5e4baca3249f030c575b9337638594f2b63f01: Service Unavailable'
+    }
+]
 
 PUSH_SUCCESSFUL = [
     {
@@ -133,6 +147,19 @@ PUSH_ALREADY_PRESENT = [
             "Size": 528,
         },
     },
+]
+
+PUSH_FAILURE = [
+    {
+        "status": "The push refers to repository [896552222739.dkr.ecr.us-west-2.amazonaws.com/lims/testing]"
+    },
+    {"status": "Preparing", "progressDetail": {}, "id": "77cae8ab23bf"},
+    {
+        'errorDetail': {
+             'message': 'error pushing image configuration: Get https://registry-1.docker.io/v2/library/ubuntu/blobs/sha256:1d622ef86b138c7e96d4f797bf5e4baca3249f030c575b9337638594f2b63f01: Service Unavailable'
+        },
+        'error': 'error pushing image configuration: Get https://registry-1.docker.io/v2/library/ubuntu/blobs/sha256:1d622ef86b138c7e96d4f797bf5e4baca3249f030c575b9337638594f2b63f01: Service Unavailable'
+    }
 ]
 
 ECR_PUSH_AUTH_FAILURE = [
