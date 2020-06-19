@@ -71,6 +71,16 @@ class TestDockerClient:
         with pytest.raises(KeyError):
             client.login()
 
+    def test_no_login_if_no_creds(self, mock_docker_environment):
+        """
+        The default client treats login as a no-op if there are no creds. The docker client will
+        still return an auth error if authentication is needed.
+        """
+        client = DockerClient.for_registry("MOCK_DEFAULT_REGISTRY")
+        client.options.pop("username", None)
+        client.options.pop("password", None)
+        client.login()
+
 
 class TestECRDockerClient:
     def test_for_registry(self, mock_docker_environment, mock_ecr):

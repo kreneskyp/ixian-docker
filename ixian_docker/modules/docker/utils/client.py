@@ -76,12 +76,14 @@ class DockerClient:
         # authenticate
         username = self.options.get("username", None)
         password = self.options.get("password", None)
-        if not username:
-            raise KeyError(f"Cannot login to {self.registry}, username not found in options.")
-        if not password:
-            raise KeyError(f"Cannot login to {self.registry}, password not found in options.")
 
-        self.client.login(username, password, "", registry=self.registry)
+        if password and not username:
+            raise KeyError(f"Cannot login to {self.registry}, username not found in options.")
+        if username and not password:
+            raise KeyError(f"Cannot login to {self.registry}, password not found in options.")
+        
+        if username and password:
+            self.client.login(username, password, "", registry=self.registry)
 
 
 class ECRDockerClient(DockerClient):
