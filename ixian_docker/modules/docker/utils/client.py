@@ -55,7 +55,7 @@ class DockerClient:
         try:
             config = CONFIG.DOCKER.REGISTRIES[registry]
         except KeyError:
-            if registry == 'docker.io':
+            if registry == "docker.io":
                 logger.debug(f"Using default registry: docker.io")
                 config = {"client": DockerClient}
             else:
@@ -81,7 +81,7 @@ class DockerClient:
             raise KeyError(f"Cannot login to {self.registry}, username not found in options.")
         if username and not password:
             raise KeyError(f"Cannot login to {self.registry}, password not found in options.")
-        
+
         if username and password:
             self.client.login(username, password, "", registry=self.registry)
 

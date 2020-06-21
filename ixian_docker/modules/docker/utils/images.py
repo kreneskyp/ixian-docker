@@ -27,8 +27,8 @@ from ixian_docker.modules.docker.utils.client import (
     docker_client,
 )
 from ixian_docker.modules.docker.utils.print import (
-    print_docker_transfer_events,
-    format_pull_status_minimal, DockerProgressPrinter,
+    format_pull_status_minimal,
+    DockerProgressPrinter,
 )
 from ixian_docker.utils.net import is_valid_hostname
 
@@ -228,7 +228,7 @@ def transfer_event_error_check(event: dict):
         raise DockerTransferError(f"Error transferring image: {event['error']}")
 
 
-def pull_image(repository:str, tag: str = None, silent: bool = False):
+def pull_image(repository: str, tag: str = None, silent: bool = False):
     """
     Pull an image from a repository.
 
@@ -258,7 +258,7 @@ def pull_image(repository:str, tag: str = None, silent: bool = False):
     print("{}:{}".format(repository, resolved_tag))
 
 
-def push_image(repository:str, tag: str = None, silent: bool = False):
+def push_image(repository: str, tag: str = None, silent: bool = False):
     """
     Push an image to a registry.
 
@@ -281,14 +281,13 @@ def push_image(repository:str, tag: str = None, silent: bool = False):
 
     handle_event_stream(event_stream, silent)
 
+
 def handle_event_stream(stream, silent: bool = False):
     """
     Handles an event stream from a push or pull. This method will check the stream for errors and
     raise a ``DockerTransferError`` if one is detected. Output will be printed if ``silent=False``
     """
-    handlers = [
-        transfer_event_error_check
-    ]
+    handlers = [transfer_event_error_check]
 
     if not silent:
         printer = DockerProgressPrinter()

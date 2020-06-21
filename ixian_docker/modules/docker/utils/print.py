@@ -16,7 +16,6 @@ from ixian_docker.utils.print import ProgressPrinter
 
 
 class DockerProgressPrinter(ProgressPrinter):
-
     def print_event(self, event):
         if "id" in event:
             # layer events all have an id
