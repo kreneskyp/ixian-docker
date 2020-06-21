@@ -127,6 +127,90 @@ def test_image_two():
     delete_image(TEST_IMAGE_TWO_NAME, force=True)
 
 
+@pytest.fixture
+def mock_build_image_if_needed(
+    mock_image_exists, mock_image_exists_in_registry, mock_pull_image, capsys, snapshot, caplog
+):
+    caplog.set_level(logging.DEBUG, logger="ixian_docker.modules.docker")
+
+    def setup(scenario="image_does_not_exist"):
+        mock_image_exists.return_value = False
+        mock_image_exists_in_registry.return_value = False
+        mock_pull_image.side_effect = None
+
+        if scenario == "image_exists_local":
+            mock_image_exists.return_value = True
+            mock_image_exists_in_registry.return_value = False
+        if scenario == "image_exists":
+            mock_image_exists.return_value = True
+            mock_image_exists_in_registry.return_value = True
+        elif scenario == "image_does_not_exist":
+            pass
+        elif scenario == "pull_image":
+            mock_image_exists_in_registry.return_value = True
+        elif scenario == "pull_image_not_found":
+            mock_image_exists_in_registry.return_value = True
+            mock_pull_image.side_effect = docker_errors.NotFound("testing")
+        elif scenario == "pull_unknown_registry":
+            raise NotImplementedError
+
+    def assert_build(image: str, builds: bool = True, scenario: str = "image_does_not_exist"):
+        from ixian.runner import run
+
+        setup(scenario)
+        image_will_be_built = scenario in {
+            "image_does_not_exist",
+            "pull_image_not_found",
+        }
+
+        assert not image_exists(image)
+        try:
+            run()
+        except:
+            raise
+        else:
+            if image_will_be_built and builds:
+                assert image_exists(image)
+            else:
+                assert not image_exists(image)
+        finally:
+            if image_will_be_built:
+                delete_image(image)
+        assert not image_exists(image)
+
+        out, err = capsys.readouterr()
+
+        # process log messages
+        log = [entry.msg for entry in caplog.records]
+        log = []
+        for entry in caplog.records:
+            if entry.msg.startswith(" ---> Running in"):
+                log.append(" ---> Running in [CONTAINER]")
+            elif entry.msg.startswith(" --->"):
+                log.append(" ---> [IMAGE]")
+            elif entry.msg.startswith("Successfully built "):
+                log.append("Successfully built [IMAGE]")
+            else:
+                log.append(entry.msg)
+
+        snapshot.assert_match(log, "log")
+        snapshot.assert_match(f"\n{out}", "sys.out")
+        snapshot.assert_match(f"\n{err}", "sys.err")
+        snapshot.assert_match(mock_image_exists.call_args_list, "mock_image_exists")
+        snapshot.assert_match(
+            mock_image_exists_in_registry.call_args_list, "mock_image_exists_in_registry"
+        )
+        snapshot.assert_match(mock_pull_image.call_args_list, "mock_pull_image")
+
+    yield {
+        "setup": setup,
+        "assert_build": assert_build,
+        "mock_image_exists": mock_image_exists,
+        "mock_image_exists_in_registry": mock_image_exists_in_registry,
+        "mock_pull_image": mock_pull_image,
+    }
+
+
 @pytest.fixture(
     params=[
         "image_exists",
@@ -136,64 +220,18 @@ def test_image_two():
         "pull_image_not_found",
     ]
 )
-def mock_build_image_if_needed(
-    request, mock_image_exists, mock_image_exists_in_registry, mock_pull_image, capsys, snapshot,
-):
-    mock_image_exists.return_value = False
-    mock_image_exists_in_registry.return_value = False
-
-    if request.param == "image_exists_local":
-        mock_image_exists.return_value = True
-        mock_image_exists_in_registry.return_value = False
-    if request.param == "image_exists":
-        mock_image_exists.return_value = True
-        mock_image_exists_in_registry.return_value = True
-    elif request.param == "image_does_not_exist":
-        pass
-    elif request.param == "pull_image":
-        mock_image_exists_in_registry.return_value = True
-    elif request.param == "pull_image_not_found":
-        mock_image_exists_in_registry.return_value = True
-        mock_pull_image.side_effect = docker_errors.NotFound("testing")
-    elif request.param == "pull_unknown_registry":
-        raise NotImplementedError
-
-    image_will_be_built = request.param in {
-        "image_does_not_exist",
-        "pull_image_not_found",
-    }
+def build_image_if_needed_scenarios(request, mock_build_image_if_needed):
+    """
+    Enumerates usecases for ``build_image_if_needed``
+    """
+    mocks = mock_build_image_if_needed
+    wrapped_assert_build = mocks["assert_build"]
 
     def assert_build(image):
-        from ixian.runner import run
+        return wrapped_assert_build(image, scenario=request.param)
 
-        if image_will_be_built:
-            image_exists_ = image_exists
-        else:
-            image_exists_ = mock_image_exists
-
-        assert not image_exists(image)
-        try:
-            run()
-        except:
-            raise
-        else:
-            if image_will_be_built:
-                assert image_exists(image)
-            else:
-                assert not image_exists(image)
-        finally:
-            if image_will_be_built:
-                delete_image(CONFIG.DOCKER.BASE_IMAGE)
-        assert not image_exists(image)
-
-        out, err = capsys.readouterr()
-        snapshot.assert_match(f"\n{out}")
-        snapshot.assert_match(f"\n{err}")
-        snapshot.assert_match(mock_image_exists.call_args_list)
-        snapshot.assert_match(mock_image_exists_in_registry.call_args_list)
-        snapshot.assert_match(mock_pull_image.call_args_list)
-
-    yield mock_image_exists, mock_image_exists_in_registry, mock_pull_image, assert_build
+    mocks["assert_build"] = assert_build
+    yield mocks
 
 
 # =================================================================================================

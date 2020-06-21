@@ -5,6 +5,11 @@ from ixian.runner import run
 from ixian_docker.tests.conftest import get_tests_dir
 
 
+DOCKERFILE_ONE = f"{get_tests_dir()}/Dockerfile.one"
+DOCKERFILE_TWO = f"{get_tests_dir()}/Dockerfile.one"
+DOCKERFILE_FAILURE = f"{get_tests_dir()}/Dockerfile.failure"
+
+
 class TaskTests:
     def test_help(self, snapshot, mock_cli, capsys):
         """
@@ -77,23 +82,19 @@ class ___TestBuildApp(TaskTests):
 
 @pytest.fixture
 def mock_build_task(
-    base_mock_ixian_environment, mock_docker_registries, mock_build_image_if_needed,
+    base_mock_ixian_environment, mock_docker_registries, build_image_if_needed_scenarios
 ):
-    # mock build_image_if_needed to always build
-    (
-        mock_image_exists,
-        mock_image_exists_in_registry,
-        mock_pull_image,
-        assert_build,
-    ) = mock_build_image_if_needed
+    """
+    Fixture that runs through build_image_if_needed_scenarios for a build task
+    """
 
     yield (
-        assert_build,
+        build_image_if_needed_scenarios["assert_build"],
+        build_image_if_needed_scenarios["mock_pull_image"],
+        build_image_if_needed_scenarios["mock_image_exists_in_registry"],
+        build_image_if_needed_scenarios["mock_image_exists"],
         base_mock_ixian_environment,
         mock_docker_registries,
-        mock_image_exists,
-        mock_image_exists_in_registry,
-        mock_pull_image,
     )
 
 
@@ -105,22 +106,38 @@ class TestBuildBaseImage(TaskTests):
     task = "build_base_image"
 
     def test_execute(self, mock_cli, mock_build_task):
-        CONFIG.DOCKER.DOCKERFILE_BASE = f"{get_tests_dir()}/Dockerfile.one"
+        CONFIG.DOCKER.DOCKERFILE_BASE = DOCKERFILE_ONE
         mock_cli.mock_in("build_base_image")
         assert_build, *_ = mock_build_task
         assert_build(CONFIG.DOCKER.BASE_IMAGE)
 
-    def test_custom_tag(self):
-        raise NotImplementedError
+    def test_custom_tag(self, mock_cli, mock_build_image_if_needed):
+        CONFIG.DOCKER.DOCKERFILE_BASE = DOCKERFILE_ONE
+        CONFIG.DOCKER.BASE_IMAGE_TAG = f"CUSTOM_TAG"
+        mock_cli.mock_in("build_base_image")
+        assert_build = mock_build_image_if_needed["assert_build"]
+        assert_build(CONFIG.DOCKER.BASE_IMAGE)
 
-    def test_custom_repository(self):
-        raise NotImplementedError
+    def test_custom_repository(self, mock_cli, mock_build_image_if_needed):
+        CONFIG.DOCKER.DOCKERFILE_BASE = DOCKERFILE_ONE
+        CONFIG.DOCKER.REPOSITORY = f"CUSTOM_REPOSITORY.FAKE"
+        mock_cli.mock_in("build_base_image")
 
-    def test_build_failure(self):
-        raise NotImplementedError
+        assert_build = mock_build_image_if_needed["assert_build"]
+        assert_build(CONFIG.DOCKER.BASE_IMAGE)
+
+    def test_build_failure(self, mock_cli, mock_build_image_if_needed):
+        CONFIG.DOCKER.DOCKERFILE_BASE = DOCKERFILE_FAILURE
+        mock_cli.mock_in("build_base_image")
+        assert_build = mock_build_image_if_needed["assert_build"]
+        assert_build(CONFIG.DOCKER.BASE_IMAGE, builds=False)
 
     def test_build_no_pull(self):
         """Build without pulling the remote image"""
+        raise NotImplementedError
+
+    def test_build_force(self):
+        """Force build using ``--force``"""
         raise NotImplementedError
 
 
