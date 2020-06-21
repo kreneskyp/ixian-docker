@@ -131,6 +131,9 @@ def test_image_two():
 def mock_build_image_if_needed(
     mock_image_exists, mock_image_exists_in_registry, mock_pull_image, capsys, snapshot, caplog
 ):
+    """
+    Mock ``build_image_if_needed`` with various options
+    """
     caplog.set_level(logging.DEBUG, logger="ixian_docker.modules.docker")
 
     def setup(scenario="image_does_not_exist"):
@@ -224,14 +227,11 @@ def build_image_if_needed_scenarios(request, mock_build_image_if_needed):
     """
     Enumerates usecases for ``build_image_if_needed``
     """
-    mocks = mock_build_image_if_needed
-    wrapped_assert_build = mocks["assert_build"]
 
     def assert_build(image):
-        return wrapped_assert_build(image, scenario=request.param)
+        return mock_build_image_if_needed["assert_build"](image, scenario=request.param)
 
-    mocks["assert_build"] = assert_build
-    yield mocks
+    yield {**mock_build_image_if_needed, "assert_build": assert_build}
 
 
 # =================================================================================================
