@@ -14,23 +14,18 @@
 
 import base64
 import datetime
-import json
-from collections import defaultdict
 
-import docker
 import pytest
 from unittest import mock
 
 from dateutil.tz import tzlocal
 
 from ixian.config import CONFIG
-from ixian.module import load_module
 from ixian_docker.modules.docker.utils.client import (
     DOCKER_REGISTRIES,
     DockerClient,
     ECRDockerClient,
 )
-from ixian_docker.modules.docker.utils.images import build_image
 from ixian_docker.tests import event_streams
 
 

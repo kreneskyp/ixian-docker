@@ -47,8 +47,14 @@ def image_exists(name):
         client.images.get(name)
     except DockerNotFound:
         return False
-    else:
-        return True
+
+
+def get_image(name):
+    client = docker_client()
+    try:
+        return client.images.get(name)
+    except DockerNotFound:
+        return None
 
 
 def image_exists_in_registry(repository, tag=None):
@@ -164,7 +170,8 @@ def build_image_if_needed(
     # else: build
     image_and_tag = "{}:{}".format(repository, tag or "latest")
 
-    logger.debug(f"Attempting to build image={image_and_tag} dockerfile={dockerfile}")
+    logger.debug(f"Attempting to build image={image_and_tag} dockerfile={dockerfile} "
+                 f"force={force} pull={pull}")
 
     if not force:
         if image_exists(image_and_tag):

@@ -17,6 +17,7 @@ import docker
 from ixian.check.checker import MultiValueChecker
 from ixian.config import CONFIG
 from ixian_docker.modules.docker.utils.client import docker_client
+from ixian_docker.modules.docker.utils.images import get_image
 
 
 class DockerVolumeExists(MultiValueChecker):
@@ -62,11 +63,13 @@ class DockerImageExists(MultiValueChecker):
         client = docker_client()
         image_ids = {}
         for image_tag in self.keys:
+            image_id = None
             try:
-                image = client.images.get(CONFIG.format(image_tag))
+                image = get_image(CONFIG.format(image_tag))
             except docker.errors.NotFound:
-                image_id = None
+                pass
             else:
-                image_id = image.id
+                if image:
+                    image_id = image.id
             image_ids[image_tag] = image_id
         return image_ids

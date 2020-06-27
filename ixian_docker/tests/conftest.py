@@ -13,15 +13,18 @@
 # limitations under the License.
 import logging
 import os
+from unittest import mock
 
+import docker
 import pytest
 from docker import errors as docker_errors
 
+from ixian.module import load_module
 from ixian_docker.modules.docker.utils.images import (
     delete_image,
-    image_exists,
+    image_exists, build_image,
 )
-from ixian_docker.tests.mocks.client import *
+from ixian_docker.tests.mocks.client import mock_docker_environment, mock_docker_registries, mock_ecr
 from ixian.tests.conftest import mock_environment as base_mock_ixian_environment
 from ixian.tests.conftest import mock_cli, mock_init
 
@@ -67,6 +70,7 @@ def mock_get_image(mock_docker_environment):
     """
     Mock image TEST_IMAGE_NAME
     """
+    # TODO: Refactor to yield dict
     not_found = set()
 
     def get_image_mock(image):
@@ -80,15 +84,6 @@ def mock_get_image(mock_docker_environment):
 
     mock_docker_environment.images.get.side_effect = get_image_mock
     yield mock_docker_environment
-
-
-@pytest.fixture
-def mock_image_exists():
-    patcher = mock.patch("ixian_docker.modules.docker.utils.images.image_exists")
-    mocked = patcher.start()
-    mocked.return_value = False
-    yield mocked
-    patcher.stop()
 
 
 @pytest.fixture
@@ -129,62 +124,105 @@ def test_image_two():
 
 @pytest.fixture
 def mock_build_image_if_needed(
-    mock_image_exists, mock_image_exists_in_registry, mock_pull_image, capsys, snapshot, caplog
+    mock_image_exists_in_registry,
+    mock_pull_image,
+    mock_get_image,
+    caplog,
+    capsys,
+    mocker,
+    snapshot,
 ):
     """
     Mock ``build_image_if_needed`` with various options
+
+    Supported Scenarios:
+    - image_exists - image exists locally and on the registry
+    - image_exists_local - image only exists locally
+    - image_does_not_exist - image does not exist locally or on the registry
+    - image_exists_registry - image exists only on the registry
+    - pull_image_not_found - image exists on registry but gives an error when pulled
     """
     caplog.set_level(logging.DEBUG, logger="ixian_docker.modules.docker")
 
-    def setup(scenario="image_does_not_exist"):
-        mock_image_exists.return_value = False
+    def setup(image, scenario="image_does_not_exist"):
+        mock_docker_environment = mock_get_image
         mock_image_exists_in_registry.return_value = False
         mock_pull_image.side_effect = None
 
         if scenario == "image_exists_local":
-            mock_image_exists.return_value = True
             mock_image_exists_in_registry.return_value = False
         if scenario == "image_exists":
-            mock_image_exists.return_value = True
             mock_image_exists_in_registry.return_value = True
         elif scenario == "image_does_not_exist":
-            pass
-        elif scenario == "pull_image":
+            mock_docker_environment.images.get.side_effect.not_found.add(image)
+            mock_image_exists_in_registry.return_value = False
+        elif scenario in ["image_exists_registry"]:
+            mock_docker_environment.images.get.side_effect.not_found.add(image)
             mock_image_exists_in_registry.return_value = True
         elif scenario == "pull_image_not_found":
+            mock_docker_environment.images.get.side_effect.not_found.add(image)
             mock_image_exists_in_registry.return_value = True
             mock_pull_image.side_effect = docker_errors.NotFound("testing")
         elif scenario == "pull_unknown_registry":
             raise NotImplementedError
 
-    def assert_build(image: str, builds: bool = True, scenario: str = "image_does_not_exist"):
+    def assert_build(
+        image: str,
+        mock_build: bool = True,
+        expects_build: bool = True,
+        scenario: str = "image_does_not_exist"
+    ):
+        """
+        Assert building an image.
+
+        if ``mock_build==True`` then building is mocked. Otherwise it will really build the image.
+        """
+
         from ixian.runner import run
 
-        setup(scenario)
+        setup(image, scenario)
+        if mock_build:
+            def output():
+                logger = logging.getLogger(__name__)
+                logger.info("[Mocked Docker Build Process]")
+            # TODO: it might already be mocked by mock_docker_environment
+            mock_build_image = mocker.patch("ixian_docker.modules.docker.utils.images.build_image")
+        else:
+            # mock_docker_environment needs to be patched with the real build api
+            docker_client = docker.from_env()
+            mock_docker_environment.api.build.side_effect = docker_client.api.build
+
         image_will_be_built = scenario in {
             "image_does_not_exist",
             "pull_image_not_found",
-        }
+        } and not mock_build
 
-        assert not image_exists(image)
+        # Always delete the image if it exists.
+        if not mock_build and image_exists(image):
+            delete_image(image, force=True)
+            assert not image_exists(image)
+
         try:
-            run()
+            exit_code = run()
         except:
             raise
         else:
-            if image_will_be_built and builds:
-                assert image_exists(image)
-            else:
-                assert not image_exists(image)
-        finally:
+            snapshot.assert_match(exit_code, "exit_code")
+            # only assert that the image exist if it was really built. Otherwise the mocks will
+            # capture the build command.
             if image_will_be_built:
+                if expects_build:
+                    assert image_exists(image)
+                else:
+                    assert not image_exists(image)
+        finally:
+            if image_will_be_built and image_exists(image):
                 delete_image(image)
-        assert not image_exists(image)
+                assert not image_exists(image)
 
         out, err = capsys.readouterr()
 
         # process log messages
-        log = [entry.msg for entry in caplog.records]
         log = []
         for entry in caplog.records:
             if entry.msg.startswith(" ---> Running in"):
@@ -196,19 +234,26 @@ def mock_build_image_if_needed(
             else:
                 log.append(entry.msg)
 
+        # snapshot test all output
         snapshot.assert_match(log, "log")
         snapshot.assert_match(f"\n{out}", "sys.out")
         snapshot.assert_match(f"\n{err}", "sys.err")
-        snapshot.assert_match(mock_image_exists.call_args_list, "mock_image_exists")
+
+        # snapshot tests calls to check for images
+        snapshot.assert_match(mock_get_image.call_args_list, "mock_get_image")
         snapshot.assert_match(
             mock_image_exists_in_registry.call_args_list, "mock_image_exists_in_registry"
         )
         snapshot.assert_match(mock_pull_image.call_args_list, "mock_pull_image")
 
+        # check mocked build args if mocked
+        if mock_build:
+            snapshot.assert_match(mock_build_image.call_args_list, "mock_build_image")
+
     yield {
         "setup": setup,
         "assert_build": assert_build,
-        "mock_image_exists": mock_image_exists,
+        "mock_get_image": mock_get_image,
         "mock_image_exists_in_registry": mock_image_exists_in_registry,
         "mock_pull_image": mock_pull_image,
     }
@@ -219,7 +264,7 @@ def mock_build_image_if_needed(
         "image_exists",
         "image_exists_local",
         "image_does_not_exist",
-        "pull_image",
+        "image_exists_registry",
         "pull_image_not_found",
     ]
 )
