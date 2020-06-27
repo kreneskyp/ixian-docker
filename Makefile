@@ -68,10 +68,11 @@ publish-test:
 
 .PHONY: clean
 clean:
-	rm -rf .tox
-	rm -rf .coverage
-	rm -rf .eggs
-	rm -rf dist
+	${DOCKER_RUN} \
+	rm -rf .tox && \
+	rm -rf .coverage && \
+	rm -rf .eggs && \
+	rm -rf dist && \
 	rm -rf build
 
 .PHONY: teardown
