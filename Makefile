@@ -73,9 +73,12 @@ clean:
 	rm -rf .coverage && \
 	rm -rf .eggs && \
 	rm -rf dist && \
-	rm -rf build
+	rm -rf build && \
+	python3 -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]" && \
+	python3 -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
 
 .PHONY: teardown
 teardown: clean
-	rm -rf .image_created
+	${DOCKER_RUN} \
+	rm -rf .image_created && \
 	rm -rf .python-version
