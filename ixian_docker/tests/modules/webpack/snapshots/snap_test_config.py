@@ -21,9 +21,9 @@ snapshots['TestConfig.test_read[CONFIG_FILE_PATH] 1'] = '/opt/unittests/etc/webp
 
 snapshots['TestConfig.test_read[DOCKERFILE] 1'] = '/home/runner/work/ixian-docker/ixian-docker/ixian_docker/modules/webpack/Dockerfile.jinja'
 
-snapshots['TestConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:webpack-330bc158ae458a8144b3358230856a20005eba7a52789da67f990b5678752a28'
+snapshots['TestConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:webpack-4e1e0e15e19d17912a7f29939ce0f8d937268106fd137ddd0d2f4902f6667761'
 
-snapshots['TestConfig.test_read[IMAGE_TAG] 1'] = 'webpack-330bc158ae458a8144b3358230856a20005eba7a52789da67f990b5678752a28'
+snapshots['TestConfig.test_read[IMAGE_TAG] 1'] = 'webpack-4e1e0e15e19d17912a7f29939ce0f8d937268106fd137ddd0d2f4902f6667761'
 
 snapshots['TestConfig.test_read[MODULE_DIR] 1'] = '/home/runner/work/ixian-docker/ixian-docker/ixian_docker/modules/webpack'
 

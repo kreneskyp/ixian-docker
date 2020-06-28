@@ -23,7 +23,7 @@ Status: Downloaded newer image for alpine:latest
 ixian_docker.tests:custom_tag
 '''
 
-snapshots['TestPull.test_pull_error 1'] = '<ExceptionInfo DockerTransferError tblen=3>'
+snapshots['TestPull.test_pull_error 1'] = 'Error transferring image: error pulling image configuration: Get https://registry-1.docker.io/v2/library/ubuntu/blobs/sha256:1d622ef86b138c7e96d4f797bf5e4baca3249f030c575b9337638594f2b63f01: Service Unavailable'
 
 snapshots['TestPull.test_pull_error 2'] = '''latest: Pulling from library/ubuntu \x1b[K\r
 d51af753c3d3: Pulling fs layer \x1b[K\r
@@ -31,7 +31,7 @@ fc878cd0a91c: Pulling fs layer \x1b[K\r
 6154df8ff988: Pulling fs layer \x1b[K\r
 fee5db0ff82f: Pulling fs layer \x1b[K\rfee5db0ff82f: Waiting \x1b[K\r'''
 
-snapshots['TestPull.test_pull_error_and_silent 1'] = '<ExceptionInfo DockerTransferError tblen=3>'
+snapshots['TestPull.test_pull_error_and_silent 1'] = 'Error transferring image: error pulling image configuration: Get https://registry-1.docker.io/v2/library/ubuntu/blobs/sha256:1d622ef86b138c7e96d4f797bf5e4baca3249f030c575b9337638594f2b63f01: Service Unavailable'
 
 snapshots['TestPull.test_pull_error_and_silent 2'] = ''
 

@@ -59,7 +59,7 @@ class DockerClient:
                 logger.debug(f"Using default registry: docker.io")
                 config = {"client": DockerClient}
             else:
-                logger.warn(f"Registry missing from DOCKER.REGISTRIES: {registry}")
+                logger.warning(f"Registry missing from DOCKER.REGISTRIES: {registry}")
                 raise UnknownRegistry(registry)
 
         Client = config["client"]

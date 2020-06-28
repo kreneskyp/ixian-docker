@@ -48,7 +48,7 @@ snapshots['TestDockerConfig.test_read[ENV_DIR] 1'] = '/opt'
 
 snapshots['TestDockerConfig.test_read[HOME_DIR] 1'] = '/root'
 
-snapshots['TestDockerConfig.test_read[IMAGE_TAG] 1'] = 'runtime-aeb92031f4e101b27b8b365f966f5df67c70db78288ee2250997194f6734abaf'
+snapshots['TestDockerConfig.test_read[IMAGE_TAG] 1'] = 'runtime-d321d9a5fae7d090947f7111963ef3a2075b473f667df8bb1a37b14b9a9f476b'
 
 snapshots['TestDockerConfig.test_read[MODULE_CONTEXT] 1'] = '.builder/module_context'
 
@@ -65,7 +65,7 @@ snapshots['TestDockerConfig.test_read[ROOT_MODULE_DIR] 1'] = '/home/runner/work/
 snapshots['TestDockerConfig.test_read[VOLUMES] 1'] = [
 ]
 
-snapshots['TestDockerConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:runtime-aeb92031f4e101b27b8b365f966f5df67c70db78288ee2250997194f6734abaf'
+snapshots['TestDockerConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:runtime-d321d9a5fae7d090947f7111963ef3a2075b473f667df8bb1a37b14b9a9f476b'
 
 snapshots['TestDockerConfig.test_task_hash 1'] = GenericRepr('<ixian.config.TaskConfig object at 0x100000000>')
 

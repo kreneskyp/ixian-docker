@@ -47,6 +47,8 @@ def image_exists(name):
         client.images.get(name)
     except DockerNotFound:
         return False
+    else:
+        return True
 
 
 def get_image(name):
@@ -201,7 +203,7 @@ def build_image_if_needed(
             elif pull:
                 logger.debug("Image does not exist on registry.")
         except UnknownRegistry as exception:
-            logger.warn(
+            logger.warning(
                 f"Registry '{str(exception)}' is not configured, couldn't check for remote image."
             )
 

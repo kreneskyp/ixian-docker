@@ -13,9 +13,9 @@ snapshots['TestPythonConfig.test_read[DOCKERFILE] 1'] = '/home/runner/work/ixian
 
 snapshots['TestPythonConfig.test_read[HOST_ROOT_MODULE_PATH] 1'] = '/home/runner/work/ixian-docker/ixian-docker/unittests'
 
-snapshots['TestPythonConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:python-fafedf5f121f5d67ba65a6f871a7a7e4c2aa3ad55ffe4b0e36a5c34c799d6904'
+snapshots['TestPythonConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:python-de231555cde55f19ef3ddad2a61abe51c8c33bb0f7f1142a4aaae1a531e9a905'
 
-snapshots['TestPythonConfig.test_read[IMAGE_TAG] 1'] = 'python-fafedf5f121f5d67ba65a6f871a7a7e4c2aa3ad55ffe4b0e36a5c34c799d6904'
+snapshots['TestPythonConfig.test_read[IMAGE_TAG] 1'] = 'python-de231555cde55f19ef3ddad2a61abe51c8c33bb0f7f1142a4aaae1a531e9a905'
 
 snapshots['TestPythonConfig.test_read[REPOSITORY] 1'] = 'docker.io/library/unittests'
 

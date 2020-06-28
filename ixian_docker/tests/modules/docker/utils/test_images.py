@@ -411,7 +411,7 @@ class TestPull:
         mock_client.api.pull.return_value = iter(event_streams.PULL_FAILURE)
         with pytest.raises(DockerTransferError) as exc_inf:
             pull_image(TEST_IMAGE_NAME, "latest")
-        snapshot.assert_match(str(exc_inf))
+        snapshot.assert_match(str(exc_inf.value))
         mock_client.api.pull.assert_called_with(
             TEST_IMAGE_NAME, "latest", stream=True, decode=True
         )
@@ -426,7 +426,7 @@ class TestPull:
         mock_client.api.pull.return_value = iter(event_streams.PULL_FAILURE)
         with pytest.raises(DockerTransferError) as exc_inf:
             pull_image(TEST_IMAGE_NAME, "latest", silent=True)
-        snapshot.assert_match(str(exc_inf))
+        snapshot.assert_match(str(exc_inf.value))
         mock_client.api.pull.assert_called_with(
             TEST_IMAGE_NAME, "latest", stream=False, decode=False
         )
