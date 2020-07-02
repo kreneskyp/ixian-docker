@@ -26,7 +26,7 @@ from ixian_docker.modules.docker.utils.images import (
 )
 from ixian_docker.tests.mocks.client import mock_docker_environment, mock_docker_registries, mock_ecr
 from ixian.tests.conftest import mock_environment as base_mock_ixian_environment
-from ixian.tests.conftest import mock_cli, mock_init
+from ixian.tests.conftest import mock_cli, mock_init, temp_builder
 
 
 TEST_IMAGE_NAME = "ixian_docker.tests"

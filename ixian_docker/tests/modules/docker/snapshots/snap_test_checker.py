@@ -15,9 +15,7 @@ snapshots['TestDockerImageExists.test_image_exists 3'] = {
     'ixian_docker.test': 'MOCK_ID__ixian_docker.test'
 }
 
-snapshots['TestDockerImageExists.test_image_exists 4'] = {
-    'ixian_docker.test': None
-}
+snapshots['TestDockerImageExists.test_image_exists 4'] = None
 
 snapshots['TestDockerImageExists.test_image_exists 5'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/checks/5595b7995104ee8881513f69e14d28dc686afc5b43894b07c5b7d1a828f1d621'
 
@@ -39,9 +37,7 @@ snapshots['TestDockerImageExists.test_image_doesnt_exist 3'] = {
     'ixian_docker.test': None
 }
 
-snapshots['TestDockerImageExists.test_image_doesnt_exist 4'] = {
-    'ixian_docker.test': 'MOCK_ID__ixian_docker.test'
-}
+snapshots['TestDockerImageExists.test_image_doesnt_exist 4'] = None
 
 snapshots['TestDockerImageExists.test_image_doesnt_exist 5'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/checks/5595b7995104ee8881513f69e14d28dc686afc5b43894b07c5b7d1a828f1d621'
 
@@ -75,9 +71,7 @@ snapshots['TestDockerImageExists.test_clone 3'] = {
     'ixian_docker.test': 'MOCK_ID__ixian_docker.test'
 }
 
-snapshots['TestDockerImageExists.test_clone 4'] = {
-    'ixian_docker.test': 'MOCK_ID__ixian_docker.test'
-}
+snapshots['TestDockerImageExists.test_clone 4'] = None
 
 snapshots['TestDockerImageExists.test_clone 5'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/checks/5595b7995104ee8881513f69e14d28dc686afc5b43894b07c5b7d1a828f1d621'
 
@@ -124,10 +118,7 @@ snapshots['TestDockerImageExists.test_multiple_images_exist 3'] = {
     'ixian_docker.tests.two': 'MOCK_ID__ixian_docker.tests.two'
 }
 
-snapshots['TestDockerImageExists.test_multiple_images_exist 4'] = {
-    'ixian_docker.test': None,
-    'ixian_docker.tests.two': 'MOCK_ID__ixian_docker.tests.two'
-}
+snapshots['TestDockerImageExists.test_multiple_images_exist 4'] = None
 
 snapshots['TestDockerImageExists.test_multiple_images_exist 5'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/checks/f60b4e5d65b2983e8813dedece4a218f2d4043cd0ec23c20f5ac7f31f9c68d1d'
 
@@ -152,10 +143,7 @@ snapshots['TestDockerImageExists.test_multiple_only_one_image_exists[ixian_docke
     'ixian_docker.tests.two': 'MOCK_ID__ixian_docker.tests.two'
 }
 
-snapshots['TestDockerImageExists.test_multiple_only_one_image_exists[ixian_docker.test] 4'] = {
-    'ixian_docker.test': 'MOCK_ID__ixian_docker.test',
-    'ixian_docker.tests.two': 'MOCK_ID__ixian_docker.tests.two'
-}
+snapshots['TestDockerImageExists.test_multiple_only_one_image_exists[ixian_docker.test] 4'] = None
 
 snapshots['TestDockerImageExists.test_multiple_only_one_image_exists[ixian_docker.test] 5'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/checks/f60b4e5d65b2983e8813dedece4a218f2d4043cd0ec23c20f5ac7f31f9c68d1d'
 
@@ -180,10 +168,7 @@ snapshots['TestDockerImageExists.test_multiple_only_one_image_exists[ixian_docke
     'ixian_docker.tests.two': None
 }
 
-snapshots['TestDockerImageExists.test_multiple_only_one_image_exists[ixian_docker.tests.two] 4'] = {
-    'ixian_docker.test': None,
-    'ixian_docker.tests.two': 'MOCK_ID__ixian_docker.tests.two'
-}
+snapshots['TestDockerImageExists.test_multiple_only_one_image_exists[ixian_docker.tests.two] 4'] = None
 
 snapshots['TestDockerImageExists.test_multiple_only_one_image_exists[ixian_docker.tests.two] 5'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/checks/f60b4e5d65b2983e8813dedece4a218f2d4043cd0ec23c20f5ac7f31f9c68d1d'
 
@@ -208,10 +193,7 @@ snapshots['TestDockerImageExists.test_multiple_no_image_exists 3'] = {
     'ixian_docker.tests.two': None
 }
 
-snapshots['TestDockerImageExists.test_multiple_no_image_exists 4'] = {
-    'ixian_docker.test': 'MOCK_ID__ixian_docker.test',
-    'ixian_docker.tests.two': None
-}
+snapshots['TestDockerImageExists.test_multiple_no_image_exists 4'] = None
 
 snapshots['TestDockerImageExists.test_multiple_no_image_exists 5'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/checks/f60b4e5d65b2983e8813dedece4a218f2d4043cd0ec23c20f5ac7f31f9c68d1d'
 
@@ -236,10 +218,7 @@ snapshots['TestDockerImageExists.test_multiple_clone 3'] = {
     'ixian_docker.tests.two': 'MOCK_ID__ixian_docker.tests.two'
 }
 
-snapshots['TestDockerImageExists.test_multiple_clone 4'] = {
-    'ixian_docker.test': None,
-    'ixian_docker.tests.two': None
-}
+snapshots['TestDockerImageExists.test_multiple_clone 4'] = None
 
 snapshots['TestDockerImageExists.test_multiple_clone 5'] = '/home/runner/work/ixian-docker/ixian-docker/.builder/checks/f60b4e5d65b2983e8813dedece4a218f2d4043cd0ec23c20f5ac7f31f9c68d1d'
 
