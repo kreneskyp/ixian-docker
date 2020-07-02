@@ -14,6 +14,9 @@
 
 import docker
 import logging
+
+from ixian.exceptions import AlreadyComplete
+
 from ixian.task import Task, VirtualTarget
 from ixian.config import CONFIG
 from ixian.modules.filesystem.file_hash import FileHash
@@ -103,7 +106,7 @@ class BuildImage(Task):
     short_description = "Build app image"
 
     def execute(self, pull=True):
-        build_image_if_needed(
+        if not build_image_if_needed(
             repository=CONFIG.DOCKER.REPOSITORY,
             tag=CONFIG.DOCKER.IMAGE_TAG,
             dockerfile=CONFIG.DOCKER.DOCKERFILE,
@@ -113,9 +116,10 @@ class BuildImage(Task):
                 "PYTHON_IMAGE": CONFIG.PYTHON.IMAGE,
                 "COMPILED_STATIC_IMAGE": CONFIG.WEBPACK.IMAGE,
             },
-        )
-        # TODO: this is why All is needed, to encapsulate running a list of checkers
-        # recheck=self.check.check)
+            # TODO: this is why All is needed, to encapsulate running a list of checkers
+            # recheck=self.check.check)
+        ):
+            raise AlreadyComplete()
 
 
 class BuildBaseImage(Task):
@@ -132,15 +136,14 @@ class BuildBaseImage(Task):
     short_description = "Build app image"
 
     def execute(self, pull=True):
-        build_image_if_needed(
+        if not build_image_if_needed(
             repository=CONFIG.DOCKER.REPOSITORY,
             tag=CONFIG.DOCKER.BASE_IMAGE_TAG,
             dockerfile=CONFIG.DOCKER.DOCKERFILE_BASE,
             force=self.__task__.force,
             pull=pull,
-        )
-        # TODO: this is why All is needed, to encapsulate running a list of checkers
-        # recheck=self.check.check)
+        ):
+            raise AlreadyComplete()
 
 
 class PullImage(Task):
