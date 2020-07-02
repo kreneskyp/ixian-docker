@@ -15,7 +15,7 @@
 import jinja2
 import os
 
-from ixian.build import write_file
+from ixian import builder
 from ixian.config import CONFIG
 
 
@@ -28,7 +28,7 @@ def get_dockerfile(path: str, render_to: str = None):
     """
     if path.endswith(".jinja"):
         dockerfile = render_to
-        write_file(dockerfile, build_dockerfile(path))
+        builder.write(dockerfile, build_dockerfile(path))
     else:
         dockerfile = path
     return dockerfile
