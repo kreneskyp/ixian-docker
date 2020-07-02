@@ -22,9 +22,14 @@ from docker import errors as docker_errors
 from ixian.module import load_module
 from ixian_docker.modules.docker.utils.images import (
     delete_image,
-    image_exists, build_image,
+    image_exists,
+    build_image,
 )
-from ixian_docker.tests.mocks.client import mock_docker_environment, mock_docker_registries, mock_ecr
+from ixian_docker.tests.mocks.client import (
+    mock_docker_environment,
+    mock_docker_registries,
+    mock_ecr,
+)
 from ixian.tests.conftest import mock_environment as base_mock_ixian_environment
 from ixian.tests.conftest import mock_cli, mock_init, temp_builder
 
@@ -143,9 +148,9 @@ def mock_build_image_if_needed(
     - pull_image_not_found - image exists on registry but gives an error when pulled
     """
     caplog.set_level(logging.DEBUG, logger="ixian_docker.modules.docker")
+    mock_docker_environment = mock_get_image
 
     def setup(image, scenario="image_does_not_exist"):
-        mock_docker_environment = mock_get_image
         mock_image_exists_in_registry.return_value = False
         mock_pull_image.side_effect = None
 
@@ -170,7 +175,7 @@ def mock_build_image_if_needed(
         image: str,
         mock_build: bool = True,
         expects_build: bool = True,
-        scenario: str = "image_does_not_exist"
+        scenario: str = "image_does_not_exist",
     ):
         """
         Assert building an image.
@@ -182,20 +187,23 @@ def mock_build_image_if_needed(
 
         setup(image, scenario)
         if mock_build:
+
             def output():
                 logger = logging.getLogger(__name__)
                 logger.info("[Mocked Docker Build Process]")
+
             # TODO: it might already be mocked by mock_docker_environment
             mock_build_image = mocker.patch("ixian_docker.modules.docker.utils.images.build_image")
         else:
             # mock_docker_environment needs to be patched with the real build api
             docker_client = docker.from_env()
             mock_docker_environment.api.build.side_effect = docker_client.api.build
+            mock_docker_environment.images.get = docker_client.images.get
+            mock_docker_environment.images.remove = docker_client.images.remove
 
-        image_will_be_built = scenario in {
-            "image_does_not_exist",
-            "pull_image_not_found",
-        } and not mock_build
+        image_will_be_built = (
+            scenario in {"image_does_not_exist", "pull_image_not_found",} and not mock_build
+        )
 
         # Always delete the image if it exists.
         if not mock_build and image_exists(image):

@@ -45,6 +45,8 @@ snapshots['TestBuildBaseImage.test_help 2'] = '''
 snapshots['TestBuildBaseImage.test_scenarios[image_exists] exit_code'] = GenericRepr('<ExitCodes.ERROR_COMPLETE: -1>')
 
 snapshots['TestBuildBaseImage.test_scenarios[image_exists] log'] = [
+    'Attempting to build image=docker.io/library/unittests:base-dbb75cb730f9d31a1e1b1146f0aa9a387ed98c1cfc80f9f2e5fa78641c90d97f dockerfile=/home/runner/work/ixian-docker/ixian-docker/ixian_docker/tests/Dockerfile.one force=False pull=True',
+    'Image exists, skipping build.',
     'Already complete. Override with --force or --force-all'
 ]
 
@@ -69,6 +71,8 @@ snapshots['TestBuildBaseImage.test_scenarios[image_exists] mock_build_image'] = 
 snapshots['TestBuildBaseImage.test_scenarios[image_exists_local] exit_code'] = GenericRepr('<ExitCodes.ERROR_COMPLETE: -1>')
 
 snapshots['TestBuildBaseImage.test_scenarios[image_exists_local] log'] = [
+    'Attempting to build image=docker.io/library/unittests:base-dbb75cb730f9d31a1e1b1146f0aa9a387ed98c1cfc80f9f2e5fa78641c90d97f dockerfile=/home/runner/work/ixian-docker/ixian-docker/ixian_docker/tests/Dockerfile.one force=False pull=True',
+    'Image exists, skipping build.',
     'Already complete. Override with --force or --force-all'
 ]
 
@@ -133,14 +137,15 @@ snapshots['TestBuildBaseImage.test_scenarios[image_does_not_exist] mock_build_im
     ,)
 ]
 
-snapshots['TestBuildBaseImage.test_scenarios[image_exists_registry] exit_code'] = GenericRepr('<ExitCodes.SUCCESS: 0>')
+snapshots['TestBuildBaseImage.test_scenarios[image_exists_registry] exit_code'] = GenericRepr('<ExitCodes.ERROR_COMPLETE: -1>')
 
 snapshots['TestBuildBaseImage.test_scenarios[image_exists_registry] log'] = [
     'Attempting to build image=docker.io/library/unittests:base-dbb75cb730f9d31a1e1b1146f0aa9a387ed98c1cfc80f9f2e5fa78641c90d97f dockerfile=/home/runner/work/ixian-docker/ixian-docker/ixian_docker/tests/Dockerfile.one force=False pull=True',
     'Image does not exist.',
     'Image exists on registry. Pulling image.',
     'Image pulled.',
-    'Check passed, skipping build.'
+    'Check passed, skipping build.',
+    'Already complete. Override with --force or --force-all'
 ]
 
 snapshots['TestBuildBaseImage.test_scenarios[image_exists_registry] sys.out'] = '''
@@ -346,4 +351,70 @@ snapshots['TestBuildBaseImage.test_build_force mock_build_image'] = [
             'context': None
         }
     ,)
+]
+
+snapshots['TestBuildBaseImage.test_build log'] = [
+    'Attempting to build image=docker.io/library/unittests:base-dbb75cb730f9d31a1e1b1146f0aa9a387ed98c1cfc80f9f2e5fa78641c90d97f dockerfile=/home/runner/work/ixian-docker/ixian-docker/ixian_docker/tests/Dockerfile.one force=True pull=True',
+    'Building image dockerfile=/home/runner/work/ixian-docker/ixian-docker/ixian_docker/tests/Dockerfile.one tag=docker.io/library/unittests:base-dbb75cb730f9d31a1e1b1146f0aa9a387ed98c1cfc80f9f2e5fa78641c90d97f context=/home/runner/work/ixian-docker/ixian-docker',
+    'Step 1/2 : FROM alpine',
+    ' ---> [IMAGE]',
+    'Step 2/2 : RUN touch /tmp/bar',
+    ' ---> Running in [CONTAINER]',
+    ' ---> [IMAGE]',
+    'Successfully built [IMAGE]',
+    'Successfully tagged unittests:base-dbb75cb730f9d31a1e1b1146f0aa9a387ed98c1cfc80f9f2e5fa78641c90d97f'
+]
+
+snapshots['TestBuildBaseImage.test_build sys.out'] = '''
+'''
+
+snapshots['TestBuildBaseImage.test_build sys.err'] = '''
+'''
+
+snapshots['TestBuildBaseImage.test_build mock_get_image'] = [
+]
+
+snapshots['TestBuildBaseImage.test_build mock_image_exists_in_registry'] = [
+]
+
+snapshots['TestBuildBaseImage.test_build mock_pull_image'] = [
+]
+
+snapshots['TestBuildBaseImage.test_build_failure exit_code'] = GenericRepr('<ExitCodes.SUCCESS: 0>')
+
+snapshots['TestBuildBaseImage.test_build_failure log'] = [
+    'Attempting to build image=docker.io/library/unittests:base-32cc7c2d166b3c9aa5f8c84268176a709e7b4c077851f06b29da5e3ce2e9bd02 dockerfile=/home/runner/work/ixian-docker/ixian-docker/ixian_docker/tests/Dockerfile.failure force=False pull=True',
+    'Image does not exist.',
+    'Image does not exist on registry.',
+    'Building image dockerfile=/home/runner/work/ixian-docker/ixian-docker/ixian_docker/tests/Dockerfile.failure tag=docker.io/library/unittests:base-32cc7c2d166b3c9aa5f8c84268176a709e7b4c077851f06b29da5e3ce2e9bd02 context=/home/runner/work/ixian-docker/ixian-docker',
+    'Step 1/2 : FROM alpine',
+    ' ---> [IMAGE]',
+    'Step 2/2 : RUN this_command_will_fail',
+    ' ---> Running in [CONTAINER]',
+    '''\x1b[91m/bin/sh: this_command_will_fail: not found
+\x1b[0m''',
+    "The command '/bin/sh -c this_command_will_fail' returned a non-zero code: 127"
+]
+
+snapshots['TestBuildBaseImage.test_build_failure sys.out'] = '''
+'''
+
+snapshots['TestBuildBaseImage.test_build_failure sys.err'] = '''
+'''
+
+snapshots['TestBuildBaseImage.test_build_failure mock_get_image'] = [
+]
+
+snapshots['TestBuildBaseImage.test_build_failure mock_image_exists_in_registry'] = [
+    (
+        (
+            'docker.io/library/unittests',
+            'base-32cc7c2d166b3c9aa5f8c84268176a709e7b4c077851f06b29da5e3ce2e9bd02'
+        ,),
+        {
+        }
+    ,)
+]
+
+snapshots['TestBuildBaseImage.test_build_failure mock_pull_image'] = [
 ]

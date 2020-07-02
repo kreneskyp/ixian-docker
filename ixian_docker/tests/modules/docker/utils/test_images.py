@@ -342,7 +342,7 @@ class TestPush:
             push_image(TEST_IMAGE_NAME, "custom_tag")
         snapshot.assert_match(str(exc_inf.value))
         mock_docker_environment.api.push.assert_called_with(
-            TEST_IMAGE_NAME, 'custom_tag', decode=True, stream=True
+            TEST_IMAGE_NAME, "custom_tag", decode=True, stream=True
         )
         out, err = capsys.readouterr()
         snapshot.assert_match(out)
@@ -366,7 +366,7 @@ class TestPush:
             push_image(TEST_IMAGE_NAME, "custom_tag", silent=True)
         snapshot.assert_match(str(exc_inf.value))
         mock_docker_environment.api.push.assert_called_with(
-            TEST_IMAGE_NAME, 'custom_tag', decode=False, stream=False
+            TEST_IMAGE_NAME, "custom_tag", decode=False, stream=False
         )
         out, err = capsys.readouterr()
         snapshot.assert_match(out)

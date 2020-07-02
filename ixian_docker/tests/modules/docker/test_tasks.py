@@ -23,7 +23,6 @@ class TaskTests:
 
 
 class ImageBuildTests:
-
     @property
     def task(self):
         raise NotImplementedError
