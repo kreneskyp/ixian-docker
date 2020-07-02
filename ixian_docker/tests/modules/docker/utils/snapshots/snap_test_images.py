@@ -47,10 +47,13 @@ snapshots['TestPush.test_push_tag 1'] = '''The push refers to repository [896552
 77cae8ab23bf: Preparing \x1b[K\r77cae8ab23bf: Pushing [>                                                  ]  68.61kB/5.553MB\x1b[K\r77cae8ab23bf: Pushing [====>                                              ]  461.8kB/5.553MB\x1b[K\r77cae8ab23bf: Pushing [=======>                                           ]  845.3kB/5.553MB\x1b[K\r77cae8ab23bf: Pushing [==================>                                ]  2.055MB/5.553MB\x1b[K\r77cae8ab23bf: Pushing [====================>                              ]  2.251MB/5.553MB\x1b[K\r77cae8ab23bf: Pushing [===============================>                   ]  3.496MB/5.553MB\x1b[K\r77cae8ab23bf: Pushing [==========================================>        ]  4.694MB/5.553MB\x1b[K\r77cae8ab23bf: Pushing [==================================================>]  5.815MB\x1b[K\r77cae8ab23bf: Pushed \x1b[K\rpush_test: digest: sha256:e4355b66995c96b4b468159fc5c7e3540fcef961189ca13fee877798649f531a size: 528
 '''
 
-snapshots['TestPush.test_push_error 1'] = '''The push refers to repository [FAKE.dkr.ecr.us-west-2.amazonaws.com/testing]
-77cae8ab23bf: Preparing \x1b[K\rdenied: Your Authorization Token has expired. Please run 'aws ecr get-login --no-include-email' to fetch a new one.
-'''
+snapshots['TestPush.test_push_error 1'] = "Error transferring image: denied: Your Authorization Token has expired. Please run 'aws ecr get-login --no-include-email' to fetch a new one."
+
+snapshots['TestPush.test_push_error 2'] = '''The push refers to repository [FAKE.dkr.ecr.us-west-2.amazonaws.com/testing]
+77cae8ab23bf: Preparing \x1b[K\r'''
 
 snapshots['TestPush.test_push_silent 1'] = ''
 
-snapshots['TestPush.test_push_error_and_silent 1'] = ''
+snapshots['TestPush.test_push_error_and_silent 1'] = "Error transferring image: denied: Your Authorization Token has expired. Please run 'aws ecr get-login --no-include-email' to fetch a new one."
+
+snapshots['TestPush.test_push_error_and_silent 2'] = ''

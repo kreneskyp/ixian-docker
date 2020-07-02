@@ -338,7 +338,12 @@ class TestPush:
         mock_docker_environment.api.push = mock.Mock(
             return_value=event_streams.ECR_PUSH_AUTH_FAILURE
         )
-        push_image(TEST_IMAGE_NAME, "custom_tag")
+        with pytest.raises(DockerTransferError) as exc_inf:
+            push_image(TEST_IMAGE_NAME, "custom_tag")
+        snapshot.assert_match(str(exc_inf.value))
+        mock_docker_environment.api.push.assert_called_with(
+            TEST_IMAGE_NAME, 'custom_tag', decode=True, stream=True
+        )
         out, err = capsys.readouterr()
         snapshot.assert_match(out)
 
@@ -357,7 +362,12 @@ class TestPush:
         mock_docker_environment.api.push = mock.Mock(
             return_value=event_streams.ECR_PUSH_AUTH_FAILURE
         )
-        push_image(TEST_IMAGE_NAME, "custom_tag", silent=True)
+        with pytest.raises(DockerTransferError) as exc_inf:
+            push_image(TEST_IMAGE_NAME, "custom_tag", silent=True)
+        snapshot.assert_match(str(exc_inf.value))
+        mock_docker_environment.api.push.assert_called_with(
+            TEST_IMAGE_NAME, 'custom_tag', decode=False, stream=False
+        )
         out, err = capsys.readouterr()
         snapshot.assert_match(out)
 
