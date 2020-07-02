@@ -132,28 +132,6 @@ class ___TestBuildDockerfile(TaskTests):
         raise NotImplementedError
 
 
-# TODO: test `remove_app_image`
-
-
-class ___TestBuildApp(TaskTests):
-    """
-    Tests the BuildApp virtual task
-    """
-
-    task = "build_app"
-    # TODO: how to make this generic since it's currently hardcoded with
-
-    def test_execute(self):
-        raise NotImplementedError
-
-    def test_execute_with_configured_build_targets(self):
-        raise NotImplementedError
-
-    def test_build_failure(self):
-        # TODO: test multiple stages
-        raise NotImplementedError
-
-
 @pytest.fixture
 def mock_build_task(
     base_mock_ixian_environment, mock_docker_registries, build_image_if_needed_scenarios
