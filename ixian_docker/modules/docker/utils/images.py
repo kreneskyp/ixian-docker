@@ -91,7 +91,7 @@ def delete_image(name, force=False):
 EMPTY_LINE = b'{"stream":"\\n"}'
 
 
-def build_image(dockerfile, tag, context=None, **kwargs):
+def build_image(dockerfile: str, tag: str, context: str = None, **kwargs) -> bool:
     """Build a docker image.
 
     Builds a docker image. This is a shim around Docker-py that adds some
@@ -156,29 +156,33 @@ def build_image(dockerfile, tag, context=None, **kwargs):
                 status = decoded_line["status"]
                 logger.info(format_pull_status_minimal(status, seen_layers))
 
+    return True
+
 
 def build_image_if_needed(
-    repository,
-    tag=None,
-    dockerfile="Dockerfile",
-    context=None,
-    pull=True,
-    recheck=None,
-    force=False,
+    repository: str,
+    tag: str = None,
+    dockerfile: str = "Dockerfile",
+    context: str = None,
+    pull: bool = True,
+    recheck: bool = None,
+    force: bool = False,
     **kwargs,
-):
+) -> bool:
     # if local: skip
     # if remote: pull & skip
     # else: build
     image_and_tag = "{}:{}".format(repository, tag or "latest")
 
-    logger.debug(f"Attempting to build image={image_and_tag} dockerfile={dockerfile} "
-                 f"force={force} pull={pull}")
+    logger.debug(
+        f"Attempting to build image={image_and_tag} dockerfile={dockerfile} "
+        f"force={force} pull={pull}"
+    )
 
     if not force:
         if image_exists(image_and_tag):
             logger.debug("Image exists, skipping build.")
-            return
+            return False
         else:
             logger.debug("Image does not exist.".format(tag))
 
@@ -199,7 +203,7 @@ def build_image_if_needed(
                     if not recheck or recheck():
                         logger.debug("Check passed, skipping build.")
                         # TODO: get image and return
-                        return
+                        return False
             elif pull:
                 logger.debug("Image does not exist on registry.")
         except UnknownRegistry as exception:
