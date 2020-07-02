@@ -95,6 +95,7 @@ class ImageBuildTests:
         assert_build(CONFIG.DOCKER.BASE_IMAGE, scenario="image_exists")
 
 
+@pytest.mark.skip
 class TestCleanDocker(TaskTests):
     task = "clean_docker"
 
