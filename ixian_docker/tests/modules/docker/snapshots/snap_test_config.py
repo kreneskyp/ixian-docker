@@ -70,3 +70,8 @@ snapshots['TestDockerConfig.test_read[IMAGE] 1'] = 'docker.io/library/unittests:
 snapshots['TestDockerConfig.test_task_hash 1'] = GenericRepr('<ixian.config.TaskConfig object at 0x100000000>')
 
 snapshots['TestDockerConfig.test_task_hash 2'] = GenericRepr('<ixian.config.TaskConfig object at 0x100000000>')
+
+snapshots['TestDockerConfig.test_read[DOCKER_IO] 1'] = 'docker.io'
+
+snapshots['TestDockerConfig.test_read[COMPOSE_ENV] 1'] = {
+}

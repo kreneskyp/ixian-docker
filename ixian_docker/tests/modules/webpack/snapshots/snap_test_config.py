@@ -34,3 +34,8 @@ snapshots['TestConfig.test_read[SOURCE_DIRS] 1'] = [
 ]
 
 snapshots['TestConfig.test_task_hash 1'] = GenericRepr('<ixian.config.TaskConfig object at 0x100000000>')
+
+snapshots['TestConfig.test_read[RUN_CMD] 1'] = '''/opt/unittests/node_modules/.bin/webpack \\ 
+  --colors \\ 
+  --config /opt/unittests/etc/webpack/webpack.config.js \\ 
+  --output-path /opt/unittests/compiled_static'''

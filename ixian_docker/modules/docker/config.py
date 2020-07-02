@@ -200,7 +200,9 @@ class DockerConfig(Config):
         Environment variables passed to all calls :code:`compose`.
         """
         return {
-            "DOCKER_IMAGE": CONFIG.DOCKER.COMPOSE_IMAGE,
-            "DOCKER_NPM_IMAGE": CONFIG.NPM.IMAGE,
-            "DOCKER_NPM_VOLUME": CONFIG.NPM.VOLUME,
+            # TODO: this needs to be a hook for modules to add to, while it works
+            #     : in practice, it breaks tests which don't load python and npm
+            # "DOCKER_IMAGE": CONFIG.DOCKER.COMPOSE_IMAGE,
+            # "DOCKER_NPM_IMAGE": CONFIG.NPM.IMAGE,
+            # "DOCKER_NPM_VOLUME": CONFIG.NPM.VOLUME,
         }

@@ -329,6 +329,24 @@ def mock_python_environment(mock_environment):
 
 
 @pytest.fixture
+def mock_pytest_environment(mock_environment):
+    load_module("ixian_docker.modules.pytest")
+    yield mock_environment
+
+
+@pytest.fixture
 def mock_django_environment(mock_python_environment):
     load_module("ixian_docker.modules.django")
     yield mock_python_environment
+
+
+@pytest.fixture
+def mock_black_environment(mock_python_environment):
+    load_module("ixian_docker.modules.black")
+    yield mock_python_environment
+
+
+@pytest.fixture
+def mock_prettier_environment(mock_npm_environment):
+    load_module("ixian_docker.modules.prettier")
+    yield mock_npm_environment
