@@ -60,7 +60,6 @@ class DockerImageExists(MultiValueChecker):
         this one, then it should use state to determine it was not built with the same image that
         is present.
         """
-        client = docker_client()
         image_ids = {}
         for image_tag in self.keys:
             image_id = None
