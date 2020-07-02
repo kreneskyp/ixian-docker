@@ -55,7 +55,9 @@ class DockerClient:
         try:
             config = CONFIG.DOCKER.REGISTRIES[registry]
         except KeyError:
-            if registry == "docker.io":
+            # if default docker registry is requested but not present, create a vanilla client with
+            # default settings.
+            if registry == CONFIG.DOCKER.DOCKER_IO:
                 logger.debug(f"Using default registry: docker.io")
                 config = {"client": DockerClient}
             else:

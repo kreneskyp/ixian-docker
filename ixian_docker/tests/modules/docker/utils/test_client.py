@@ -16,6 +16,7 @@ from unittest import mock
 
 import pytest
 import docker
+from ixian.config import CONFIG
 
 from ixian_docker.modules.docker.utils.client import (
     DockerClient,
@@ -40,6 +41,13 @@ class TestDockerClient:
         client.client.api.push.assert_not_called()
         client.client.api.pull.assert_not_called()
         client.client.login.assert_not_called()
+
+    def test_default_default_registry(self):
+        """
+        default registry doesn't need to be configured
+        """
+        client = DockerClient.for_registry(CONFIG.DOCKER.DOCKER_IO)
+        assert isinstance(client, DockerClient)
 
     def test_unknown_registry(self, mock_docker_environment):
         """Test requesting a registry that isn't configured"""

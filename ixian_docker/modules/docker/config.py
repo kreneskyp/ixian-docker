@@ -46,6 +46,9 @@ class DockerConfig(Config):
 
         return os.path.dirname(os.path.realpath(docker.__file__))
 
+    #: Dockers registry, also the default for docker
+    DOCKER_IO = "docker.io"
+
     #: The docker image will be tagged with this tag when built.
     #:
     #: By default, this tag uses the hash from :code:`build_image`. The hash should represent the
