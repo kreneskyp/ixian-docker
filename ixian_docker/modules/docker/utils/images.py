@@ -47,8 +47,14 @@ def image_exists(name):
         client.images.get(name)
     except DockerNotFound:
         return False
-    else:
-        return True
+
+
+def get_image(name):
+    client = docker_client()
+    try:
+        return client.images.get(name)
+    except DockerNotFound:
+        return None
 
 
 def image_exists_in_registry(repository, tag=None):
@@ -100,6 +106,7 @@ def build_image(dockerfile, tag, context=None, **kwargs):
 
     client = docker_client()
 
+    print("build_image damnit! ", client, client.api.build, client.api.build.side_effect)
     stream = client.api.build(path=context, dockerfile=dockerfile, tag=tag, **kwargs)
     seen_layers = defaultdict(set)
 
@@ -164,7 +171,8 @@ def build_image_if_needed(
     # else: build
     image_and_tag = "{}:{}".format(repository, tag or "latest")
 
-    logger.debug(f"Attempting to build image={image_and_tag} dockerfile={dockerfile}")
+    logger.debug(f"Attempting to build image={image_and_tag} dockerfile={dockerfile} "
+                 f"force={force} pull={pull}")
 
     if not force:
         if image_exists(image_and_tag):
@@ -198,6 +206,8 @@ def build_image_if_needed(
                 f"Registry '{str(exception)}' is not configured, couldn't check for remote image."
             )
 
+
+    print("byild_image: ", build_image)
     return build_image(dockerfile, image_and_tag, context=context, **kwargs)
 
 
